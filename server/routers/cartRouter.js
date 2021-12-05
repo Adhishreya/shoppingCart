@@ -98,13 +98,33 @@ CardRouter.route('/increment')
             next(err);
         }
         else{
-            doc.increment(doc._id);
-            res.statusCode = 200;
-            res.setHeader('Content-Type','application/json');
-            res.json(doc);
+             Products.findById(doc.productId,(err,product)=>{
+                if(err){
+                    console.log(err);
+                    next(err);
+                }
+                else{
+                    product.updateAvailability(product._id,-1,next)
+                    .then((data)=>{
+                        console.log("Dataaaaaa"+data)
+                        if(err){
+                            next(err);
+                        }
+                        // else{
+                        doc.increment(doc._id,next);
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type','application/json');
+                        res.json(doc);
+                        // }
+                        
+                    },err=>next(err));
+                    ;    
+                }
+            }).clone()
+
+           
         }
     });
-
 });
 
 CardRouter.route('/decrement')       
@@ -115,7 +135,7 @@ CardRouter.route('/decrement')
                 next(err);
             }
             else{
-                doc.decrement(doc._id);
+                doc.decrement(doc._id,next);
                 res.statusCode = 200;
                 res.setHeader('Content-Type','application/json');
                 res.json(doc);

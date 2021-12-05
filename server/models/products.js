@@ -64,11 +64,11 @@ const products = new mongoose.Schema({
     tags:[Tags]
 
 });
-products.methods.updateAvailability = function(id,number,next){
-    console.log("id is"+id);
+product.methods.updateAvailability = function(id,number,next){
+    console.log("inside number"+number);
     return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({_id:id},{
         $set:{
-            availability:this.availability - number
+            availability:this.availability + number
         }
     },{new:true,runValidators:true},(err,doc)=>{
         if(err){

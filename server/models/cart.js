@@ -9,10 +9,16 @@ const cartItemsSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: true,
+        get:v => v,
+        validate:(function(value){
+            if(value<0){
+                throw new Error('Quantity cannot be negative');
+            }
+        })
     }});
 
 
-    cartItemsSchema.methods.increment = function(id){
+    cartItemsSchema.methods.increment = function(id,next){
         return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({_id:id},{
             $set:{
                 quantity:this.quantity + 1,
@@ -21,14 +27,13 @@ const cartItemsSchema = new mongoose.Schema({
         (err,doc)=>{
             if(err){
                 console.log(err);
-            }
-            else{
-                console.log(doc);
+                next(err);
             }
             }).clone();
     } 
 
-    cartItemsSchema.methods.decrement = function(id){
+
+    cartItemsSchema.methods.decrement = function(id,next){
         return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({_id:id},{
             $set:{
                 quantity:this.quantity - 1,
@@ -37,13 +42,21 @@ const cartItemsSchema = new mongoose.Schema({
         (err,doc)=>{
             if(err){
                 console.log(err);
+                next(err);
             }
             else{
+                Products.findById(doc.productId,(err,product)=>{
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        product.updateAvailability(product._id,+1,next);    
+                    }
+                })
                 console.log(doc);
             }
             }).clone();
     } 
-
 const cart = new mongoose.Schema({
     // cartItemId:{
     //     unique:true,
