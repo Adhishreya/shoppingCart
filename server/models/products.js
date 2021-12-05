@@ -37,17 +37,22 @@ const products = new mongoose.Schema({
     },
     availability:{
         type:Number,
-        min:0
+        min:0,
+        validate:(value)=>{ 
+            if(value<this.quantity){
+                throw new Error('Invalid availability');
+            }
+        }
     },
     reviews:[Reviews],
     averageRating:{
        default:0,
        type:Number 
     },
-    quantity:{
-        type:Number,
-        min:0,
-    },
+    // quantity:{
+    //     type:Number,
+    //     min:0,
+    // },
     discount:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Discount'
@@ -59,5 +64,20 @@ const products = new mongoose.Schema({
     tags:[Tags]
 
 });
-
+products.methods.updateAvailability = function(id,number,next){
+    console.log("id is"+id);
+    return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({_id:id},{
+        $set:{
+            availability:this.availability - number
+        }
+    },{new:true,runValidators:true},(err,doc)=>{
+        if(err){
+            console.log(err);
+            next(err);
+        }
+        else{
+            console.log(doc);
+        }
+        }).clone();
+}
 module.exports = mongoose.model("Products",products);

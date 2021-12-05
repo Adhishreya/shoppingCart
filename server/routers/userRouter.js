@@ -1,5 +1,7 @@
 const userRouter = require('express').Router();
 const Users = require('../models/user');
+const passport = require('passport');
+const authenticate = require('../authentication')
 userRouter.route('/get')
 .get((req, res) => {
 
@@ -47,8 +49,12 @@ userRouter.route('/signup')
             )
         }
         );
-                        
-                        
+userRouter.post('/signin',passport.authenticate('local',{failureFlash:true}),(req,res)=>{
+    res.setStatus = 200;
+    res.setHeader('Content-Type','aplication/json');
+    res.send()
+})
+                 
 
         // var authenticate = Users.authenticate();
         // authenticate(email,password,(err,result)=>{
