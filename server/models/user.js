@@ -16,11 +16,17 @@ const users = new mongoose.Schema({
     phoneNumber:{
         type:String,
         unique:true,
-        require:true
+        validate:{
+            validator:function(v){
+                return  /\d{3}\d{3}\d{4}/.test(v);
+            },
+            message:'{VALUE} is not a valid phone number'
+        }
+        // require:true
     },
     email:{
         type:String,
-        require:true,
+        // require:true,
         unique:true,
         lowercase:true
         //,
@@ -35,24 +41,14 @@ const users = new mongoose.Schema({
     address:[{
         type:String
     }],
-    password:{
-        type:String,
-        require:true,
-        minlength:6,
-        maxlength:20,
-        // select:false,
-        // validate:{
-        //     validator:function(value){
-        //         return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,20}/.test(value);
-        //     },
-        //     message:'{VALUE} is not a valid password'
-        // },
-
-    },
+    // password:{
+    //     type:String,
+    //     require:true,
+    //     minlength:6,
+    //     maxlength:20,
+    // },
 
 });
 users.plugin(Passport);
-// ,{
-//     usernameField:'email'
-//});
+
 module.exports = mongoose.model("Users",users);

@@ -1,3 +1,3 @@
 module.exports={
-    'secret-key':"1234-abcd-5678-efgh"
+    'secretKey':"1234-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"
 }
