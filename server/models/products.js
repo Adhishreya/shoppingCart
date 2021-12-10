@@ -6,7 +6,7 @@ const Tags = require('../models/tags');
 const imageSchema = new mongoose.Schema({
     // data: Buffer,
     // contentType: String
-    type:String
+    type: String
 });
 
 const products = new mongoose.Schema({
@@ -14,70 +14,70 @@ const products = new mongoose.Schema({
     //     unique:true,
     //     type:mongoose.Schema.Types.ObjectId
     // },
-    productName:{
-        type:String
+    productName: {
+        type: String
     },
-    description:{
-        type:String,
+    description: {
+        type: String,
         require
     },
-    sku:{
-        type:String,
-        unique:true
+    sku: {
+        type: String,
+        unique: true
     },
-    images:{
-        type:[imageSchema]
+    images: {
+        type: [imageSchema]
     },
-    price:{
-        type:currency,
+    price: {
+        type: currency,
     },
-    vendorDetails:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Vendor'
+    vendorDetails: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Vendor'
     },
-    availability:{
-        type:Number,
-        min:0,
-        validate:(value)=>{ 
-            if(value<this.quantity){
+    availability: {
+        type: Number,
+        min: 0,
+        validate: (value) => {
+            if (value < this.quantity) {
                 throw new Error('Invalid availability');
             }
         }
     },
-    reviews:[Reviews],
-    averageRating:{
-       default:0,
-       type:Number 
+    reviews: [Reviews],
+    averageRating: {
+        default: 0,
+        type: Number
     },
     // quantity:{
     //     type:Number,
     //     min:0,
     // },
-    discount:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Discount'
+    discount: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Discount'
     },
     // category:{
     //     type:String,
     //     require:true
     // },
-    tags:[Tags]
+    tags: [Tags]
 
 });
-product.methods.updateAvailability = function(id,number,next){
-    console.log("inside number"+number);
-    return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({_id:id},{
-        $set:{
-            availability:this.availability + number
+product.methods.updateAvailability = function (id, number, next) {
+    console.log("inside number" + number);
+    return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({ _id: id }, {
+        $set: {
+            availability: this.availability + number
         }
-    },{new:true,runValidators:true},(err,doc)=>{
-        if(err){
+    }, { new: true, runValidators: true }, (err, doc) => {
+        if (err) {
             console.log(err);
             next(err);
         }
-        else{
+        else {
             console.log(doc);
         }
-        }).clone();
+    }).clone();
 }
-module.exports = mongoose.model("Products",products);
+module.exports = mongoose.model("Products", products);
