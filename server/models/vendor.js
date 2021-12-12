@@ -4,8 +4,8 @@ const vendor = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Users'
     },
-    licensedVendor:{
-        type:Boolean,
+    licensedNumber:{
+        type:String,
         require:true
     },
     companyName:{
@@ -26,8 +26,8 @@ const vendor = new mongoose.Schema({
         require:true
     },
     companyWebsite:{
-        type:String,
-        require:true
+        type:String
+        // require:true
     }                         
 });
 module.exports = mongoose.model("Vendor",vendor);

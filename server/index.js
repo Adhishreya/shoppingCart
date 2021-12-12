@@ -12,10 +12,12 @@ const port = process.env.PORT || 5000;
 const Users = require('./models/user');
 app.use(bodyParser.urlencoded({ extended: false }))
 const userRouter = require('./routers/userRouter');
+const vendorRouter = require('./routers/vendorRouter');
+// const productsRouter = require('./routers/productRouter');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
-
 const passport = require('passport');
+app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -32,8 +34,15 @@ mongoose.connect(
 ;
 
 passport.use(new LocalStrategy(Users.authenticate()));
+passport.serializeUser((user,done)=>{
+  done(null,user.id);
+});
 
-app.use(passport.initialize());
+passport.deserializeUser((id,done)=>{
+  Users.findById(id,(err,user)=>{
+      done(err,user);
+  });
+});
 // app.use(passport.session({secret:config.secretKey,resave:false,saveUninitialized:false}));
 // console.log(config['secret-key']);
 var opts = {}
@@ -60,6 +69,8 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
 ));
 
 app.use('/users', userRouter);
+app.use('/vendor',vendorRouter);
+// app.use('/products',productsRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);

@@ -3,9 +3,9 @@ const Users = require('../models/user');
 const passport = require('passport');
 const authenticate = require('../authentication')
 userRouter.route('/profile')
-    .get(authenticate.verifyUser,(req, res) => {
+    .get(authenticate.verifyUser, (req, res) => {
         console.log(req.user)
-        Users.find({_id:req.user.id}).then((users) => {
+        Users.find({ _id: req.user.id }).then((users) => {
             // res.sendStatus(200);
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json  ');
@@ -17,7 +17,6 @@ userRouter.route('/profile')
 userRouter.route('/signup')
     .post((req, res, next) => {
         let { username, password, email, phoneNumber, address } = req.body;
-        console.log({ username, password, email, phoneNumber })
         Users.register(new Users({ username: username }), password, (err, user) => {
             if (err) {
                 next(err);
@@ -25,19 +24,23 @@ userRouter.route('/signup')
             else {
                 user.email = email;
                 user.phoneNumber = phoneNumber;
-                user.address = address;
+                // user.address = address;
                 user.save((err, user) => {
-                    passport.authenticate('local'), (req, res, next) => {
-                        res.sendStatus(200);
-                        res.setHeader('Content-Type', 'application/json  ');
-                        res.json(user);
+                    if (err) {
+                        res.statusCode = 500;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({ err: err });
+                        return;
                     }
-                });
+
+                    passport.authenticate('local')(req, res, () => {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({ success: true, status: 'Registration Successful!' });
+                    });
+                })
 
             }
-
-            // }))
-
         })
     });
 userRouter.post('/signin', passport.authenticate('local', { failureFlash: true }), (req, res) => {

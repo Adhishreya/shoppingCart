@@ -5,6 +5,7 @@ const Users = require('./models/user');
 const jwt = require('jsonwebtoken');//create ,sign and verify tokens
 const config = require('./config');
 passport.serializeUser((user,done)=>{
+    console.log(user)
     done(null,user.id);
 });
 
@@ -28,7 +29,18 @@ exports.verifyAdmin=((req,res,next)=>{
         err.status = 403;
         next(err);
     }
-})
+});
+
+exports.verifyVendor=((req,res,next)=>{
+    if(req.user.vendor == true){
+        next()
+    }
+    else{
+        var err = new Error('You are not registered as a vendor yet!');
+        err.status = 403;
+        next(err);
+    }
+});
 
 // exports.authenticate= passport.use(new LocalStrategy((username,password,done)=>{
 //     //verify credentials callback
