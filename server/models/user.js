@@ -5,47 +5,53 @@ const users = new mongoose.Schema({
     //     type:mongoose.Schema.Types.ObjectId,
     //     unique:true
     // },
-    admin:{
-        type:Boolean,
-        default:false
+    admin: {
+        type: Boolean,
+        default: false
     },
-    vendor:{
-        type:Boolean,
-        default:false
+    vendor: {
+        type: Boolean,
+        default: false
     },
-    userName:{
-        type:String,
-        require:true
+    userName: {
+        type: String,
+        require: true
     },
-    phoneNumber:{
-        type:String,
-        unique:true,
-        validate:{
-            validator:function(v){
+    phoneNumber: {
+        type: String,
+        unique: true,
+        validate: {
+            validator: function (v) {
                 // return  /\d{3}\d{3}\d{4}/.test(v);
-                return  /[1-9]{1}[0-9]{9}/.test(v);
+                return /[1-9]{1}[0-9]{9}/.test(v);
             },
-            message:'{VALUE} is not a valid phone number'
+            message: '{VALUE} is not a valid phone number'
         }
         // require:true
     },
-    email:{
-        type:String,
+    email: {
+        type: String,
         // require:true,
-        unique:true,
-        lowercase:true
+        unique: true,
+        lowercase: true
         //,
         // validate:(value)=>{
         //     return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value);
         // }
     },
-    displayPicture : {
-        type:String,
-        default:null
+    displayPicture: {
+        type: String,
+        default: null
     },
-    address:[{
-        type:String
+    address: [{
+        type: String
     }],
+    cart: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Cart'
+        }
+    ]
     // password:{
     //     type:String,
     //     require:true,
@@ -56,4 +62,4 @@ const users = new mongoose.Schema({
 });
 users.plugin(Passport);
 
-module.exports = mongoose.model("Users",users);
+module.exports = mongoose.model("Users", users);

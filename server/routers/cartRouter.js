@@ -2,9 +2,10 @@ const express = require('express');
 const CardRouter = express.Router();
 const Products = require('../models/products');
 const mongoose = require('mongoose');
-const { Cart, CartItem } = require('../models/cart_item');
+const authenticate = require('../authentication');
+const { Cart, CartItem } = require('../models/cart');
 CardRouter.route('/')
-    .get((req, res, next) => {
+    .get(authenticate.verifyUser, (req, res, next) => {
         Cart.find({}).populate('products').then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
@@ -12,21 +13,21 @@ CardRouter.route('/')
         })
 
     })
-    .post((req, res, next) => {
+// .post((req, res, next) => {
 
-        console.log(req.body);
+//     console.log(req.body);
 
-        Cart.create({ userId: req.body.user }).then(data => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(data);
-        }, err => next(err)).catch(e => console.log(e));
-    })
+//     Cart.create({ userId: req.user._id }).then(data => {
+//         res.statusCode = 200;
+//         res.setHeader('Content-Type', 'application/json');
+//         res.json(data);
+//     }, err => next(err)).catch(e => console.log(e));
+// })
 
 CardRouter.route('/:id')
-    .post((req, res, next) => {
+    .post(authenticate.verifyUser,(req, res, next) => {
         let id = req.params.id;
-        let { user, quantity } = req.body;
+        let { quantity } = req.body;
         var cartItem;
         console.log(id);
         Products.findById({ _id: id }, (err, product) => {
@@ -38,18 +39,14 @@ CardRouter.route('/:id')
                 quantity = 1;
             }
             // number = quantity
-            product.updateAvailability(id, quantity, next).then(() => {
+            product.updateAvailability(id, -quantity, next).then(() => {
                 CartItem.create({ productId: id, quantity: quantity }, (err, doc) => {
                     if (err) {
                         next(err);
-
                     }
                     else {
                         cartItem = doc;
-
-
-
-                        Cart.findOne({ userId: user }, (err, docs) => {
+                        Cart.findOne({ userId: req.user._id }, (err, docs) => {
                             if (err) {
                                 next(err);
                             }
@@ -61,16 +58,11 @@ CardRouter.route('/:id')
                                 res.json(docs);
                             }
                         })
-
                     }
-
                 })
-
             })
         }
-
         )
-
     })
     .delete((req, res) => {
         let { cartId } = req.body;

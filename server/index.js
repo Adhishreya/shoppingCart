@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const userRouter = require('./routers/userRouter');
 const vendorRouter = require('./routers/vendorRouter');
 const productsRouter = require('./routers/productRouter');
+const CardRouter = require('./routers/cartRouter');
 // const categoryRouter = require('./routers/categoryRouter');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
@@ -50,15 +51,12 @@ var opts = {}
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 //extracts the jwt from the authorization header with the scheme 'bearer'
 opts.secretOrKey = config.secretKey;
-// console.log(opts.secretOrKey);
 passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
-  console.log(jwt_payload);
   Users.findOne({ _id: jwt_payload._id }, (err, user) => {
     if (err) {
       return done(err, false);
     }
     if (user) {
-      console.log(user)
       return done(null, user);//callback when the user is successfully found and the first parameter is the error that is assigned to null and the second parameter is the successfully obtained parameter
     }
     else{
@@ -72,7 +70,7 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
 app.use('/users', userRouter);
 app.use('/vendor',vendorRouter);
 app.use('/products',productsRouter);
-// app.use('/category',c)
+app.use('/cart',CardRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);
