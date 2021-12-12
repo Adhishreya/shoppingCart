@@ -3,68 +3,64 @@ require('mongoose-currency').loadType(mongoose);
 const currency = mongoose.Types.Currency;
 const Reviews = require('../models/reviews');
 const Tags = require('../models/tags');
-const imageSchema = new mongoose.Schema({
-    // data: Buffer,
-    // contentType: String
-    type: String
-});
+// const imageSchema = new mongoose.Schema({
+//     // data: Buffer,
+//     // contentType: String
+//     type: String
+// });
 
 const products = new mongoose.Schema({
-    // productId:{
-    //     unique:true,
-    //     type:mongoose.Schema.Types.ObjectId
-    // },
     productName: {
         type: String
     },
     description: {
         type: String,
-        require
+        require: true
     },
     sku: {
         type: String,
         unique: true
     },
-    images: {
-        type: [imageSchema]
-    },
+    images: [{ type: String }],
     price: {
         type: currency,
     },
-    vendorDetails: {
+    vendorDetails: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vendor'
-    },
+    }],
     availability: {
         type: Number,
         min: 0,
         validate: (value) => {
-            if (value < this.quantity) {
+            if (value < this.availability) {
                 throw new Error('Invalid availability');
             }
         }
     },
-    reviews: [Reviews],
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: Reviews
+        }
+    ],
+    colours: [{
+        type: String
+    }],
     averageRating: {
         default: 0,
         type: Number
     },
-    // quantity:{
-    //     type:Number,
-    //     min:0,
-    // },
     discount: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Discount'
     },
-    // category:{
-    //     type:String,
-    //     require:true
-    // },
-    tags: [Tags]
-
+    tags: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Tags
+    }]
 });
-product.methods.updateAvailability = function (id, number, next) {
+products.methods.updateAvailability = function (id, number, next) {
     console.log("inside number" + number);
     return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({ _id: id }, {
         $set: {

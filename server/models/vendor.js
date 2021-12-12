@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const vendor = new mongoose.Schema({
-    userId:{
+    userId:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Users'
-    },
+    }],
     licensedNumber:{
         type:String,
         require:true

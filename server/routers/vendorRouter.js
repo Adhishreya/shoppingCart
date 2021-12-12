@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const authenticate = require('../authentication');
 vendorRouter.route('/profile')
-    // .get(authenticate.verifyUser,authenticate.verifyVendor, (req, res, next) => {
-    //     Vendor.find({_id:req.user.id}).populate('userId').then((vendor)=>{
-    //         res.statusCode = 200;
-    //         res.setHeader('Content-Type', 'application/json');
-    //         res.json(vendor);
-    //     },err=>next(err))
-    // })
+    .get(authenticate.verifyUser,authenticate.verifyAdmin, (req, res, next) => {
+        Vendor.find({}).populate('userId').then((vendor)=>{
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(vendor);
+        },err=>next(err))
+    })
     .post(authenticate.verifyUser, authenticate.verifyVendor, (req, res, next) => {
         let { licensedVendor, companyName, companyAddress, companyEmail, companyPhone, companyWebsite } = req.body;
         Vendor.create({ licensedVendor, companyName, companyAddress, companyEmail, companyPhone, companyWebsite, userId: mongoose.Types.ObjectId(req.user.userId) }, (err, vendor) => {

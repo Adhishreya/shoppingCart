@@ -13,7 +13,8 @@ const Users = require('./models/user');
 app.use(bodyParser.urlencoded({ extended: false }))
 const userRouter = require('./routers/userRouter');
 const vendorRouter = require('./routers/vendorRouter');
-// const productsRouter = require('./routers/productRouter');
+const productsRouter = require('./routers/productRouter');
+// const categoryRouter = require('./routers/categoryRouter');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
 const passport = require('passport');
@@ -70,7 +71,8 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
 
 app.use('/users', userRouter);
 app.use('/vendor',vendorRouter);
-// app.use('/products',productsRouter);
+app.use('/products',productsRouter);
+// app.use('/category',c)
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);
