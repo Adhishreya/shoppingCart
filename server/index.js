@@ -40,13 +40,15 @@ var opts = {}
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 //extracts the jwt from the authorization header with the scheme 'bearer'
 opts.secretOrKey = config.secretKey;
-console.log(opts.secretOrKey);
+// console.log(opts.secretOrKey);
 passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
-  Users.findOne({ _id: jwt_payload.sub }, (err, user) => {
+  console.log(jwt_payload);
+  Users.findOne({ _id: jwt_payload._id }, (err, user) => {
     if (err) {
       return done(err, false);
     }
-    if (!user) {
+    if (user) {
+      console.log(user)
       return done(null, user);//callback when the user is successfully found and the first parameter is the error that is assigned to null and the second parameter is the successfully obtained parameter
     }
     else{

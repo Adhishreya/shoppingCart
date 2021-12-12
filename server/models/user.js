@@ -9,6 +9,10 @@ const users = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    vendor:{
+        type:Boolean,
+        default:false
+    },
     userName:{
         type:String,
         require:true
@@ -18,7 +22,8 @@ const users = new mongoose.Schema({
         unique:true,
         validate:{
             validator:function(v){
-                return  /\d{3}\d{3}\d{4}/.test(v);
+                // return  /\d{3}\d{3}\d{4}/.test(v);
+                return  /[1-9]{1}[0-9]{9}/.test(v);
             },
             message:'{VALUE} is not a valid phone number'
         }

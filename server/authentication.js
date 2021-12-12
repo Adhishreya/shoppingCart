@@ -15,8 +15,21 @@ passport.deserializeUser((id,done)=>{
 });
 
 exports.getTokens = (user)=>{
-    return jwt.sign(user,config.secretKey,{expiresIn:3600});
+    return jwt.sign(user,config.secretKey,{expiresIn:30*24*3600});
+    //requesting the user to sign in after every 30 days ie here token expires after approx a month
 }
+exports.verifyUser = passport.authenticate('jwt',{session:false});
+exports.verifyAdmin=((req,res,next)=>{
+    if(req.user.admin == true){
+        next()
+    }
+    else{
+        var err = new Error('You are not authorized to perform this operation!');
+        err.status = 403;
+        next(err);
+    }
+})
+
 // exports.authenticate= passport.use(new LocalStrategy((username,password,done)=>{
 //     //verify credentials callback
 //         Users.findOne({username:username},(err,user)=>{
@@ -34,12 +47,12 @@ exports.getTokens = (user)=>{
 //     }
 // ));
 
-exports.verifyAdmin= (req,res,next) => {
-     if(req.user.admin == true){
-         next()
-     }
-     else{
-         res.setCode = 500;
-         next(err);
-     }
-}
+// exports.verifyAdmin= (req,res,next) => {
+//      if(req.user.admin == true){
+//          next()
+//      }
+//      else{
+//          res.setCode = 500;
+//          next(err);
+//      }
+// }
