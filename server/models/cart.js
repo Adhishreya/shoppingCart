@@ -42,20 +42,19 @@ cartItemsSchema.methods.decrement = function (id, next) {
     }, { new: true, runValidators: true },
         (err, doc) => {
             if (err) {
-                console.log(err);
                 next(err);
             }
-            else {
-                Products.findById(doc.productId, (err, product) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    else {
-                        product.updateAvailability(product._id, +1, next);
-                    }
-                })
-                console.log(doc);
-            }
+            // else {
+            //     Products.findById(doc.productId, (err, product) => {
+            //         if (err) {
+            //             console.log(err);
+            //         }
+            //         else {
+            //             product.updateAvailability(product._id, +1, next);
+            //         }
+            //     })
+            //     console.log(doc);
+            // }
         }).clone();
 }
 const cart = new mongoose.Schema({

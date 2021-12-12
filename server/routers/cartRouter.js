@@ -25,7 +25,7 @@ CardRouter.route('/')
 // })
 
 CardRouter.route('/:id')
-    .post(authenticate.verifyUser,(req, res, next) => {
+    .post(authenticate.verifyUser, (req, res, next) => {
         let id = req.params.id;
         let { quantity } = req.body;
         var cartItem;
@@ -83,7 +83,7 @@ CardRouter.route('/:id')
 
 
 CardRouter.route('/increment')
-    .patch((req, res, next) => {
+    .put((req, res, next) => {
         let { orderId } = req.body;
         CartItem.findById({ _id: orderId }, (err, doc) => {
             if (err) {
@@ -120,18 +120,45 @@ CardRouter.route('/increment')
     });
 
 CardRouter.route('/decrement')
-    .patch((req, res, next) => {
+    .put((req, res, next) => {
         let { orderId } = req.body;
         CartItem.findById({ _id: orderId }, (err, doc) => {
             if (err) {
                 next(err);
             }
             else {
-                doc.decrement(doc._id, next);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(doc);
+                Products.findById(doc.productId, (err, product) => {
+                    if (err) {
+                        console.log(err);
+                        next(err);
+                    }
+                    else {
+                        product.updateAvailability(product._id, +1, next)
+                            .then((data) => {
+                                console.log("Dataaaaaa" + data)
+                                if (err) {
+                                    next(err);
+                                }
+                                // else{
+                                doc.decrement(doc._id, next);
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json(doc);
+                                // }
+
+                            }, err => next(err));
+                        ;
+                    }
+                }).clone()
+
+
             }
+            // else {
+            //     doc.decrement(doc._id, next);
+            //     res.statusCode = 200;
+            //     res.setHeader('Content-Type', 'application/json');
+            //     res.json(doc);
+            // }
         });
 
     });
