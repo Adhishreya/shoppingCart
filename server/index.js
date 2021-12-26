@@ -14,7 +14,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const userRouter = require('./routers/userRouter');
 const vendorRouter = require('./routers/vendorRouter');
 const productsRouter = require('./routers/productRouter');
-const CardRouter = require('./routers/cartRouter');
+const CartRouter = require('./routers/cartRouter');
+const CardRouter = require('./routers/cardDetailsRouter');
 // const categoryRouter = require('./routers/categoryRouter');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
@@ -33,16 +34,16 @@ mongoose.connect(
 ).catch(err => {
   console.log('unable to connect' + err)
 });
-;
+const mongoSession = mongoose.startSession();
 
 passport.use(new LocalStrategy(Users.authenticate()));
-passport.serializeUser((user,done)=>{
-  done(null,user.id);
+passport.serializeUser((user, done) => {
+  done(null, user.id);
 });
 
-passport.deserializeUser((id,done)=>{
-  Users.findById(id,(err,user)=>{
-      done(err,user);
+passport.deserializeUser((id, done) => {
+  Users.findById(id, (err, user) => {
+    done(err, user);
   });
 });
 // app.use(passport.session({secret:config.secretKey,resave:false,saveUninitialized:false}));
@@ -59,8 +60,8 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
     if (user) {
       return done(null, user);//callback when the user is successfully found and the first parameter is the error that is assigned to null and the second parameter is the successfully obtained parameter
     }
-    else{
-      return done(null,false);//the error is not encountered but a new account of the specified user can be created
+    else {
+      return done(null, false);//the error is not encountered but a new account of the specified user can be created
     }
   })
 }
@@ -68,9 +69,10 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
 ));
 
 app.use('/users', userRouter);
-app.use('/vendor',vendorRouter);
-app.use('/products',productsRouter);
-app.use('/cart',CardRouter);
+app.use('/vendor', vendorRouter);
+app.use('/products', productsRouter);
+app.use('/cart', CartRouter);
+app.use('/saveCard', CardRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);

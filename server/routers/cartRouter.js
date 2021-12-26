@@ -1,10 +1,10 @@
 const express = require('express');
-const CardRouter = express.Router();
+const CartRouter = express.Router();
 const Products = require('../models/products');
 const mongoose = require('mongoose');
 const authenticate = require('../authentication');
 const { Cart, CartItem } = require('../models/cart');
-CardRouter.route('/')
+CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
         Cart.find({}).populate('products').then(data => {
             res.statusCode = 200;
@@ -24,7 +24,7 @@ CardRouter.route('/')
 //     }, err => next(err)).catch(e => console.log(e));
 // })
 
-CardRouter.route('/:id')
+CartRouter.route('/:id')
     .post(authenticate.verifyUser, (req, res, next) => {
         let id = req.params.id;
         let { quantity } = req.body;
@@ -82,7 +82,7 @@ CardRouter.route('/:id')
     })
 
 
-CardRouter.route('/increment')
+CartRouter.route('/increment')
     .put((req, res, next) => {
         let { orderId } = req.body;
         CartItem.findById({ _id: orderId }, (err, doc) => {
@@ -119,47 +119,40 @@ CardRouter.route('/increment')
         });
     });
 
-CardRouter.route('/decrement')
-    .put((req, res, next) => {
+CartRouter.route('/decrement')
+    .put(async(req, res, next) => {
         let { orderId } = req.body;
-        CartItem.findById({ _id: orderId }, (err, doc) => {
-            if (err) {
-                next(err);
-            }
-            else {
-                Products.findById(doc.productId, (err, product) => {
-                    if (err) {
-                        console.log(err);
-                        next(err);
-                    }
-                    else {
-                        product.updateAvailability(product._id, +1, next)
-                            .then((data) => {
-                                console.log("Dataaaaaa" + data)
-                                if (err) {
-                                    next(err);
-                                }
-                                // else{
-                                doc.decrement(doc._id, next);
-                                res.statusCode = 200;
-                                res.setHeader('Content-Type', 'application/json');
-                                res.json(doc);
-                                // }
-
-                            }, err => next(err));
-                        ;
-                    }
-                }).clone()
-
-
-            }
-            // else {
-            //     doc.decrement(doc._id, next);
-            //     res.statusCode = 200;
-            //     res.setHeader('Content-Type', 'application/json');
-            //     res.json(doc);
-            // }
+        const cartSession = mongoose.startSession();//creating a session to create a transaction
+        (await cartSession).startTransaction(()=>{//starting a transaction
+            CartItem.findById({ _id: orderId }, (err, doc) => {
+                if (err) {
+                    next(err);
+                }
+                else {
+                    Products.findById(doc.productId, (err, product) => {
+                        if (err) {
+                            console.log(err);
+                            next(err);
+                        }
+                        else {
+                            product.updateAvailability(product._id, +1, next)
+                                .then((data) => {
+                                    console.log("Dataaaaaa" + data)
+                                    if (err) {
+                                        next(err);
+                                    }
+                                    doc.decrement(doc._id, next);
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(doc);
+                                }, err => next(err));
+                        }
+                    }).clone()
+                }
+            });
         });
 
+        
+
     });
-module.exports = CardRouter;
+module.exports = CartRouter;
