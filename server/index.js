@@ -20,6 +20,7 @@ const CardRouter = require('./routers/cardDetailsRouter');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
 const passport = require('passport');
+const orderRouter = require('./routers/orderRouter');
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
@@ -73,6 +74,7 @@ app.use('/vendor', vendorRouter);
 app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
 app.use('/saveCard', CardRouter);
+app.use('/checkout',orderRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);

@@ -6,7 +6,7 @@ const authenticate = require('../authentication');
 const { Cart, CartItem } = require('../models/cart');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Cart.find({}).populate('products').then(data => {
+        Cart.find({userId:req.user._id}).populate('products').then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
@@ -120,10 +120,10 @@ CartRouter.route('/increment')
     });
 
 CartRouter.route('/decrement')
-    .put(async(req, res, next) => {
+    .put(async (req, res, next) => {
         let { orderId } = req.body;
         const cartSession = mongoose.startSession();//creating a session to create a transaction
-        (await cartSession).startTransaction(()=>{//starting a transaction
+        (await cartSession).startTransaction(() => {//starting a transaction
             CartItem.findById({ _id: orderId }, (err, doc) => {
                 if (err) {
                     next(err);
@@ -152,7 +152,16 @@ CartRouter.route('/decrement')
             });
         });
 
-        
 
-    });
+
+    })
+// CartRouter.route('/checkout')
+//     .get(authenticate.verifyUser, (req, res, next) => {
+//         Cart.findOne({ userId: req.user._id }).populate('products').then(data => {
+//             res.statusCode = 200;
+//             res.setHeader('Content-Type', 'application/json');
+//             res.json(data);
+//         }, err => next(err));
+//     });
+
 module.exports = CartRouter;

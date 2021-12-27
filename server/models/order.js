@@ -3,41 +3,41 @@ require('mongoose-currency').loadType(mongoose);
 const currency = mongoose.Types.Currency;
 
 const order = new mongoose.Schema({
-    cartId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Cart'
+    cartId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart'
     },
-    status:{
-        type:String,
-        enum:['Delivered','Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success']
+    status: {
+        type: String,
+        enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
     },
-    total:{
-        type:currency
+    total: {
+        type: currency
     },
-    paymentMode:{
-        type:String,
-        enum:['COD','Debit Card','Wallet']
+    paymentMode: {
+        type: String,
+        enum: { values: ['COD', 'Debit Card', 'Wallet'] }
     },
-    tax:{
-        type:Number,
-        default:0
-     },
-    itemCount:{
-        type:Number
+    tax: {
+        type: Number,
+        default: 0
+    },
+    itemCount: {
+        type: Number
     },  // no of items in the cart
-    shippingAddress:{
-        type:String
+    shippingAddress: {
+        type: String
     },
-    paymentId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Payment'
+    paymentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Payment'
     },
-    paymentDate:{
-        type:Date
+    paymentDate: {
+        type: Date
     },
-    shippingCost:{
-        type:currency
+    shippingCost: {
+        type: currency
     },
 
 });
-module.exports = mongoose.Schema("Orders",order);
+module.exports = mongoose.model("Orders", order);
