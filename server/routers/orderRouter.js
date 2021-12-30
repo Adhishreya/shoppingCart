@@ -5,28 +5,30 @@ var orderRouter = require('express').Router();
 var authenticate = require('../authentication');
 var { Cart, CartItem } = require('../models/cart');
 var Products = require('../models/products');
-
+var { calculateTotal } = require('../methods/calculateTotal');
 orderRouter.route('/')
     .post(authenticate.verifyUser, (req, res, next) => {
-        Cart.find({ }).populate('products').then(data => {
+        Cart.find({}).populate('products').then(data => {
             var total = 0;
             var itemCount = 0;
             var summary = [];
-            for (var i = 0; i < data[0].products.length; i++) {
-                var quant = data[0].products[i].quantity;
-                Products.findById(data[0].products[i].productId).then(product => {
-                    console.log(product.price);
-                    total += product.price * quant;
-                    console.log(total);
-                    summary[i] = {
-                        productName: product.productName,
-                        quantity: quant,
-                        price: product.price*quant
-                    }
-                });
-                itemCount += quant;
-            }
-            console.log(summary);
+            calculateTotal(data[0].products);
+            // for (var i = 0; i < data[0].products.length; i++) {
+            //     var quant = data[0].products[i].quantity;
+            //     Products.findById(data[0].products[i].productId).then(product => {
+            //         console.log(product.price);
+            //         total += product.price * quant;
+            //         console.log(total);
+            //         summary[i] = {
+            //             productName: product.productName,
+            //             quantity: quant,
+            //             price: product.price*quant
+            //         }
+            //     });
+            //     itemCount += quant;
+            // }
+
+            // console.log(summary);
             res.statusCode = 200;
             res.send(summary);
             // data[0].products.forEach(element => {
