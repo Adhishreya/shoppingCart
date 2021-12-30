@@ -12,7 +12,18 @@ orderRouter.route('/')
             var total = 0;
             var itemCount = 0;
             var summary = [];
-            calculateTotal(data[0].products);
+            calculateTotal(data[0].products).then(res => {
+                console.log(res);
+            });
+            // data[0].then(res => {
+            //     // res.forEach(item => {
+            //     //     total += item.price;
+            //     //     itemCount += item.quantity;
+            //     // })
+            //     console.log(res);
+            //     console.log(data[1]);
+            //     console.log(data[2]);
+            // });
             // for (var i = 0; i < data[0].products.length; i++) {
             //     var quant = data[0].products[i].quantity;
             //     Products.findById(data[0].products[i].productId).then(product => {
