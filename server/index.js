@@ -19,6 +19,7 @@ const CardRouter = require('./routers/cardDetailsRouter');
 // const categoryRouter = require('./routers/categoryRouter');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
+const paymentRouter = require('./routers/paymentsRouter');
 const passport = require('passport');
 const orderRouter = require('./routers/orderRouter');
 app.use(passport.initialize());
@@ -75,6 +76,7 @@ app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
 app.use('/saveCard', CardRouter);
 app.use('/checkout',orderRouter);
+app.use('/pay',paymentRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);

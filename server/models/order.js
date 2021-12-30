@@ -3,20 +3,17 @@ require('mongoose-currency').loadType(mongoose);
 const currency = mongoose.Types.Currency;
 
 const order = new mongoose.Schema({
-    cartId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cart'
+        ref: 'Users'
     },
-    status: {
-        type: String,
-        enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
-    },
+    orderSummary:[],
+    // status: {
+    //     type: String,
+    //     enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
+    // },
     total: {
         type: currency
-    },
-    paymentMode: {
-        type: String,
-        enum: { values: ['COD', 'Debit Card', 'Wallet'] }
     },
     tax: {
         type: Number,

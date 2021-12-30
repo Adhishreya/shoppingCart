@@ -5,11 +5,15 @@ const payment = new mongoose.Schema({
     },
     paymentStatus:{
         type:String,
-        enum:['Pending','Success','Failed'],
+        enum: { values:['Pending','Success','Failed']},
         default:'Pending'
     },
     amount:{
         type:Number
+    },
+    paymentMode: {
+        type: String,
+        enum: { values: ['COD', 'Debit Card', 'Wallet'] }
     }
 });
-module.exports = mongoose.Schema("Payment",payment);
+module.exports = mongoose.model("Payment",payment);

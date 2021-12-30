@@ -26,9 +26,12 @@ function calculateTotal(data) {
             total: total
         }
         summary.push(finalSummary);
-        // console.log(summary);
         return summary;
     });
+}
+
+
+function updateOrders(data) {
 }
 module.exports = { calculateTotal };
 
