@@ -5,6 +5,9 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import IconButton from '@mui/material/IconButton';
+
 const Products = () => {
     const [products, setProducts] = useState([]);
     useEffect(() => {
@@ -17,10 +20,10 @@ const Products = () => {
     }, []);
     return (
         <div>
-            <ul class= "grid">
+            <ul class="grid">
                 {products.map(product => (
                     <li key={product.id}>
-                        <Card sx={{ maxWidth: 345 }}>
+                        <Card sx={{ maxWidth: 355 }}>
                             <CardActionArea>
                                 <CardMedia
                                     component="img"
@@ -29,12 +32,19 @@ const Products = () => {
                                     alt={product.name}
                                 />
                                 <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        {product.name}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {product.price}
-                                    </Typography>
+
+                                    <div class="grid">
+                                        <Typography gutterBottom variant="body" component="div">
+                                            {product.productName}
+                                        </Typography>
+                                        <Typography variant="subtitle1" color="text.primary">
+                                            {product.price}
+                                        </Typography>
+
+                                    </div>
+                                    <Button variant="contained" startIcon={<AddShoppingCartIcon />}>
+                                        ADD TO CART
+                                    </Button>
                                 </CardContent>
                             </CardActionArea>
                             <CardActions>

@@ -24,7 +24,9 @@ class App extends Component {
       <div>
         {/* <LandingPage /> */}
         <BrowserRouter>
-        <Main/>
+          {/* <Provider> */}
+            <Main />
+          {/* </Provider> */}
         </BrowserRouter>
         {/* <Users /> */}
 

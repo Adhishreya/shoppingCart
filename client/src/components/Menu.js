@@ -10,6 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import Login from './Login';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -58,6 +59,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   
 
 export default function Menu() {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -84,7 +88,8 @@ export default function Menu() {
                         <AddShoppingCartIcon backgroundColor="white" />
                     </IconButton>
 
-                    <Button color="inherit">Login</Button>
+                    <Button color="inherit"><Login open={open} setOpen={setOpen} handleOpen={handleOpen} handleClose={handleClose}/></Button>
+                    {/* <Login /> */}
                 </Toolbar>
             </AppBar>
         </Box>
