@@ -1,5 +1,4 @@
-const express = require('express');
-const Router = express.Router();
+const express = require('express');;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -17,6 +16,7 @@ const productsRouter = require('./routers/productRouter');
 const CartRouter = require('./routers/cartRouter');
 const CardRouter = require('./routers/cardDetailsRouter');
 // const categoryRouter = require('./routers/categoryRouter');
+require('dotenv').config();
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
 const paymentRouter = require('./routers/paymentsRouter');

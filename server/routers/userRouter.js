@@ -1,8 +1,22 @@
 const userRouter = require('express').Router();
 const Users = require('../models/user');
-const {Cart} = require('../models/cart');
+const { Cart } = require('../models/cart');
 const passport = require('passport');
-const authenticate = require('../authentication')
+const authenticate = require('../authentication');
+const cloudinary = require('cloudinary').v2;
+const { result } = require('lodash');
+const e = require('express');
+require('dotenv').config();
+
+const config ={
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+}
+console.log(config);
+
+cloudinary.config(config);
+
 userRouter.route('/profile')
     .get(authenticate.verifyUser, (req, res) => {
         // console.log(req.user)
@@ -60,9 +74,9 @@ userRouter.post('/signin', passport.authenticate('local', { failureFlash: true }
                 req.user.cart = cart._id;
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.send({ success: true, status: "Successfully Registered", token: token});            
+                res.send({ success: true, status: "Successfully Registered", token: token });
             })
-            
+
         })
     }
     else {
@@ -126,7 +140,33 @@ userRouter.route('/addressUpdate/:id')
         })
     });
 
-
+userRouter.route('/uploadProfilePicture')
+    .post(authenticate.verifyUser, (req, res, next) => {
+        const image = req.body.image;
+        if (image) {
+            cloudinary.uploader.upload(image).then(result => {
+                Users.findByIdAndUpdate({ _id: req.user._id }, {
+                    $set: {
+                        displayPicture: result.secure_url
+                    }
+                }, (err, user) => {
+                    if (err) {
+                        next(err);
+                    }
+                    else {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.send(user);
+                    }
+                }
+                )
+            }, err => next(err));
+        } else {
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ err: "No Image Provided" });
+        }
+    })
 // var authenticate = Users.authenticate();
 // authenticate(email,password,(err,result)=>{
 //     if(err){
