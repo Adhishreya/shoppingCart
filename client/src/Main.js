@@ -1,13 +1,18 @@
-import React from "react"
+import React, { Component } from "react"
 import Products from "./components/DataFetch";
 import Menu from "./components/Menu";
-const Main = () => {
-    return (
-        <div>
-            <Menu/>
-            <Products />
-        </div>
-    )
+import { connect, context } from "react-redux";
+// import {useSelector,useDispatch} from "react-redux";
+import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
+class Main extends Component {
+    render() {
+        return (
+            <div>
+                <Menu value={this.props.itemCount} />
+                <Products value={this.props}/>
+            </div>
+        )
+    }
 
 }
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

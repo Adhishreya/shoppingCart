@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 // import LandingPage from "./LandingPage";
+import { Provider } from "react-redux";
 import Main from "./Main";
 import {
   BrowserRouter,
@@ -11,22 +12,28 @@ import {
 // import Users from "./Users";
 import "./app.css";
 
+import {store} from "./reduxStore/store";
 class App extends Component {
+
+
   constructor() {
+
+
     super();
     this.state = {
       name: "React"
     };
   }
 
+
   render() {
     return (
       <div>
         {/* <LandingPage /> */}
-        <BrowserRouter>
-          {/* <Provider> */}
+        <BrowserRouter >
+          <Provider store={store}>
             <Main />
-          {/* </Provider> */}
+          </Provider>
         </BrowserRouter>
         {/* <Users /> */}
 
@@ -35,5 +42,6 @@ class App extends Component {
     );
   }
 }
+// const store = Redux.createStore(reducer);
 
 render(<App />, document.getElementById("root"));

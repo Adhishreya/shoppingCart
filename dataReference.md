@@ -1,2 +1,6 @@
 - https://fakestoreapi.com/
 - https://fakestoreapi.com/products/8
+- https://www.freecodecamp.org/news/build-a-secure-server-with-node-and-express/
+- https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
+- https://www.npmjs.com/package/mongoose-type-email
+- efficient image datatype in mongoose

@@ -38,7 +38,7 @@ export default function Login({ open, handleOpen, handleClose }) {
                     autoComplete="off"
                     style={style}
                 >
-                    <div class="grid">
+                    <div className="grid">
                         <div>
                             <TextField
                                 required

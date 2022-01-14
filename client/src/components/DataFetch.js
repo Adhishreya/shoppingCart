@@ -8,21 +8,22 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 
-const Products = () => {
+const Products = (props) => {
+
     const [products, setProducts] = useState([]);
     useEffect(() => {
         axios.get('http://localhost:5000/products')
             .then(res => {
                 setProducts(res.data);
-                console.log(res.data)
+                // console.log(res.data)
             })
             .catch(err => console.log(err));
     }, []);
     return (
         <div>
-            <ul class="grid">
+            <ul className="grid">
                 {products.map(product => (
-                    <li key={product.id}>
+                    <li key={product._id}>
                         <Card sx={{ maxWidth: 355 }}>
                             <CardActionArea>
                                 <CardMedia
@@ -33,7 +34,7 @@ const Products = () => {
                                 />
                                 <CardContent>
 
-                                    <div class="grid">
+                                    <div className="grid">
                                         <Typography gutterBottom variant="body" component="div">
                                             {product.productName}
                                         </Typography>
@@ -42,13 +43,16 @@ const Products = () => {
                                         </Typography>
 
                                     </div>
-                                    <Button variant="contained" startIcon={<AddShoppingCartIcon />}>
-                                        ADD TO CART
-                                    </Button>
                                 </CardContent>
                             </CardActionArea>
                             <CardActions>
+                                <Button onClick={() => {
+                                    props.value.add(); console.log(props.value.itemCount)
+                                }} variant="contained" startIcon={<AddShoppingCartIcon />}>
+                                    ADD TO CART
+                                </Button>
                                 {/* <Button size="small" color="primary">
+                                
           Share
         </Button> */}
                             </CardActions>
