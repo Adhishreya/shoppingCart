@@ -15,6 +15,8 @@ const vendorRouter = require('./routers/vendorRouter');
 const productsRouter = require('./routers/productRouter');
 const CartRouter = require('./routers/cartRouter');
 const CardRouter = require('./routers/cardDetailsRouter');
+var flash = require('connect-flash');
+
 // const categoryRouter = require('./routers/categoryRouter');
 require('dotenv').config();
 const session = require('express-session')
@@ -25,7 +27,7 @@ const orderRouter = require('./routers/orderRouter');
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
-
+app.use(flash());
 // mongoose.set('useCreateIndex', true);
 mongoose.connect(
   "mongodb+srv://adhishreya:nougat%40IO2018@realmcluster.ptlvu.mongodb.net/ShoppingCart?retryWrites=true&w=majority",

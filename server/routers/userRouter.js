@@ -8,7 +8,7 @@ const { result } = require('lodash');
 const e = require('express');
 require('dotenv').config();
 
-const config ={
+const config = {
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET
@@ -61,29 +61,55 @@ userRouter.route('/signup')
 userRouter.post('/signin', passport.authenticate('local', { failureFlash: true }), (req, res) => {
 
     var token = authenticate.getTokens({ _id: req.user._id });
-    console.log(req.user.cart.length == 0);
-    if (req.user.cart.length == 0) {
-        Cart.create({ userId: req.user._id }, (err, cart) => {
-            if (err) {
-                next(err);
-            }
-            Users.findByIdAndUpdate(req.user._id, { $set: { cart: cart._id } }, (err, user) => {
-                if (err) {
-                    next(err);
-                }
-                req.user.cart = cart._id;
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.send({ success: true, status: "Successfully Registered", token: token });
-            })
+    // console.log(req.user.cart.length == 0);
+    // if (req.user.cart.length == 0) {
+    //     Cart.create({ userId: req.user._id }, (err, cart) => {
+    //         if (err) {
+    //             next(err);
+    //         }
+    //         Users.findByIdAndUpdate(req.user._id, { $set: { cart: cart._id } }, (err, user) => {
+    //             if (err) {
+    //                 err.statusCode = 401;
+    //                 next(err);
+    //             }
+    //             req.user.cart = cart._id;
+    //             res.statusCode = 200;
+    //             res.setHeader('Content-Type', 'application/json');
+    //             res.send({ success: true, status: "Successfully Registered", token: token });
+    //         })
 
-        })
-    }
-    else {
-        res.setStatus = 200;
-        res.setHeader('Content-Type', 'aplication/json');
-        res.send({ success: true, status: "Successfully Registered", token: token });
-    }
+    //     })
+    // }
+    // else {
+    //     res.setStatus = 200;
+    //     res.setHeader('Content-Type', 'aplication/json');
+    //     res.send({ success: true, status: "Successfully Registered", token: token });
+    // }
+    Cart.find({ userId: req.user._id }, (err, cart) => {
+        if (err) {
+            next(err);
+        } else {
+
+            if (cart.length == 0) {
+                Cart.create({ userId: req.user._id }, (err, cart) => {
+                    if (err) {
+                        next(err);
+                    } else {
+                        res.setStatus = 200;
+                        res.setHeader('Content-Type', 'aplication/json');
+                        res.send({ success: true, status: "Successfully Registered", token: token });
+                    }
+                })
+            }
+            else {
+                res.setStatus = 200;
+                res.setHeader('Content-Type', 'aplication/json');
+                res.send({ success: true, status: "Successfully Registered", token: token });
+            }
+        }
+
+    })
+
 });
 
 userRouter.route('/:id')
