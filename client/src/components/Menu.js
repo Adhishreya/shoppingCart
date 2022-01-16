@@ -10,8 +10,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from "@mui/material/Modal";
 import Login from './Login';
-
+// import IconMenu from "./BasicMenu";
 import { useSelector, useDispatch } from 'react-redux';
 
 
@@ -59,6 +61,56 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
+const styleComponent = {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: '100%!important',
+    background: "red"
+}
+
+const menuStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4
+  };
+
+
+
+  function BasicModal() {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+  
+    return (
+      <div>
+        <Button onClick={handleOpen}>Open modal</Button>
+        <Modal
+          open={open}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={menuStyle}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+            <Button onClick={() => handleClose()}>click</Button>
+          </Box>
+        </Modal>
+        {/* <IconMenu></IconMenu> */}
+      </div>
+    );
+  }
+
 
 const Menu = (props) => {
     const [open, setOpen] = React.useState(false);
@@ -66,8 +118,8 @@ const Menu = (props) => {
     const handleClose = () => setOpen(false);
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar>
+            <AppBar position="static" style={{ styleComponent }}>
+                <Toolbar style={{ styleComponent }}>
                     <IconButton
                         size="large"
                         edge="start"
@@ -75,7 +127,8 @@ const Menu = (props) => {
                         aria-label="menu"
                         sx={{ mr: 2 }}
                     >
-                        <MenuIcon />
+                        {/* <BasicMenu /> */}
+                        <BasicModal></BasicModal>
                     </IconButton>
                     <Search>
                         <SearchIconWrapper>
@@ -86,12 +139,13 @@ const Menu = (props) => {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search>
-                    <IconButton color="inherit" aria-label="add to shopping cart">
-                        <AddShoppingCartIcon backgroundColor="white" />
-                    </IconButton>
-                    {props.value}
-                    <Button color="inherit"><Login open={open} setOpen={setOpen} handleOpen={handleOpen} handleClose={handleClose} /></Button>
-                    {/* <Login /> */}
+                    <div style={{ justifySelf: "flex-end" }}>
+                        <IconButton color="inherit" aria-label="add to shopping cart">
+                            <AddShoppingCartIcon backgroundColor="white" />
+                        </IconButton>
+                        {props.value}
+                        <Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} /></Button>
+                    </div>
                 </Toolbar>
             </AppBar>
         </Box>

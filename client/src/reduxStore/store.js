@@ -50,5 +50,4 @@ const initialState = {
   export const mapStateToProps=(store)=>{
     return {itemCount:store.itemCount};
   }
-  // connect(null,mapDispatchToProps)(Main);
    

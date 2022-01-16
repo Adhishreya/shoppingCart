@@ -4,3 +4,8 @@
 - https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
 - https://www.npmjs.com/package/mongoose-type-email
 - efficient image datatype in mongoose
+- https://aboutreact.com/react-native-currency-symbols/
+- https://stackoverflow.com/questions/49421792/how-to-use-material-uinext-textfield-error-props
+- https://stackoverflow.com/questions/7273706/storing-a-shopping-cart-when-no-user-is-logged-inplayframework-doubt
+- https://blog.logrocket.com/jwt-authentication-best-practices/
+- https://owasp.org/www-community/HttpOnly

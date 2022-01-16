@@ -4,7 +4,7 @@ const passport = require('passport');
 const authenticate = require('../authentication');
 productsRouter.route('/')
     .get((req, res) => {
-        Products.find({}).populate('vendorDetails','companyName').then((data) => {
+        Products.find({},'productName images price _id').populate('vendorDetails','companyName').then((data) => {
             // .populate('vendorDetails').populate('discount').populate('reviews.userId').then((data)=>{
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
@@ -35,6 +35,14 @@ productsRouter.route('/updateInventory/:productId')
 );
 
 productsRouter.route('/:productId')
+.get((req,res,next)=>{
+    let productId = req.params.productId;
+    Products.findById(productId).then((data)=>{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(data);
+    }).catch(e => next(e));
+})
 .delete((authenticate.verifyUser,authenticate.verifyAdmin,(req,res,next)=>{
     let productId = req.params.productId;
     Products.findByIdAndDelete(productId).then((data)=>{

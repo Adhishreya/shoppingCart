@@ -12,7 +12,7 @@ import {
 // import Users from "./Users";
 import "./app.css";
 
-import {store} from "./reduxStore/store";
+import { store } from "./reduxStore/store";
 class App extends Component {
 
 
@@ -29,19 +29,13 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/* <LandingPage /> */}
         <BrowserRouter >
           <Provider store={store}>
             <Main />
           </Provider>
         </BrowserRouter>
-        {/* <Users /> */}
-
-        <p />
       </div>
     );
   }
 }
-// const store = Redux.createStore(reducer);
-
 render(<App />, document.getElementById("root"));

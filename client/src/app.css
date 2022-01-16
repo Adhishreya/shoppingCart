@@ -2,7 +2,8 @@
     list-style: none;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-gap: 10px;
+    grid-gap: 1.5rem;
+    margin: 1rem;
     padding: 0;    
 }
 /* .button{

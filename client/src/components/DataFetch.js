@@ -7,6 +7,21 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
+import { height } from '@mui/system';
+
+import {productDetails} from '../requestModules/products';
+
+
+const styleComponent = {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: '80%!important',
+    justifyContent: "space-around",
+    // background: "red",
+    justifySelf: "flex-center",
+}
+
 
 const Products = (props) => {
 
@@ -24,38 +39,38 @@ const Products = (props) => {
             <ul className="grid">
                 {products.map(product => (
                     <li key={product._id}>
-                        <Card sx={{ maxWidth: 355 }}>
-                            <CardActionArea>
-                                <CardMedia
-                                    component="img"
-                                    height="140"
-                                    image={product.images[0]}
-                                    alt={product.name}
-                                />
-                                <CardContent>
+                        <Card style={{ width: '100%' ,display:"flex",flexDirection:"column"}}>
+                            <CardMedia
+                                component="img"
+                                height="140"
+                                image={product.images[0]}
+                                alt={product.name}
+                                onClick={() => productDetails(product._id)}
+                            />
+                            <CardContent>
 
-                                    <div className="grid">
-                                        <Typography gutterBottom variant="body" component="div">
-                                            {product.productName}
-                                        </Typography>
-                                        <Typography variant="subtitle1" color="text.primary">
-                                            {product.price}
-                                        </Typography>
+                                <Typography gutterBottom variant="body" component="div">
+                                    {product.productName}
+                                </Typography>
 
-                                    </div>
-                                </CardContent>
-                            </CardActionArea>
+
+                            </CardContent>
+                            {/* </CardActionArea> */}
+                            <div style={ styleComponent }>
+                            <Typography variant="subtitle1" color="text.primary">
+                                        <b>{'\u20B9'}</b>{product.price}
+                                    </Typography>
                             <CardActions>
-                                <Button onClick={() => {
-                                    props.value.add(); console.log(props.value.itemCount)
-                                }} variant="contained" startIcon={<AddShoppingCartIcon />}>
-                                    ADD TO CART
-                                </Button>
-                                {/* <Button size="small" color="primary">
+                               
+                                    
+                                    <Button onClick={() => {
+                                        props.value.add(); console.log(props.value.itemCount)
+                                    }} variant="contained" startIcon={<AddShoppingCartIcon />}>
+                                        {/* ADD TO CART */}
+                                    </Button>
                                 
-          Share
-        </Button> */}
                             </CardActions>
+                            </div>
                         </Card>
                     </li>
                 ))}
