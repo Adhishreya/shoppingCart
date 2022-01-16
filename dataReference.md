@@ -12,3 +12,7 @@
 - https://stackoverflow.com/questions/53167078/how-to-resolve-req-flash-is-not-a-function-in-node-js
 - https://medium.com/@ryanchenkie_40935/react-authentication-how-to-store-jwt-in-a-cookie-346519310e81#:~:text=The%20httpOnly%3A%20true%20setting%20means,stored%20cookies%20and%20their%20values.
 - https://www.youtube.com/watch?v=M6N7gEZ-IUQ
+- https://medium.com/bb-tutorials-and-thoughts/react-how-to-proxy-to-backend-server-5588a9e0347
+- https://reactsecurity.io/
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+- [Interceptors](https://axios-http.com/docs/interceptors)
