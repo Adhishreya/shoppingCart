@@ -9,3 +9,6 @@
 - https://stackoverflow.com/questions/7273706/storing-a-shopping-cart-when-no-user-is-logged-inplayframework-doubt
 - https://blog.logrocket.com/jwt-authentication-best-practices/
 - https://owasp.org/www-community/HttpOnly
+- https://stackoverflow.com/questions/53167078/how-to-resolve-req-flash-is-not-a-function-in-node-js
+- https://medium.com/@ryanchenkie_40935/react-authentication-how-to-store-jwt-in-a-cookie-346519310e81#:~:text=The%20httpOnly%3A%20true%20setting%20means,stored%20cookies%20and%20their%20values.
+- https://www.youtube.com/watch?v=M6N7gEZ-IUQ

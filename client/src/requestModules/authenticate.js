@@ -3,7 +3,7 @@ export const loginRequest = ({username,password}) => {
     console.log(password+" "+username);
     axios.post("http://localhost:5000/users/signin",{username:username,password:password}).then(res => {
         console.log(res.data);
-    });
+    }).catch(err => console.log(err.response));
     // axios.post("http://localhost:5000/users/signin",{data:{username:username,password:password}}).then(res => {
     //     console.log(res.data);
     // });

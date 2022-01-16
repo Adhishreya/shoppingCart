@@ -2,6 +2,7 @@ const express = require('express');;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const createError = require('http-errors');
 const app = express();
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -83,7 +84,8 @@ app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);
     console.log(err);
-    res.statusCode = 500;
+    // res.statusCode = 500;
+    // console.log(err.co?)
     res.setHeader('Content-Type', 'application/json');
     res.send('unable to perform operation' + err)
   }
