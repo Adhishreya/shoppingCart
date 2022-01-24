@@ -73,9 +73,9 @@ export default function Login({ open, handleOpen, handleClose }) {
     // useEffect(() => {
     //     console.log(userLog);
     // }, [userName, password]);
-    // const toggleLog = () => {
-    //     setToggleLog(!userLog);
-    // }
+    const toggleLog = () => {
+        setToggleLog(!userLog);
+    }
     return (
         <div >
             <Button color="inherit" onClick={handleOpen}>Login</Button>

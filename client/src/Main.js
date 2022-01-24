@@ -7,7 +7,7 @@ class Main extends Component {
     render() {
         return (
             <div>
-                <Menu value={this.props.itemCount} />
+                {/* <Menu value={this.props.itemCount} /> */}
                 <Products value={this.props}/>
             </div>
         )

@@ -16,3 +16,4 @@
 - https://reactsecurity.io/
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
 - [Interceptors](https://axios-http.com/docs/interceptors)
+- https://github.com/reduxjs/redux
