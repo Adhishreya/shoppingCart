@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 // import LandingPage from "./LandingPage";
-import { Provider } from "react-redux";
-import Main from "./Main";
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+// import { Provider } from "react-redux";
+// import Main from "./Main";
+// import {
+//   BrowserRouter,
+//   Switch,
+//   Route,
+//   Link
+// } from "react-router-dom";
 // import Users from "./Users";
 import "./app.css";
 
-import { store } from "./reduxStore/store";
+// import { store } from "./reduxStore/store";
 class App extends Component {
 
 
@@ -29,11 +29,11 @@ class App extends Component {
   render() {
     return (
       <div>
-        <BrowserRouter >
-          <Provider store={store}>
+        {/* <BrowserRouter > */}
+          {/* <Provider store={store}>
             <Main />
-          </Provider>
-        </BrowserRouter>
+          </Provider> */}
+        {/* </BrowserRouter> */}
       </div>
     );
   }
