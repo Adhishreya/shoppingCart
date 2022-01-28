@@ -1,37 +1,12 @@
 {
-  "name": "react",
-  "version": "1.0.0",
-  "description": "React example starter project",
-  "keywords": [
-    "react",
-    "starter"
-  ],
-  "main": "src/index.js",
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@emotion/react": "^11.7.1",
-    "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.3.1",
-    "@mui/material": "^5.3.1",
-    "axios": "^0.25.0",
-    "react": ">=16.12.0",
-    "react-dom": ">=16.12.0",
-    "react-redux": "^7.2.6",
-    "react-scripts": "^5.0.0",
-    "redux": "^4.1.2"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
-    "react-router-dom": "^6.2.1"
+    "react-scripts": "5.0.0"
   }
 }
