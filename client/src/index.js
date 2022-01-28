@@ -3,12 +3,12 @@ import { render } from "react-dom";
 // import LandingPage from "./LandingPage";
 // import { Provider } from "react-redux";
 // import Main from "./Main";
-// import {
-//   BrowserRouter,
-//   Switch,
-//   Route,
-//   Link
-// } from "react-router-dom";
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 // import Users from "./Users";
 // import "./app.css";
 
@@ -29,11 +29,11 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/* <BrowserRouter > */}
+        <BrowserRouter >
           {/* <Provider store={store}>
             <Main />
           </Provider> */}
-        {/* </BrowserRouter> */}
+        </BrowserRouter>
       </div>
     );
   }
