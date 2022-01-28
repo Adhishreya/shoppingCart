@@ -24,5 +24,14 @@ vendorRouter.route('/profile')
             }
         });
     });
+
+    vendorRouter.route('/profile/:id')
+    .get((req,res,next)=>{
+        Vendor.findById({_id:req.params.id}).then((data)=>{
+            res.statusCode = 200;
+            res.setHeader('Context-Type','application/json');
+            res.json(data);
+        },err=>next(err));
+    })
 //chacnge email and company address from the vendor id saved in the session/
 module.exports = vendorRouter;

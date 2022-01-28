@@ -6,6 +6,10 @@
     margin: 1rem;
     padding: 0;    
 }
+.productImage img{ 
+    width:50%;
+    height: 50%;
+}
 /* .button{
     width: 50%;
     height: fit-content;

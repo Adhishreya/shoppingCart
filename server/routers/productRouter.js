@@ -37,7 +37,7 @@ productsRouter.route('/updateInventory/:productId')
 productsRouter.route('/:productId')
 .get((req,res,next)=>{
     let productId = req.params.productId;
-    Products.findById(productId).then((data)=>{
+    Products.findById(productId).populate('vendorDetails').then((data)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(data);
