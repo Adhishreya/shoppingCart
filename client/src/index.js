@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 // import LandingPage from "./LandingPage";
-// import { Provider } from "react-redux";
-// import Main from "./Main";
+import { Provider } from "react-redux";
+import Main from "./Main";
 import {
   BrowserRouter,
   Switch,
@@ -10,9 +10,9 @@ import {
   Link
 } from "react-router-dom";
 // import Users from "./Users";
-// import "./app.css";
+import "./app.css";
 
-// import { store } from "./reduxStore/store";
+import { store } from "./reduxStore/store";
 class App extends Component {
 
 
@@ -30,9 +30,9 @@ class App extends Component {
     return (
       <div>
         <BrowserRouter >
-          {/* <Provider store={store}>
+          <Provider store={store}>
             <Main />
-          </Provider> */}
+          </Provider>
         </BrowserRouter>
       </div>
     );
