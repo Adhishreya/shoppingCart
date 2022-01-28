@@ -17,3 +17,14 @@
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
 - [Interceptors](https://axios-http.com/docs/interceptors)
 - https://github.com/reduxjs/redux
+
+
+- [React Router]
+- https://medium.com/age-of-awareness/amazing-new-stuff-in-react-router-v6-895ba3fab6af
+- https://v5.reactrouter.com/web/guides/quick-start
+
+- [errors]
+- https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares
+- https://github.com/facebook/docusaurus/pull/6168
+- https://github.com/facebook/create-react-app/pull/11862
+- https://stackoverflow.com/questions/70130655/webpack-5-doesnt-update-the-bundle-js

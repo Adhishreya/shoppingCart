@@ -12,6 +12,6 @@ class Main extends Component {
             </div>
         )
     }
-
+ 
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

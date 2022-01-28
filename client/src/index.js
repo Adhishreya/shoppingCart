@@ -7,35 +7,41 @@ import {
   BrowserRouter,
   Switch,
   Route,
+  Routes,
   Link
 } from "react-router-dom";
 // import Users from "./Users";
 import "./app.css";
 
 import { store } from "./reduxStore/store";
+import ProductDetails from "./components/ProductDetails";
+import ErrorPage from "./components/ErrorPage"
 class App extends Component {
-
-
   constructor() {
-
-
     super();
     this.state = {
       name: "React"
     };
   }
-
-
   render() {
     return (
       <div>
-        <BrowserRouter >
-          <Provider store={store}>
-            <Main />
-          </Provider>
-        </BrowserRouter>
+        <Provider store={store}>
+          <Main />
+        </Provider>
       </div>
     );
   }
 }
-render(<App />, document.getElementById("root"));
+render(<div>
+  <BrowserRouter >
+    <Routes>
+      <Route path="/" element={<App />}/>
+      <Route path="*" element={<ErrorPage/>}/>
+      <Route path="/products/:id" element={<ProductDetails />} />
+      
+    </Routes>
+
+  </BrowserRouter>
+
+</div>, document.getElementById("root"));

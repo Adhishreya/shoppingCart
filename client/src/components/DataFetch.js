@@ -8,8 +8,9 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import { height } from '@mui/system';
+import {Link} from "react-router-dom";
 
-import {productDetails} from '../requestModules/products';
+import  {productDetails} from '../requestModules/products';
 
 
 const styleComponent = {
@@ -39,7 +40,8 @@ const Products = (props) => {
             <ul className="grid">
                 {products.map(product => (
                     <li key={product._id}>
-                        <Card style={{ width: '100%' ,display:"flex",flexDirection:"column"}}>
+                        <Card style={{ width: '100%', display: "flex", flexDirection: "column" }}>
+                            <Link to={`/products/${product._id}`}>
                             <CardMedia
                                 component="img"
                                 height="140"
@@ -47,8 +49,8 @@ const Products = (props) => {
                                 alt={product.name}
                                 onClick={() => productDetails(product._id)}
                             />
+                            </Link>
                             <CardContent>
-
                                 <Typography gutterBottom variant="body" component="div">
                                     {product.productName}
                                 </Typography>
@@ -56,26 +58,28 @@ const Products = (props) => {
 
                             </CardContent>
                             {/* </CardActionArea> */}
-                            <div style={ styleComponent }>
-                            <Typography variant="subtitle1" color="text.primary">
-                                        <b>{'\u20B9'}</b>{product.price}
-                                    </Typography>
-                            <CardActions>
-                               
-                                    
+                            <div style={styleComponent}>
+                                <Typography variant="subtitle1" color="text.primary">
+                                    <b>{'\u20B9'}</b>{product.price}
+                                </Typography>
+                                <CardActions>
+
+
                                     <Button onClick={() => {
                                         props.value.add(); console.log(props.value.itemCount)
                                     }} variant="contained" startIcon={<AddShoppingCartIcon />}>
                                         {/* ADD TO CART */}
                                     </Button>
-                                
-                            </CardActions>
+
+                                </CardActions>
                             </div>
                         </Card>
                     </li>
                 ))}
 
             </ul>
+
+            <Link to="/products">Product Details</Link>
         </div>
     );
 }
