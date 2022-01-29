@@ -23,6 +23,10 @@
 - https://medium.com/age-of-awareness/amazing-new-stuff-in-react-router-v6-895ba3fab6af
 - https://v5.reactrouter.com/web/guides/quick-start
 
+
+- [mongo]
+- https://stackoverflow.com/questions/3305561/how-to-query-mongodb-with-like
+
 - [errors]
 - https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares
 - https://github.com/facebook/docusaurus/pull/6168
@@ -30,3 +34,6 @@
 - https://stackoverflow.com/questions/70130655/webpack-5-doesnt-update-the-bundle-js
 - https://stackoverflow.com/questions/67191286/crbug-1173575-non-js-module-files-deprecated-chromewebdata-index%EA%9E%89530595551
 - https://stackoverflow.com/questions/53657920/i-cant-install-react-using-npx-create-react-app
+
+- [authentication]
+- https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication

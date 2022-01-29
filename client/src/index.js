@@ -14,9 +14,9 @@ import {
 import "./app.css";
 
 import { store } from "./reduxStore/store";
-import ProductDetails from "./components/ProductDetails";
-import ErrorPage from "./components/ErrorPage"
-import Menu from "./components/Menu";
+// import ProductDetails from "./components/ProductDetails";
+// import ErrorPage from "./components/ErrorPage"
+import Menu from "./components/MenuComponent";
 class App extends Component {
   constructor() {
     super();
@@ -29,17 +29,12 @@ class App extends Component {
       <div>
         <Provider store={store}>
           {/* this is the global space */}
-          <Menu value={this.props.itemCount} />
+          {/* <Menu value={this.props.itemCount} /> */}
           <BrowserRouter >
-            <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="*" element={<ErrorPage />} />
-              <Route path="/products/:id" element={<ProductDetails />} />
-
-            </Routes>
+            <Main />
 
           </BrowserRouter>
-          
+
         </Provider>
       </div>
     );

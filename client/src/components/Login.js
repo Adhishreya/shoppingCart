@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
 import { loginRequest } from '../requestModules/authenticate';
-import { FormControl, InputLabel, Input ,FormGroup} from '@mui/material';
+import { FormControl, InputLabel, Input, FormGroup } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -36,34 +37,38 @@ const componentStyle2 = {
 }
 
 export default function Login({ open, handleOpen, handleClose }) {
+    let navigate = useNavigate();
     const [userLog, setToggleLog] = useState(false);
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
-    const [userErrorMessage,setUserErrorMessage] = useState('');
-    const [passwordErrorMessage,setPasswordErrorMessage] = useState('');
-    const [userError,setUserError] = useState(false);
-    const [passwordError,setPasswordError] = useState(false);
-    
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+
+    const [userErrorMessage, setUserErrorMessage] = useState('');
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+    const [userError, setUserError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+
     // const [error,setError] = useState(false);
     const handleChange = (e) => {
         // console.log(e.target.name);
         if (e.target.name === 'name') {
             setUserName(e.target.value);
-            if(userName.length < 5){
+            if (userName.length < 5) {
                 setUserErrorMessage("Cannot be less than 5 characters");
                 setUserError(true);
-            }else{
+            } else {
                 setUserErrorMessage("");
                 setUserError(false);
             }
             console.log(userName);
         } else {
-            if(password.length < 8){
+            if (password.length < 7) {
                 console.log(password);
                 setPasswordErrorMessage("Cannot be less than 8 characters");
                 setPasswordError(true);
             }
-            else{
+            else {
                 setPasswordErrorMessage("");
                 setPasswordError(false);
             }
@@ -76,6 +81,16 @@ export default function Login({ open, handleOpen, handleClose }) {
     const toggleLog = () => {
         setToggleLog(!userLog);
     }
+
+
+    useEffect(() => {
+        console.log(localStorage.getItem("token"))
+        if (localStorage.getItem("token") != null || localStorage.getItem("token") !== undefined) {
+            handleClose();
+            navigate("/")
+        }
+    }, [localStorage.getItem("token")])
+
     return (
         <div >
             <Button color="inherit" onClick={handleOpen}>Login</Button>
@@ -118,10 +133,38 @@ export default function Login({ open, handleOpen, handleClose }) {
                         !userLog ?
                             <div style={componentStyle}>
                                 <form action='POST' onSubmit="return false">
-                                <FormGroup role="form">
-                                <FormControl style={{ width: "50%", margin: "2% auto" }} onSubmit={() => alert('submit')}>
+                                    <FormGroup role="form">
+                                        <FormControl style={{ width: "50%", margin: "2% auto" }} onSubmit={() => alert('submit')}>
+                                            <TextField id="standard-basic" name="name" label="Username" error={userError} required
+                                                helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
+                                            <TextField
+                                                id="standard-password-input"
+                                                required={true}
+                                                label="Password"
+                                                error={passwordError}
+                                                helperText={passwordErrorMessage}
+                                                type="password"
+                                                variant="standard"
+                                                name="password"
+                                                onChange={(e) => handleChange(e)}
+                                                onFocus={(e) => handleChange(e)}
+                                            />
+                                            <Button id="outlined-required" onClick={() => console.log(loginRequest({ username: userName, password, password }, navigate))} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                                Login
+                                            </Button>
+                                        </FormControl>
+                                    </FormGroup>
+                                </form>
+                                {/* <Button style={{ height: "1rem", margin: "1rem 25%", padding: '1rem' }} variant="contained" color="primary" onClick={() => toggleLog()}>
+                                    Register</Button> */}
+                            </div>
+                            :
+                            <div>
+                                <div style={{ width: "50%", margin: "2% auto" }}>
                                     <TextField id="standard-basic" name="name" label="Username" error={userError} required
                                         helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
+                                    <TextField id="standard-basic" label="Email" type="email" variant="standard" required onChange={(e) => setEmail(e.target.value)} />
+                                    <TextField id="standard-basic" label="Phone No" variant="standard" type="tel" required onChange={(e) => setPassword(e.target.value)} />
                                     <TextField
                                         id="standard-password-input"
                                         required={true}
@@ -134,21 +177,6 @@ export default function Login({ open, handleOpen, handleClose }) {
                                         onChange={(e) => handleChange(e)}
                                         onFocus={(e) => handleChange(e)}
                                     />
-                                    <Button id="outlined-required" onClick={()=>console.log( loginRequest({username:userName,password,password}))} variant="contained" color="primary"  style={{ margin: "1rem auto " }}>
-                                        Login
-                                    </Button>
-                                </FormControl>
-                                </FormGroup>
-                                </form>
-                                {/* <Button style={{ height: "1rem", margin: "1rem 25%", padding: '1rem' }} variant="contained" color="primary" onClick={() => toggleLog()}>
-                                    Register</Button> */}
-                            </div>
-                            :
-                            <div>
-                                <div style={{ width: "50%", margin: "2% auto" }}>
-                                    <TextField id="standard-basic" label="Username" variant="standard" />
-                                    <TextField id="standard-basic" label="Email" type="email" variant="standard" />
-                                    <TextField id="standard-basic" label="Phone No" variant="standard" type="tel" />
                                     <Button id="outlined-required" variant="contained" color="primary" type="submit" style={{ margin: "1rem auto " }}>
                                         Register
                                     </Button>

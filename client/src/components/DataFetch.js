@@ -25,7 +25,7 @@ const styleComponent = {
 
 
 const Products = (props) => {
-
+    // console.log(props)
     const [products, setProducts] = useState([]);
     useEffect(() => {
         axios.get('http://localhost:5000/products')
@@ -79,7 +79,7 @@ const Products = (props) => {
 
             </ul>
 
-            <Link to="/products">Product Details</Link>
+            {/* <Link to="/products">Product Details</Link> */}
         </div>
     );
 }

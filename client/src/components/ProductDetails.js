@@ -6,7 +6,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import { Button } from '@mui/material';
 
 
-const ProductDetails = () => {
+const ProductDetails = (props) => {
     const [data, setData] = useState(null);
     const [showDetails, setDetails] = useState(false);
 
@@ -17,6 +17,7 @@ const ProductDetails = () => {
     // productDetails(product._id);
     return (
         <div>
+            
             {/* {param.id} */}
             {/* {data.productName} */}
             {data ?
