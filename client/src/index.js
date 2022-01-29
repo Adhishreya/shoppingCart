@@ -16,6 +16,7 @@ import "./app.css";
 import { store } from "./reduxStore/store";
 import ProductDetails from "./components/ProductDetails";
 import ErrorPage from "./components/ErrorPage"
+import Menu from "./components/Menu";
 class App extends Component {
   constructor() {
     super();
@@ -27,21 +28,21 @@ class App extends Component {
     return (
       <div>
         <Provider store={store}>
-          <Main />
+          {/* this is the global space */}
+          <Menu value={this.props.itemCount} />
+          <BrowserRouter >
+            <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="*" element={<ErrorPage />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
+
+            </Routes>
+
+          </BrowserRouter>
+          
         </Provider>
       </div>
     );
   }
 }
-render(<div>
-  <BrowserRouter >
-    <Routes>
-      <Route path="/" element={<App />}/>
-      <Route path="*" element={<ErrorPage/>}/>
-      <Route path="/products/:id" element={<ProductDetails />} />
-      
-    </Routes>
-
-  </BrowserRouter>
-
-</div>, document.getElementById("root"));
+render(<App />, document.getElementById("root"));

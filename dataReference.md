@@ -28,3 +28,5 @@
 - https://github.com/facebook/docusaurus/pull/6168
 - https://github.com/facebook/create-react-app/pull/11862
 - https://stackoverflow.com/questions/70130655/webpack-5-doesnt-update-the-bundle-js
+- https://stackoverflow.com/questions/67191286/crbug-1173575-non-js-module-files-deprecated-chromewebdata-index%EA%9E%89530595551
+- https://stackoverflow.com/questions/53657920/i-cant-install-react-using-npx-create-react-app
