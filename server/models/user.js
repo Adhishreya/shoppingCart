@@ -15,7 +15,8 @@ const users = new mongoose.Schema({
     },
     userName: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     phoneNumber: {
         type: String,
@@ -34,9 +35,9 @@ const users = new mongoose.Schema({
         // require:true,
         unique: true,
         lowercase: true,
-        validate:(value)=>{
-            return /^w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
-        }
+        // validate:(value)=>{
+        //     return /^w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
+        // }
         //,
         // validate:(value)=>{
         //     return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value);

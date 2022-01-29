@@ -32,6 +32,7 @@ userRouter.route('/profile')
 userRouter.route('/signup')
     .post((req, res, next) => {
         let { username, password, email, phoneNumber, address } = req.body;
+        console.log(req.body);
         Users.register(new Users({ username: username }), password, (err, user) => {
             if (err) {
                 next(err);
@@ -42,6 +43,7 @@ userRouter.route('/signup')
                 // user.address = address;
                 user.save((err, user) => {
                     if (err) {
+                        console.log(err)
                         res.statusCode = 500;
                         res.setHeader('Content-Type', 'application/json');
                         res.json({ err: err });
@@ -49,9 +51,10 @@ userRouter.route('/signup')
                     }
 
                     passport.authenticate('local')(req, res, () => {
+                        var token = authenticate.getTokens({ _id: req.user._id });
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json({ success: true, status: 'Registration Successful!' });
+                        res.json({ success: true, status: 'Registration Successful!',token: token  });
                     });
                 })
 

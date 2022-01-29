@@ -167,8 +167,9 @@ function AccountMenu() {
 
           <Divider />
           <MenuItem onClick={()=>{
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            // localStorage.removeItem("token");
+            // localStorage.removeItem("user");
+            localStorage.clear();
           navigate("/")
           }}>
             <ListItemIcon>
