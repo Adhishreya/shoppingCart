@@ -20,3 +20,17 @@ export const signupRequest = ({username,password,email,phone},navigate) => {
     }
     }).catch(err => console.log(err));
 };
+
+
+// export const profileDetails = ()=>{
+//     axios.get("http://localhost:5000/users/profile",{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(result=>{console.log(result.data[0].username);localStorage.setItem("user",result.data[0].username);})
+// }
+
+export const uploadImage = (image,navigate) =>{
+    console.log(image.data)
+    const data = new FormData();
+    data.append("image",image,""+image.name+"")
+    // const data = {"image":image};
+    console.log(data)
+    axios.post("http://localhost:5000/users/uploadProfilePicture",data,{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(res=>{console.log(res.data);if(res.data){navigate("/profile")}},err=>console.log(err))
+}

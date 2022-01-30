@@ -258,7 +258,7 @@ const MenuComponent = (props) => {
                     </Search>
                     <div style={{ justifySelf: "flex-end" }}>
                         <IconButton color="inherit" aria-label="add to shopping cart">
-                            <AddShoppingCartIcon backgroundColor="white" />
+                            <AddShoppingCartIcon backgroundcolor="white" />
                         </IconButton>
                         {props.value}
                {localStorage.getItem("token")? <AccountMenu/>:<Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} /></Button>}

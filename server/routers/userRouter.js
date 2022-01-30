@@ -6,6 +6,10 @@ const authenticate = require('../authentication');
 const cloudinary = require('cloudinary').v2;
 const { result } = require('lodash');
 const e = require('express');
+
+const multer = require('multer')
+const upload = multer();
+
 require('dotenv').config();
 
 const config = {
@@ -149,26 +153,34 @@ userRouter.route('/addressUpdate/:id')
     });
 
 userRouter.route('/uploadProfilePicture')
-    .post(authenticate.verifyUser, (req, res, next) => {
-        const image = req.body.image;
+    .post(authenticate.verifyUser,upload.single("image"), (req, res, next) => {
+        console.log(req.file);
+        const image = req.file;
         if (image) {
-            cloudinary.uploader.upload(image).then(result => {
-                Users.findByIdAndUpdate({ _id: req.user._id }, {
-                    $set: {
-                        displayPicture: result.secure_url
+            // cloudinary.uploader.unsigned_upload_stream
+            cloudinary.uploader.upload_stream({ resource_type: 'raw' },(err,result)=>{
+                if(err){
+                    next(err);
+                }else{
+                    Users.findByIdAndUpdate({ _id: req.user._id }, {
+                        $set: {
+                            displayPicture: result.secure_url
+                        }
+                    }, (err, user) => {
+                        if (err) {
+                            next(err);
+                        }
+                        else {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.send(user.displayPicture);
+                        }
                     }
-                }, (err, user) => {
-                    if (err) {
-                        next(err);
-                    }
-                    else {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.send(user);
-                    }
+                    )
                 }
-                )
-            }, err => next(err));
+            }).end(req.file.buffer);      
+            
+            
         } else {
             res.statusCode = 400;
             res.setHeader('Content-Type', 'application/json');

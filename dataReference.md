@@ -18,6 +18,7 @@
 - [Interceptors](https://axios-http.com/docs/interceptors)
 - https://github.com/reduxjs/redux
 
+- http://expressjs.com/en/resources/middleware/multer.html
 
 - [React Router]
 - https://medium.com/age-of-awareness/amazing-new-stuff-in-react-router-v6-895ba3fab6af
@@ -34,6 +35,10 @@
 - https://stackoverflow.com/questions/70130655/webpack-5-doesnt-update-the-bundle-js
 - https://stackoverflow.com/questions/67191286/crbug-1173575-non-js-module-files-deprecated-chromewebdata-index%EA%9E%89530595551
 - https://stackoverflow.com/questions/53657920/i-cant-install-react-using-npx-create-react-app
+- https://programmingwithmosh.com/javascript/react-file-upload-proper-server-side-nodejs-easy/
+- https://support.cloudinary.com/hc/en-us/community/posts/360007581379-Correct-way-of-uploading-from-buffer-
+- https://stackoverflow.com/questions/21128451/express-cant-upload-file-req-files-is-undefined
+- https://stackoverflow.com/questions/51415439/how-can-i-add-raw-data-body-to-an-axios-request
 
 - [authentication]
 - https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication
