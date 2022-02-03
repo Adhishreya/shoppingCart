@@ -6,7 +6,7 @@ const authenticate = require('../authentication');
 const { Cart, CartItem } = require('../models/cart');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Cart.find({userId:req.user._id}).populate({path:'products',populate:{path:'productId'}}).then(data => {
+        Cart.find({userId:req.user._id}).populate({path:'products',populate:{path:"productId",select:"images productName"}}).then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
