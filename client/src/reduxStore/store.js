@@ -6,6 +6,7 @@ import Main from '../Main';
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const ADD_TO_CART = "ADD_TO_CART";
 const SEARCH_SET = "SEARCH_SET";
+const QUANTITY_SET = "QUANTITY_SET"
 // const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
 const initialState = {
   itemCount: 0,
@@ -13,7 +14,9 @@ const initialState = {
   // ,items:[]
 }
 const cartReducer = (state = initialState, action) => {
+  console.log(action.type)
   switch (action.type) {
+
     case ADD_TO_CART: {
       let tempCount = state.itemCount + 1;
       return Object.assign({}, state, { itemCount: tempCount });
@@ -25,8 +28,12 @@ const cartReducer = (state = initialState, action) => {
       }
       return Object.assign({}, state, { itemCount: tempCount });
     }
-    case SEARCH_SET :{
-      return Object.assign({},state,{searchString:e});
+    case SEARCH_SET: {
+      return Object.assign({}, state, { searchString: e });
+    }
+    case QUANTITY_SET: {
+      // console.log(action)
+      return Object.assign({}, state, { itemCount: action.payload });
     }
     default:
       return state;
@@ -45,6 +52,9 @@ export const remove = () => {
 export const setSearchState = (e) => {
   return { type: SEARCH_SET }
 }
+export const setQuantity = (quant) => {
+  return { type: QUANTITY_SET, payload: quant };
+}
 
 export const store = createStore(cartReducer);
 
@@ -52,7 +62,8 @@ export const mapDispatchToProps = dispatch => {
   return {
     add: () => dispatch(add()),
     remove: () => dispatch(remove()),
-    setSearchState :()=>dispatch(setSearchState(e))
+    setSearchState: () => dispatch(setSearchState(e)),
+    setQuantity: (quant) => dispatch(setQuantity(quant))
   }
 }
 

@@ -29,7 +29,7 @@ class Main extends Component {
                     {["*", "/error"].map((path) => <Route key={path} path={path} element={<ErrorPage />} />)}
                     <Route path="/products/:id" element={<ProductDetails />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/cart"  element={<Cart  value={this.props}/>} />
                 </Routes>
 
             </div>

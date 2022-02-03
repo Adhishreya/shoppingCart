@@ -42,6 +42,7 @@
 - https://stackoverflow.com/questions/51415439/how-can-i-add-raw-data-body-to-an-axios-request
 - https://stackoverflow.com/questions/56514722/how-to-get-a-response-from-express-server-about-an-error-using-axios-in-react-ap
 - https://stackoverflow.com/questions/18867628/mongoose-deep-population-populate-a-populated-field
+- https://stackoverflow.com/questions/26691543/return-certain-fields-with-populate-from-mongoose
 
 - [authentication]
 - https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication

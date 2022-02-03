@@ -30,6 +30,7 @@ cartItemsSchema.methods.increment = function (id, next) {
                 console.log(err);
                 next(err);
             }
+            console.log(doc);
         }).clone();
 }
 
