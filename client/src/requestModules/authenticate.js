@@ -1,24 +1,24 @@
 import axios from "axios";
-export const loginRequest = ({username,password},navigate) => {
-    axios.post("http://localhost:5000/users/signin",{username:username,password:password}).then(res => {
-        localStorage.setItem("token",res.data.token);
+export const loginRequest = ({ username, password }, navigate) => {
+    axios.post("http://localhost:5000/users/signin", { username: username, password: password }).then(res => {
+        localStorage.setItem("token", res.data.token);
         navigate("/")
-        axios.get("http://localhost:5000/users/profile",{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(result=>{console.log(result.data[0].username);localStorage.setItem("user",result.data[0].username);})
-    }).catch(err => console.log(err.response));
+        axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => { console.log(result.data[0].username); localStorage.setItem("user", result.data[0].username); })
+    }).catch(err => { console.log(err.response); navigate("/error") });
 
 }
 
-export const signupRequest = ({username,password,email,phone},navigate) => {
-    console.log(username,password,email,phone)
-    axios.post("http://localhost:5000/users/signup",{username:username,password:password,email:email,phoneNumber:phone}).then(res => {
-        console.log(res.status)    
-    if(res.status === 200){
-    console.log(res.data)    
-    localStorage.setItem("token",res.data.token);
-        navigate("/")
-        axios.get("http://localhost:5000/users/profile",{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(result=>{console.log(result.data[0].username);localStorage.setItem("user",result.data[0].username);})
-    }
-    }).catch(err => console.log(err));
+export const signupRequest = ({ username, password, email, phone }, navigate) => {
+    console.log(username, password, email, phone)
+    axios.post("http://localhost:5000/users/signup", { username: username, password: password, email: email, phoneNumber: phone }).then(res => {
+        console.log(res.status)
+        if (res.status === 200) {
+            console.log(res.data)
+            localStorage.setItem("token", res.data.token);
+            navigate("/")
+            axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => { console.log(result.data[0].username); localStorage.setItem("user", result.data[0].username); })
+        }
+    }).catch(err => { console.log(err.response); navigate("/error") });
 };
 
 
@@ -26,11 +26,11 @@ export const signupRequest = ({username,password,email,phone},navigate) => {
 //     axios.get("http://localhost:5000/users/profile",{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(result=>{console.log(result.data[0].username);localStorage.setItem("user",result.data[0].username);})
 // }
 
-export const uploadImage = (image,navigate) =>{
+export const uploadImage = (image, navigate) => {
     console.log(image.data)
     const data = new FormData();
-    data.append("image",image,""+image.name+"")
+    data.append("image", image, "" + image.name + "")
     // const data = {"image":image};
     console.log(data)
-    axios.post("http://localhost:5000/users/uploadProfilePicture",data,{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(res=>{console.log(res.data);if(res.data){navigate("/profile")}},err=>console.log(err))
+    axios.post("http://localhost:5000/users/uploadProfilePicture", data, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
 }

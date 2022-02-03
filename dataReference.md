@@ -27,6 +27,7 @@
 
 - [mongo]
 - https://stackoverflow.com/questions/3305561/how-to-query-mongodb-with-like
+- https://stackoverflow.com/questions/60227421/how-can-i-convert-image-buffer-to-photo-to-upload-to-cloudinary
 
 - [errors]
 - https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares
@@ -39,6 +40,8 @@
 - https://support.cloudinary.com/hc/en-us/community/posts/360007581379-Correct-way-of-uploading-from-buffer-
 - https://stackoverflow.com/questions/21128451/express-cant-upload-file-req-files-is-undefined
 - https://stackoverflow.com/questions/51415439/how-can-i-add-raw-data-body-to-an-axios-request
+- https://stackoverflow.com/questions/56514722/how-to-get-a-response-from-express-server-about-an-error-using-axios-in-react-ap
+- https://stackoverflow.com/questions/18867628/mongoose-deep-population-populate-a-populated-field
 
 - [authentication]
 - https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication
