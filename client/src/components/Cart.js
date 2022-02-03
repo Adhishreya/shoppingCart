@@ -5,30 +5,22 @@ const Cart = () => {
 
     const [cartData, setCartData] = useState(null);
     let navigate = useNavigate();
-    var element =  null;
+    // var element =  null;
     useEffect(() => {
         cartDetails(navigate).then(res => { console.log(res.data); setCartData(res.data); })
     }, []);
     return (<div>
         {
-            cartData ? <div className='grid'>
+            cartData ? <div className=''>
                 {
-                    cartData[0].products.map((cartItem, key) => {
-                        productDetails(cartItem.productId).then(res=>{
-                                const result = res;
-                                const image = result.images[0];
-                                const name = result.productName;
-                                element = {image:image,name:name};
-                                console.log(element)
-                                return element;
-                        })
-                        {
-                            element?<div>
-                                <img src={element.image}/>
-                                <h2>{element.name}</h2>
-                            </div>:null
-                        }
-                    })
+                    cartData[0].products.map((cartItem, key) =>
+                        <div key={cartItem._id}>
+                            <img style={{height:"200px",width:"200px"}} src={cartItem.productId.images[0]}/>
+                            <h5>{cartItem.productId.productName}</h5>
+                            <h6>{cartItem.quantity}</h6>
+                            {console.log(cartItem.productId)}
+                        </div>
+                    )
                 }
             </div> : null
         }
