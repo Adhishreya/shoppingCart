@@ -6,11 +6,11 @@ const authenticate = require('../authentication');
 const { Cart, CartItem } = require('../models/cart');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Cart.find({userId:req.user._id}).populate({path:'products',populate:{path:"productId",select:"images productName"}}).then(data => {
+        Cart.find({ userId: req.user._id }).populate({ path: 'products', populate: { path: "productId", select: "images productName" } }).then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
-        }).catch(err=>next(err))
+        }).catch(err => next(err))
 
     })
 // .post((req, res, next) => {
@@ -103,10 +103,16 @@ CartRouter.route('/increment')
                                     next(err);
                                 }
                                 // else{
-                                doc.increment(doc._id, next);
-                                res.statusCode = 200;
-                                res.setHeader('Content-Type', 'application/json');
-                                res.json(doc);
+                                doc.increment(doc._id, next).then(result => {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(result);
+                                }
+                                    , err => next(err)
+                                );
+                                // res.statusCode = 200;
+                                // res.setHeader('Content-Type', 'application/json');
+                                // res.json(doc);
                                 // }
 
                             }, err => next(err));
@@ -120,37 +126,41 @@ CartRouter.route('/increment')
     });
 
 CartRouter.route('/decrement')
-    .put(async (req, res, next) => {
+    .put((req, res, next) => {
         let { orderId } = req.body;
-        const cartSession = mongoose.startSession();//creating a session to create a transaction
-        (await cartSession).startTransaction(() => {//starting a transaction
-            CartItem.findById({ _id: orderId }, (err, doc) => {
-                if (err) {
-                    next(err);
-                }
-                else {
-                    Products.findById(doc.productId, (err, product) => {
-                        if (err) {
-                            console.log(err);
-                            next(err);
-                        }
-                        else {
-                            product.updateAvailability(product._id, +1, next)
-                                .then((data) => {
-                                    console.log("Dataaaaaa" + data)
-                                    if (err) {
-                                        next(err);
-                                    }
-                                    doc.decrement(doc._id, next);
+        // const cartSession = mongoose.startSession();//creating a session to create a transaction
+        // (await cartSession).startTransaction(() => {//starting a transaction
+        CartItem.findById({ _id: orderId }, (err, doc) => {
+            if (err) {
+                next(err);
+            }
+            else {
+                Products.findById(doc.productId, (err, product) => {
+                    if (err) {
+                        console.log(err);
+                        next(err);
+                    }
+                    else {
+                        product.updateAvailability(product._id, +1, next)
+                            .then((data) => {
+                                console.log("Dataaaaaa" + data)
+                                if (err) {
+                                    next(err);
+                                }
+                                doc.decrement(doc._id, next).then(result => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
-                                    res.json(doc);
+                                    res.json(result);
                                 }, err => next(err));
-                        }
-                    }).clone()
-                }
-            });
+                                // res.statusCode = 200;
+                                // res.setHeader('Content-Type', 'application/json');
+                                // res.json(doc);
+                            }, err => next(err));
+                    }
+                }).clone()
+            }
         });
+        // });
 
 
 

@@ -14,7 +14,6 @@ const initialState = {
   // ,items:[]
 }
 const cartReducer = (state = initialState, action) => {
-  console.log(action.type)
   switch (action.type) {
 
     case ADD_TO_CART: {
@@ -32,7 +31,6 @@ const cartReducer = (state = initialState, action) => {
       return Object.assign({}, state, { searchString: e });
     }
     case QUANTITY_SET: {
-      // console.log(action)
       return Object.assign({}, state, { itemCount: action.payload });
     }
     default:

@@ -100,7 +100,7 @@ const menuStyle = {
   p: 4
 };
 
-function AccountMenu() {
+function AccountMenu(props) {
   let navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -167,9 +167,9 @@ function AccountMenu() {
 
         <Divider />
         <MenuItem onClick={() => {
-          // localStorage.removeItem("token");
-          // localStorage.removeItem("user");
+          console.log(props)
           localStorage.clear();
+          props.setCount(0);
           navigate("/")
         }}>
           <ListItemIcon>
@@ -217,7 +217,7 @@ const MenuComponent = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+  console.log(props)
   const [input, setInput] = React.useState();
   const [searchParams, setSearchparams] = useSearchParams();
 
@@ -263,7 +263,7 @@ const MenuComponent = (props) => {
               </IconButton>
             </Link>
             {props.value}
-            {localStorage.getItem("token") ? <AccountMenu /> : <Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} /></Button>}
+            {localStorage.getItem("token") ? <AccountMenu setCount={props.setCount} /> : <Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} /></Button>}
           </div>
         </Toolbar>
       </AppBar>

@@ -20,7 +20,7 @@ class Main extends Component {
         return (
             <div>
                 {/* <nav> */}
-                <Menu value={this.props.itemCount} />
+                <Menu value={this.props.itemCount} setCount={this.props.setQuantity}/>
                 {localStorage.getItem("user") ? "Welcome " + localStorage.getItem("user") : null}
                 {/* </nav> */}
                 <Routes>
