@@ -263,7 +263,7 @@ const MenuComponent = (props) => {
               </IconButton>
             </Link>
             {props.value}
-            {localStorage.getItem("token") ? <AccountMenu setCount={props.setCount} /> : <Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} /></Button>}
+            {localStorage.getItem("token") ? <AccountMenu setCount={props.setCount} /> : <Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} setCount={props.setCount} /></Button>}
           </div>
         </Toolbar>
       </AppBar>

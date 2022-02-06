@@ -1,10 +1,26 @@
 import axios from "axios";
-export const loginRequest = ({ username, password }, navigate) => {
+import { cartDetails } from '../requestModules/products'
+export const loginRequest = ({ username, password }, navigate, setCount) => {
+
+    var quantity = 0;
+
     axios.post("http://localhost:5000/users/signin", { username: username, password: password }).then(res => {
         localStorage.setItem("token", res.data.token);
         navigate("/")
         console.log(res)
-        axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => { console.log(result.data[0].username); localStorage.setItem("user", result.data[0].username); })
+        axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => {
+            console.log(result.data[0].username);
+            localStorage.setItem("user", result.data[0].username);
+            cartDetails(navigate).then(res => {
+                if (res.data !== null) {
+                    // setCartData(res.data);
+                    res.data[0].products.forEach(element => {
+                        quantity += element.quantity;
+                    });
+                    setCount(quantity);
+                }
+            })
+        })
     }).catch(err => { console.log(err.response); navigate("/error") });
 
 }

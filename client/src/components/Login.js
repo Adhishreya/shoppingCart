@@ -36,7 +36,7 @@ const componentStyle2 = {
     flexDirection: "row"
 }
 
-export default function Login({ open, handleOpen, handleClose }) {
+export default function Login({ open, handleOpen, handleClose, setCount }) {
     let navigate = useNavigate();
     const [userLog, setToggleLog] = useState(false);
     const [userName, setUserName] = useState('');
@@ -48,6 +48,8 @@ export default function Login({ open, handleOpen, handleClose }) {
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userError, setUserError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+
+    console.log("This is the props" + setCount)
 
     // const [error,setError] = useState(false);
     const handleChange = (e) => {
@@ -61,10 +63,10 @@ export default function Login({ open, handleOpen, handleClose }) {
                 setUserErrorMessage("");
                 setUserError(false);
             }
-            console.log(userName);
+            // console.log(userName);
         } else {
             if (password.length < 7) {
-                console.log(password);
+                // console.log(password);
                 setPasswordErrorMessage("Cannot be less than 8 characters");
                 setPasswordError(true);
             }
@@ -127,7 +129,7 @@ export default function Login({ open, handleOpen, handleClose }) {
                                                 onChange={(e) => handleChange(e)}
                                                 onFocus={(e) => handleChange(e)}
                                             />
-                                            <Button id="outlined-required" onClick={() => loginRequest({ username: userName, password: password }, navigate)} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                            <Button id="outlined-required" onClick={() => loginRequest({ username: userName, password: password }, navigate,setCount)} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
                                                 Login
                                             </Button>
                                         </FormControl>
@@ -161,7 +163,7 @@ export default function Login({ open, handleOpen, handleClose }) {
                                             {/* <Button id="outlined-required" variant="contained" color="primary" type="submit" style={{ margin: "1rem auto " }} onClick={() =>signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate)}>
                                                 Register
                                             </Button> */}
-                                            <Button id="outlined-required" onClick={() => {console.log(email);signupRequest({ username: userName, password: password,email: email, phone: phone }, navigate)}} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                            <Button id="outlined-required" onClick={() => { console.log(email); signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate) }} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
                                                 Register
                                             </Button>
                                         </FormControl>
