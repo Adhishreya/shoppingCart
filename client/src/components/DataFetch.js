@@ -66,7 +66,10 @@ const Products = (props) => {
 
 
                                     <Button onClick={() => {
-                                        props.value.add(); console.log(props.value.itemCount)
+                                        // props.value.add(); console.log(props.value.itemCount)
+                                        if(localStorage.getItem("token")!==null){
+                                            
+                                        }
                                     }} variant="contained" startIcon={<AddShoppingCartIcon />}>
                                         {/* ADD TO CART */}
                                     </Button>

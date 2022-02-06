@@ -127,7 +127,7 @@ export default function Login({ open, handleOpen, handleClose }) {
                                                 onChange={(e) => handleChange(e)}
                                                 onFocus={(e) => handleChange(e)}
                                             />
-                                            <Button id="outlined-required" onClick={() => console.log(loginRequest({ username: userName, password: password }, navigate))} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                            <Button id="outlined-required" onClick={() => loginRequest({ username: userName, password: password }, navigate)} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
                                                 Login
                                             </Button>
                                         </FormControl>

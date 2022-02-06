@@ -6,11 +6,14 @@ import Main from '../Main';
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const ADD_TO_CART = "ADD_TO_CART";
 const SEARCH_SET = "SEARCH_SET";
-const QUANTITY_SET = "QUANTITY_SET"
+const QUANTITY_SET = "QUANTITY_SET";
+const IS_LOGGED = "IS_LOGGED"
 // const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
 const initialState = {
   itemCount: 0,
-  searchString: ''
+  searchString: '',
+  isLogged: false,
+  openHandle: null
   // ,items:[]
 }
 const cartReducer = (state = initialState, action) => {
@@ -32,6 +35,9 @@ const cartReducer = (state = initialState, action) => {
     }
     case QUANTITY_SET: {
       return Object.assign({}, state, { itemCount: action.payload });
+    }
+    case IS_LOGGED: {
+      return Object.assign({}, state, { isLogged: !state.isLogged });
     }
     default:
       return state;
