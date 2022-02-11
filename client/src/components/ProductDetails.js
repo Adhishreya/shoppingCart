@@ -9,12 +9,13 @@ import { Button } from '@mui/material';
 const ProductDetails = (props) => {
     const [data, setData] = useState(null);
     const [showDetails, setDetails] = useState(false);
-
+    console.log("this is the props")
     useEffect(() => {
+        // localStorage
+        
         productDetails(param.id).then(res => { console.log(res); setData(res) }).catch(err => console.log(err));
     }, []);
     let param = useParams();
-    // productDetails(product._id);
     return (
         <div>
             

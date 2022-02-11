@@ -16,5 +16,7 @@
 
 Todo
 - handle the case when the user is not logged in and the cart is empty.
-- handle on logged in the cart should autopopulate and not just by navigating to the cart endpoint
 - the add buttons in the landing page also must be modified
+
+Done
+- handle on logged in the cart should autopopulate and not just by navigating to the cart endpoint

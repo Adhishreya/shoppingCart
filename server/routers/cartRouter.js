@@ -4,6 +4,7 @@ const Products = require('../models/products');
 const mongoose = require('mongoose');
 const authenticate = require('../authentication');
 const { Cart, CartItem } = require('../models/cart');
+const { isNull } = require('lodash');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
         Cart.find({ userId: req.user._id }).populate({ path: 'products', populate: { path: "productId", select: "images productName" } }).then(data => {
@@ -24,12 +25,12 @@ CartRouter.route('/')
 //     }, err => next(err)).catch(e => console.log(e));
 // })
 
-CartRouter.route('/:id')
-    .post(authenticate.verifyUser, (req, res, next) => {
+CartRouter.route('/add/:id')
+    .post((req, res, next) => {
         let id = req.params.id;
         let { quantity } = req.body;
         var cartItem;
-        console.log(id);
+        console.log(req.url);
         Products.findById({ _id: id }, (err, product) => {
             if (err) {
                 console.log(err);
@@ -83,13 +84,20 @@ CartRouter.route('/:id')
 
 
 CartRouter.route('/increment')
-    .put((req, res, next) => {
+    .post(authenticate.verifyUser,(req, res, next) => {
         let { orderId } = req.body;
         CartItem.findById({ _id: orderId }, (err, doc) => {
+            console.log(req.headers);
+            if (doc === null) {
+                // res.header('Authorization', req.headers.authentication);
+                console.log(res.getHeaderNames());
+                res.redirect(307,"/cart/add/"+orderId);
+                // res.redirect(302,"/")
+            }
             if (err) {
                 next(err);
             }
-            else {
+            if (doc) {
                 Products.findById(doc.productId, (err, product) => {
                     if (err) {
                         console.log(err);

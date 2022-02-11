@@ -3,6 +3,9 @@ import { createStore } from "redux";
 import thunk from 'redux-thunk';
 import Products from "../components/DataFetch";
 import Main from '../Main';
+
+import { localItems } from '../requestModules/products'
+// console.log(localItems());
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const ADD_TO_CART = "ADD_TO_CART";
 const SEARCH_SET = "SEARCH_SET";
@@ -10,7 +13,7 @@ const QUANTITY_SET = "QUANTITY_SET";
 const IS_LOGGED = "IS_LOGGED"
 // const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
 const initialState = {
-  itemCount: 0,
+  itemCount: localItems(),
   searchString: '',
   isLogged: false,
   openHandle: null

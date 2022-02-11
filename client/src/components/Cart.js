@@ -39,7 +39,7 @@ const Cart = (props) => {
                                     console.log(res);
                                     props.value.add()
                                 })
-
+ 
 
                             }}>+</button></div>
 

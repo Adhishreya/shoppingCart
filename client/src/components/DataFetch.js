@@ -8,9 +8,11 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import { height } from '@mui/system';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import  {productDetails} from '../requestModules/products';
+import { productDetails ,increment} from '../requestModules/products';
+
+import { useNavigate } from 'react-router-dom';
 
 
 const styleComponent = {
@@ -26,6 +28,8 @@ const styleComponent = {
 
 const Products = (props) => {
     // console.log(props)
+    let navigate = useNavigate();
+
     const [products, setProducts] = useState([]);
     useEffect(() => {
         axios.get('http://localhost:5000/products')
@@ -42,13 +46,13 @@ const Products = (props) => {
                     <li key={product._id}>
                         <Card style={{ width: '100%', display: "flex", flexDirection: "column" }}>
                             <Link to={`/products/${product._id}`}>
-                            <CardMedia
-                                component="img"
-                                height="140"
-                                image={product.images[0]}
-                                alt={product.name}
-                                onClick={() => productDetails(product._id)}
-                            />
+                                <CardMedia
+                                    component="img"
+                                    height="140"
+                                    image={product.images[0]}
+                                    alt={product.name}
+                                    onClick={() => productDetails(product._id)}
+                                />
                             </Link>
                             <CardContent>
                                 <Typography gutterBottom variant="body" component="div">
@@ -63,26 +67,26 @@ const Products = (props) => {
                                     <b>{'\u20B9'}</b>{product.price}
                                 </Typography>
                                 <CardActions>
-
-
                                     <Button onClick={() => {
-                                        // props.value.add(); console.log(props.value.itemCount)
-                                        if(localStorage.getItem("token")!==null){
-                                            
-                                        }
-                                    }} variant="contained" startIcon={<AddShoppingCartIcon />}>
-                                        {/* ADD TO CART */}
-                                    </Button>
+                                        if (localStorage.getItem("token") !== null) {
 
+                                            increment(product._id, navigate).then(res => {
+                                                console.log(res);
+                                                props.value.add()
+                                            })
+
+
+                                        }
+                                    }
+                                    }
+                                        variant="contained" startIcon={<AddShoppingCartIcon />}>
+                                    </Button>
                                 </CardActions>
                             </div>
                         </Card>
                     </li>
                 ))}
-
             </ul>
-
-            {/* <Link to="/products">Product Details</Link> */}
         </div>
     );
 }
