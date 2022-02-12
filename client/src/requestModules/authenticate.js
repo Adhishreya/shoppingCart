@@ -54,3 +54,9 @@ export const uploadImage = (image, navigate) => {
     // console.log(data)
     axios.post("http://localhost:5000/users/uploadProfilePicture", data, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
 }
+
+
+export const changeAddress = (address, navigate) => {
+
+    axios.post("http://localhost:5000/users/addressUpdate", {address:address}, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
+}

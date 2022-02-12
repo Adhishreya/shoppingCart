@@ -44,7 +44,7 @@ userRouter.route('/signup')
             else {
                 user.email = email;
                 user.phoneNumber = phoneNumber;
-                // user.address = address;
+                user.address = null;
                 user.cart = new Cart({ userId: user._id });
 
                 user.save((err, user) => {
@@ -140,9 +140,10 @@ userRouter.route('/:id')
 
     }));
 
-userRouter.route('/addressUpdate/:id')
-    .put(authenticate.verifyUser, (req, res, next) => {
-        Users.findByIdAndUpdate({ _id: req.params.id }, { $pull: { address: req.body.address } }, (err, user) => {
+userRouter.route('/addressUpdate')
+    .post(authenticate.verifyUser, (req, res, next) => {
+        console.log(req.body.address)
+        Users.findByIdAndUpdate({ _id: req.user.id }, { $push: { address: req.body.address } }, (err, user) => {
             if (err) {
                 next(err);
             }
