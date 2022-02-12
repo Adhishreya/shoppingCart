@@ -25,8 +25,8 @@ CartRouter.route('/')
 //     }, err => next(err)).catch(e => console.log(e));
 // })
 
-CartRouter.route('/add/:id')
-    .post(authenticate.verifyUser,(req, res, next) => {
+CartRouter.route('/cartItem/:id')
+    .post(authenticate.verifyUser, (req, res, next) => {
         let id = req.params.id;
         let { quantity } = req.body;
         var cartItem;
@@ -97,7 +97,7 @@ CartRouter.route('/increment/:id')
             if (doc === null) {
                 // res.header('Authorization', req.headers.authentication);
                 console.log(res.getHeaderNames());
-                res.redirect(307, "/cart/add/" + orderId);
+                res.redirect(307, "/cart/cartItem/" + orderId);
                 // res.redirect(302,"/")
             }
             if (err) {
@@ -139,7 +139,7 @@ CartRouter.route('/increment/:id')
         });
     });
 
-CartRouter.route('/decrement/:id')
+CartRouter.route('/decrement')
     .post(authenticate.verifyUser, (req, res, next) => {
         let { orderId } = req.body;
         // const cartSession = mongoose.startSession();//creating a session to create a transaction
