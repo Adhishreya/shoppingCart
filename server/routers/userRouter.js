@@ -45,6 +45,8 @@ userRouter.route('/signup')
                 user.email = email;
                 user.phoneNumber = phoneNumber;
                 // user.address = address;
+                user.cart = new Cart({ userId: user._id });
+
                 user.save((err, user) => {
                     if (err) {
                         console.log(err)
@@ -73,7 +75,7 @@ userRouter.post('/signin', passport.authenticate('local'), (req, res,next) => {
         if (err) {
             next(err);
         } else {
-
+            console.log("Cart", cart);
             if (cart.length == 0) {
                 Cart.create({ userId: req.user._id }, (err, cart) => {
                     if (err) {
