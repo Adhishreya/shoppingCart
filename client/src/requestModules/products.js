@@ -33,7 +33,7 @@ export const cartDetails = (navigate) => {
 
 export const increment = (id, navigate) => {
     return new Promise((resolve, reject) => {
-        axios.post("http://localhost:5000/cart/increment", { orderId: id }, { headers: { Authentication: "bearer " + localStorage.getItem("token") } }).then(res => {
+        axios.post("http://localhost:5000/cart/increment/" + id,null, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
             resolve(res)
         }).catch(err => {
             console.log(err.response);
@@ -46,7 +46,7 @@ export const increment = (id, navigate) => {
 export const decrement = (id, navigate) => {
     console.log(id)
     return new Promise((resolve, reject) => {
-        axios.put("http://localhost:5000/cart/decrement", { orderId: id }, { headers: { Authentication: "bearer " + localStorage.getItem("token") } }).then(res => {
+        axios.post("http://localhost:5000/cart/decrement", { orderId: id }, { headers: { Authentication: "bearer " + localStorage.getItem("token") } }).then(res => {
             resolve(res)
         }).catch(err => {
             console.log(err.response);

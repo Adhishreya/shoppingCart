@@ -26,7 +26,7 @@ CartRouter.route('/')
 // })
 
 CartRouter.route('/add/:id')
-    .post((req, res, next) => {
+    .post(authenticate.verifyUser,(req, res, next) => {
         let id = req.params.id;
         let { quantity } = req.body;
         var cartItem;
@@ -82,16 +82,22 @@ CartRouter.route('/add/:id')
         })
     })
 
+CartRouter.route('/incr/:id')
+    .post(authenticate.verifyUser, (req, res, next) => {
+        console.log(req.headers)
+        res.json();
+    })
 
-CartRouter.route('/increment')
-    .post(authenticate.verifyUser,(req, res, next) => {
-        let { orderId } = req.body;
+CartRouter.route('/increment/:id')
+    .post(authenticate.verifyUser, (req, res, next) => {
+        // let { orderId } = req.body;
+        let orderId = req.params.id;
         CartItem.findById({ _id: orderId }, (err, doc) => {
             console.log(req.headers);
             if (doc === null) {
                 // res.header('Authorization', req.headers.authentication);
                 console.log(res.getHeaderNames());
-                res.redirect(307,"/cart/add/"+orderId);
+                res.redirect(307, "/cart/add/" + orderId);
                 // res.redirect(302,"/")
             }
             if (err) {
@@ -133,8 +139,8 @@ CartRouter.route('/increment')
         });
     });
 
-CartRouter.route('/decrement')
-    .put((req, res, next) => {
+CartRouter.route('/decrement/:id')
+    .post(authenticate.verifyUser, (req, res, next) => {
         let { orderId } = req.body;
         // const cartSession = mongoose.startSession();//creating a session to create a transaction
         // (await cartSession).startTransaction(() => {//starting a transaction
