@@ -65,8 +65,11 @@ CartRouter.route('/cartItem/:id')
         }
         )
     })
-    .delete((req, res) => {
-        let { cartId } = req.body;
+
+CartRouter.route('/deleteCartItem/:id')
+    .post(authenticate.verifyUser, (req, res) => {
+        // let { cartId } = req.body;
+        let cartId = req.params.id;
         Cart.findByIdAndUpdate({ _id: cartId }, {
             $pull: {
                 products: mongoose.Types.ObjectId(req.params.id)
@@ -162,13 +165,17 @@ CartRouter.route('/decrement')
                                     next(err);
                                 }
                                 doc.decrement(doc._id, next).then(result => {
-                                    res.statusCode = 200;
-                                    res.setHeader('Content-Type', 'application/json');
-                                    res.json(result);
+                                    if (result.quantity == 0) {
+                                        res.redirect(307, "/cart/deleteCartItem/" + orderId);
+                                    } else {
+                                        res.statusCode = 200;
+                                        res.setHeader('Content-Type', 'application/json');
+                                        res.json(result);
+                                    }
+                                    // res.statusCode = 200;
+                                    // res.setHeader('Content-Type', 'application/json');
+                                    // res.json(result);
                                 }, err => next(err));
-                                // res.statusCode = 200;
-                                // res.setHeader('Content-Type', 'application/json');
-                                // res.json(doc);
                             }, err => next(err));
                     }
                 }).clone()

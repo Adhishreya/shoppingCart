@@ -55,6 +55,19 @@ export const decrement = (id, navigate) => {
     })
 }
 
+export const deleteCartItem = (id, navigate) => {
+    console.log(id)
+    return new Promise((resolve, reject) => {
+        axios.post("http://localhost:5000/cart/deleteCartItem/"+id, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            console.log(err.response);
+            navigate("/error")
+        });
+    })
+}
+
+
 export const localItems = () => {
 
     var itemC = 0;
