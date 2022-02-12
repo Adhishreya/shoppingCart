@@ -21,8 +21,15 @@ const Profile = () => {
     const [address, setAddress] = useState(null);
     const [editAdd, setEditAdd] = useState(false);
     useEffect(() => {
-        axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => { setProfile(result.data[0]) })
-        console.log(profile)
+        axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => { 
+            setProfile(result.data[0]) 
+            if(result.data[0].address!==null && typeof result.data[0].address!==undefined){
+                // refAddress.current.value=+result.data[0].address[0];
+            }
+        })
+      
+        // console.log(profile)
+        // console.log(refAddress.current.value)
     }, [])
     return (<div style={{ background: "" }}>
         {
@@ -47,20 +54,26 @@ const Profile = () => {
                 <p>Phone : {profile.phoneNumber}</p>
                 <div>Address :
                     {editAdd ? <div>
-                        <textarea ref={refAddress} onChange={(e) => { setAddress(e.target.value) }} />
+                        <textarea ref={refAddress} value={refAddress.current==null?null:refAddress.current.value} onChange={(e) => { setAddress(e.target.value) }} />
                         <CloseIcon onClick={() => setEditAdd(editAdd => !editAdd)} />
                         <Button color="success">
                             <CheckIcon onClick={() => {
                                 // setAddress
                                 changeAddress(address, navigate);
                                 console.log(address);
+                                window.location.reload();
 
                             }} />
                         </Button>
 
                     </div>
                         : <div>
-                            <ModeEditIcon onClick={() => setEditAdd(editAdd => !editAdd)} />
+                            <ModeEditIcon onClick={() =>{
+                                 setEditAdd(editAdd => !editAdd)
+                                //  if(profile.address!==null && typeof profile.address!==undefined){
+                                //     refAddress.current.value=profile.address[0];
+                                // }
+                                 }} />
                             <div>
 
                                 {

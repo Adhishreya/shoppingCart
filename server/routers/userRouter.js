@@ -143,7 +143,7 @@ userRouter.route('/:id')
 userRouter.route('/addressUpdate')
     .post(authenticate.verifyUser, (req, res, next) => {
         console.log(req.body.address)
-        Users.findByIdAndUpdate({ _id: req.user.id }, { $push: { address: req.body.address } }, (err, user) => {
+        Users.findByIdAndUpdate({ _id: req.user.id }, { address: req.body.address } , (err, user) => {
             if (err) {
                 next(err);
             }
