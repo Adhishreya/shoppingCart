@@ -19,8 +19,8 @@ class Main extends Component {
     render() {
         return (
             <div>
-                <Menu value={this.props.itemCount} setCount={this.props.setQuantity} />
-                {localStorage.getItem("user") ? "Welcome " + localStorage.getItem("user") : null}
+                <Menu value={this.props.itemCount} setCount={this.props.setQuantity} searchString={this.props.setSearchState} />
+                {/* {localStorage.getItem("user") ? "Welcome " + localStorage.getItem("user") : null} */}
                 <Routes>
                     <Route path="/" element={<Products value={this.props} search={this.props.searchString} />} />
                     {/* <Route path="*" element={<ErrorPage  />} /> */}

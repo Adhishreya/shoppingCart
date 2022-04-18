@@ -25,6 +25,8 @@ const session = require('express-session')
 const paymentRouter = require('./routers/paymentsRouter');
 const passport = require('passport');
 const orderRouter = require('./routers/orderRouter');
+const TagRouter = require('./routers/tagRouter');
+const DiscountRouter = require('./routers/discountRouter');
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
@@ -79,6 +81,8 @@ app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
 app.use('/saveCard', CardRouter);
 app.use('/checkout',orderRouter);
+app.use('/tags',TagRouter);
+app.use('/discount',DiscountRouter);
 app.use('/pay',paymentRouter);
 app.use(function (err, req, res, next) {
   if (err) {

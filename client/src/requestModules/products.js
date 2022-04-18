@@ -1,10 +1,13 @@
 import axios from "axios";
-// export const productDetails = (id) => {
-//     console.log("http://localhost:5000/products/" + id);
-//     axios.get("http://localhost:5000/products/" + id).then(res => {
-//         console.log(res.data);
-//     });
-// }
+
+export const fetchAllProducts = () => {
+    return new Promise((resolve, reject) => {
+        axios.get("http://localhost:5000/products/").then(res => {
+            console.log(res.data);
+        });
+    })
+}
+
 export const productDetails = (id) => {
     return new Promise((resolve, reject) => {
         axios.get("http://localhost:5000/products/" + id).then(res => {
@@ -13,6 +16,25 @@ export const productDetails = (id) => {
     })
 }
 
+export const tagsDetails = () => {
+    return new Promise((resolve, reject) => {
+        axios.get("http://localhost:5000/tags/").then(res => {
+            console.log(res.data)
+            resolve(res.data);
+        })
+    })
+}
+
+export const discountDetails = () => {
+    return new Promise((resolve, reject) => {
+        axios.get("http://localhost:5000/discount/").then(res => {
+            console.log(res.data)
+            resolve(res.data);
+        })
+    })
+}
+
+// const tage = ["Refurbished","New","Used","Damaged","Discontinued","Refurbished","NewArivals","Used","Damaged","Discontinued"];
 // export const cartDetails = () => {
 //     return new Promise((resolve, reject) => {
 //         axios.get("http://localhost:5000/cart", { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => resolve(res));
@@ -33,7 +55,7 @@ export const cartDetails = (navigate) => {
 
 export const increment = (id, navigate) => {
     return new Promise((resolve, reject) => {
-        axios.post("http://localhost:5000/cart/increment/" + id,null, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+        axios.post("http://localhost:5000/cart/increment/" + id, null, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
             resolve(res)
         }).catch(err => {
             console.log(err.response);
@@ -58,7 +80,7 @@ export const decrement = (id, navigate) => {
 export const deleteCartItem = (id, navigate) => {
     console.log(id)
     return new Promise((resolve, reject) => {
-        axios.post("http://localhost:5000/cart/deleteCartItem/"+id, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+        axios.post("http://localhost:5000/cart/deleteCartItem/" + id, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
             resolve(res)
         }).catch(err => {
             console.log(err.response);

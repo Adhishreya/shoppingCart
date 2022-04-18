@@ -5,7 +5,6 @@ const passport = require('passport');
 const authenticate = require('../authentication');
 const cloudinary = require('cloudinary').v2;
 const { result } = require('lodash');
-const e = require('express');
 
 const multer = require('multer')
 const upload = multer();

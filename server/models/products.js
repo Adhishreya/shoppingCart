@@ -52,8 +52,10 @@ const products = new mongoose.Schema({
         type: Number
     },
     discount: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Discount'
+        // type: mongoose.Schema.Types.ObjectId,
+        // ref: 'Discount'
+        type:mongoose.Schema.Types.Number,
+        default:0
     },
     tags: [{
         type: mongoose.Schema.Types.ObjectId,

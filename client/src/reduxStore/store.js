@@ -10,7 +10,8 @@ const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const ADD_TO_CART = "ADD_TO_CART";
 const SEARCH_SET = "SEARCH_SET";
 const QUANTITY_SET = "QUANTITY_SET";
-const IS_LOGGED = "IS_LOGGED"
+const IS_LOGGED = "IS_LOGGED";
+const SEARCH_STRING = "SEARCH_STRING";
 // const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
 const initialState = {
   itemCount: localItems(),
@@ -33,14 +34,14 @@ const cartReducer = (state = initialState, action) => {
       }
       return Object.assign({}, state, { itemCount: tempCount });
     }
-    case SEARCH_SET: {
-      return Object.assign({}, state, { searchString: e });
-    }
     case QUANTITY_SET: {
       return Object.assign({}, state, { itemCount: action.payload });
     }
     case IS_LOGGED: {
       return Object.assign({}, state, { isLogged: !state.isLogged });
+    }
+    case SEARCH_STRING:{
+      return Object.assign({},{searchString: action.searchPara})
     }
     default:
       return state;
@@ -56,8 +57,8 @@ export const remove = () => {
     type: REMOVE_FROM_CART
   };
 }
-export const setSearchState = (e) => {
-  return { type: SEARCH_SET }
+export const setSearchState = (searchPara) => {
+  return { type: SEARCH_SET ,payload:searchPara}
 }
 export const setQuantity = (quant) => {
   return { type: QUANTITY_SET, payload: quant };
@@ -69,7 +70,7 @@ export const mapDispatchToProps = dispatch => {
   return {
     add: () => dispatch(add()),
     remove: () => dispatch(remove()),
-    setSearchState: () => dispatch(setSearchState(e)),
+    setSearchState: (searchPara) => dispatch(setSearchState(searchPara)),
     setQuantity: (quant) => dispatch(setQuantity(quant))
   }
 }

@@ -85,7 +85,7 @@ const styleComponent = {
   flexDirection: "row",
   alignItems: "center",
   width: '100%!important',
-  background: "red"
+  // background: "red"
 }
 
 const menuStyle = {
@@ -122,7 +122,7 @@ function AccountMenu(props) {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -186,10 +186,10 @@ function BasicModal() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
- 
+
   return (
-    <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+    <>
+      {/* <Button >Open modal</Button> */}
       <Modal
         open={open}
         aria-labelledby="modal-modal-title"
@@ -197,18 +197,13 @@ function BasicModal() {
       >
 
         <Box sx={menuStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
           <Button onClick={() => handleClose()}>click</Button>
         </Box>
       </Modal>
-      <Button><Link to="/">Home</Link></Button>
-      {/* <IconMenu></IconMenu> */}
-    </div>
+      <Button><Link to="/" style={{color:"#f1f5f9"}}>Home</Link></Button>
+      {/* <Button onClick={handleOpen}><Link to="/">Home</Link></Button> */}
+      {/* <conMenu></IconMenu> */}
+    </>
   );
 }
 
@@ -221,10 +216,11 @@ const MenuComponent = (props) => {
   const [input, setInput] = React.useState();
   const [searchParams, setSearchparams] = useSearchParams();
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{ styleComponent }}>
-        <Toolbar style={{ styleComponent }}>
+  return ( 
+    //style={{ styleComponent }}
+    <Box sx={{ flexGrow: 1 }} >
+      <AppBar position="static" style={styleComponent}>
+        <Toolbar style={{ display: 'flex', flexDirection: "row",background:"#374151", width: "100%", justifyContent: "space-around" }}>
           <IconButton
             size="large"
             edge="start"
@@ -233,7 +229,7 @@ const MenuComponent = (props) => {
             sx={{ mr: 2 }}
           >
             {/* <BasicMenu /> */}
-            <BasicModal></BasicModal>
+            <BasicModal />
           </IconButton>
           <Search>
             <SearchIconWrapper>
@@ -243,6 +239,20 @@ const MenuComponent = (props) => {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
               onChange={(e) => {
+                let searchValue = e.target.value;
+                if(searchValue.length)
+                {
+                  // console.log(searchValue)
+                  localStorage.setItem("searchString",e.target.value);
+                  props.searchString(searchValue);
+                }
+                // localStorage.setItem("searchString",e.target.value);
+                else
+                {
+                  props.searchString("");
+                  localStorage.setItem("searchString","");
+                }
+                // localStorage.setItem("searchString","");
                 // let search = e.target.value;
                 // setInput(search);
                 // // console.log(search)
@@ -256,8 +266,8 @@ const MenuComponent = (props) => {
 
             />
           </Search>
-          <div style={{ justifySelf: "flex-end" }}>
-            <Link to="/cart">
+          <div style={{ justifySelf: "flex-end" ,display:"flex" }}>
+            <Link to="/cart" style={{color:"#f1f5f9"}}>
               <IconButton color="inherit" aria-label="add to shopping cart">
                 <AddShoppingCartIcon backgroundcolor="white" />
               </IconButton>
