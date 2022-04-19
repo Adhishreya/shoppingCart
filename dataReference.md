@@ -15,6 +15,7 @@
 - https://medium.com/bb-tutorials-and-thoughts/react-how-to-proxy-to-backend-server-5588a9e0347
 - https://reactsecurity.io/
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+- [react-hooks-cant-perform-a-react-state-update-on-an-unmounted-component](https://stackoverflow.com/questions/56442582/react-hooks-cant-perform-a-react-state-update-on-an-unmounted-component)
 - [Interceptors](https://axios-http.com/docs/interceptors)
 - https://github.com/reduxjs/redux
 
@@ -44,6 +45,7 @@
 - https://stackoverflow.com/questions/18867628/mongoose-deep-population-populate-a-populated-field
 - https://stackoverflow.com/questions/26691543/return-certain-fields-with-populate-from-mongoose
 - https://stackoverflow.com/questions/46133557/why-is-my-header-not-being-set-on-redirect
+- https://stackoverflow.com/questions/39513753/my-redux-state-has-changed-why-doesnt-react-trigger-a-re-render
 
 - [authentication]
 - https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication

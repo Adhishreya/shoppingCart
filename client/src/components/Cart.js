@@ -11,7 +11,7 @@ const Cart = (props) => {
             
             if (res.data !== null || typeof res.data !== 'undefined') {
                 setCartData(res.data);
-                console.log("the response is" + res.data);
+                //console.log("the response is" + res.data);
                 res.data[0].products.forEach(element => {
                     quantity += element.quantity;
                 });
@@ -19,21 +19,21 @@ const Cart = (props) => {
                 // console.log(cartData === null)
             }
             else {
-                console.log("nulllllll")
+                // console.log("nulllllll")
             }
         })
     }, []);
     return (<div>
         {cartData === null ? null : <div>{
             cartData[0].products.map((cartItem, key) => {
-                console.log(cartItem);
+                // console.log(cartItem);
                 return (<div key={cartItem._id} className="grid">
                     <img style={{ height: "200px", width: "200px" }} src={cartItem.productId.images[0]} />
                     <div>
                         <h5>{cartItem.productId.productName}</h5>
                         <div style={{ display: "iflex" }}><button onClick={() => {
                             decrement(cartItem._id, navigate).then(res => {
-                                console.log(res);
+                                // console.log(res);
                                 props.value.remove();
                                 // navigate("/cart");
                                 window.location.reload();
@@ -44,7 +44,7 @@ const Cart = (props) => {
                             cartItem.quantity
                         }</span><button onClick={() => {
                             increment(cartItem._id, navigate).then(res => {
-                                console.log(res);
+                                // console.log(res);
                                 props.value.add();
                                 window.location.reload();
                             })
@@ -53,7 +53,7 @@ const Cart = (props) => {
                         }}>+</button>
                             <DeleteIcon onClick={() => {
                                 deleteCartItem(cartItem._id, navigate).then(res => {
-                                    console.log(res);
+                                    // console.log(res);
                                     props.value.remove();
                                     // navigate("/cart");
                                     window.location.reload();

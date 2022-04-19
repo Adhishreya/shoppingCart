@@ -49,7 +49,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
     const [userError, setUserError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
-    console.log("This is the props" + setCount)
+    // console.log("This is the props" + setCount)
 
     // const [error,setError] = useState(false);
     const handleChange = (e) => {
@@ -86,7 +86,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
 
 
     useEffect(() => {
-        console.log(localStorage.getItem("token"))
+        // console.log(localStorage.getItem("token"))
         if (localStorage.getItem("token") != null || localStorage.getItem("token") !== undefined) {
             handleClose();
             navigate("/")
@@ -163,7 +163,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                                             {/* <Button id="outlined-required" variant="contained" color="primary" type="submit" style={{ margin: "1rem auto " }} onClick={() =>signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate)}>
                                                 Register
                                             </Button> */}
-                                            <Button id="outlined-required" onClick={() => { console.log(email); signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate) }} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                            <Button id="outlined-required" onClick={() => {signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate) }} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
                                                 Register
                                             </Button>
                                         </FormControl>

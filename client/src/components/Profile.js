@@ -60,7 +60,6 @@ const Profile = () => {
                             <CheckIcon onClick={() => {
                                 // setAddress
                                 changeAddress(address, navigate);
-                                console.log(address);
                                 window.location.reload();
 
                             }} />

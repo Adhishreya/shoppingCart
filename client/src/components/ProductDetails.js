@@ -9,7 +9,6 @@ import { Button } from '@mui/material';
 const ProductDetails = (props) => {
     const [data, setData] = useState(null);
     const [showDetails, setDetails] = useState(false);
-    console.log("this is the props")
     useEffect(() => {
         productDetails(param.id).then(res => { setData(res) }).catch(err => console.log(err));
     }, []);
@@ -73,10 +72,6 @@ const ProductDetails = (props) => {
                     }
                     
                 </div>
-
-                // data.productName
-
-
                 : param.id}
             {/* <img alt="main-image" src={data.images[0]}/> */}
         </div>

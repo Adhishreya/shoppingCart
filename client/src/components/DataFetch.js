@@ -29,7 +29,6 @@ const styleComponent = {
 
 const Products = (props) => {
     let navigate = useNavigate();
-    // console.log(props.search)
     const [products, setProducts] = useState([]);
     const [tags, setTags] = useState([]);
     const [filters, setFilter] = useState([]);
@@ -42,17 +41,9 @@ const Products = (props) => {
             })
             .catch(err => console.log(err));
     }, [tags]);
-
-    // useEffect(() => {
-    //     console.log("this is the searched string  =====" + localStorage.getItem("searchString"));
-    // }, [localStorage.getItem("searchString")])
-
     useEffect(() => {
-        // console.log("the changeed state due to connect is = "+ (props.search !== null) )
         if (typeof props.search != undefined && props.search !== null) {
-            // if (!props.search.length)
-            //     fetchProducts();
-            // else
+
                 searchFilter(props.search)
         }
     }, [props.search]);
@@ -104,7 +95,6 @@ const Products = (props) => {
     }
 
     function searchFilter(value) {
-        // console.log("checking errorrrrr "+(!value.length))
         if (!value.length) return fetchProducts();
         let serachedResults = products.filter(items => items.productName.toLowerCase().includes(value.toLowerCase()));
         if (serachedResults.length)
@@ -115,7 +105,7 @@ const Products = (props) => {
         <>
             <div>
                 <ul>
-                    {filters.map((item, index) => <li key={index} onClick={() => tagRemoveFilter(item)}>{item}</li>)}
+                    {filters.map((item, index) => <li key={`${item}-${index}`} onClick={() => tagRemoveFilter(item)}>{item}</li>)}
                 </ul>
             </div>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", margin: "2rem" }}>
