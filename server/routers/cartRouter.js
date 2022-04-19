@@ -83,7 +83,7 @@ CartRouter.route('/deleteCartItem/:id')
                 res.json(data);
             })
         })
-    })
+    }) 
 
 CartRouter.route('/incr/:id')
     .post(authenticate.verifyUser, (req, res, next) => {

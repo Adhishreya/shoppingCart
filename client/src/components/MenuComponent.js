@@ -167,7 +167,7 @@ function AccountMenu(props) {
 
         <Divider />
         <MenuItem onClick={() => {
-          console.log(props)
+          // console.log(props)
           localStorage.clear();
           props.setCount(0);
           navigate("/")
@@ -212,7 +212,7 @@ const MenuComponent = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  console.log(props)
+  // console.log(props)
   const [input, setInput] = React.useState();
   const [searchParams, setSearchparams] = useSearchParams();
 
@@ -242,6 +242,7 @@ const MenuComponent = (props) => {
                 let searchValue = e.target.value;
                 if(searchValue.length)
                 {
+                  // console.log(props)
                   // console.log(searchValue)
                   localStorage.setItem("searchString",e.target.value);
                   props.searchString(searchValue);

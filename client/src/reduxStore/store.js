@@ -15,7 +15,7 @@ const SEARCH_STRING = "SEARCH_STRING";
 // const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
 const initialState = {
   itemCount: localItems(),
-  searchString: '',
+  searchString: null,
   isLogged: false,
   openHandle: null
   // ,items:[]
@@ -40,8 +40,9 @@ const cartReducer = (state = initialState, action) => {
     case IS_LOGGED: {
       return Object.assign({}, state, { isLogged: !state.isLogged });
     }
-    case SEARCH_STRING:{
-      return Object.assign({},{searchString: action.searchPara})
+    case SEARCH_STRING: {
+      console.log("this is the redux store " + action.payload)
+      return Object.assign({}, { searchString: action.payload })
     }
     default:
       return state;
@@ -57,8 +58,8 @@ export const remove = () => {
     type: REMOVE_FROM_CART
   };
 }
-export const setSearchState = (searchPara) => {
-  return { type: SEARCH_SET ,payload:searchPara}
+export const setSearchState = (searchParam) => {
+  return { type: SEARCH_STRING, payload: searchParam }
 }
 export const setQuantity = (quant) => {
   return { type: QUANTITY_SET, payload: quant };
@@ -70,12 +71,12 @@ export const mapDispatchToProps = dispatch => {
   return {
     add: () => dispatch(add()),
     remove: () => dispatch(remove()),
-    setSearchState: (searchPara) => dispatch(setSearchState(searchPara)),
+    setSearchState: (searchParam) => dispatch(setSearchState(searchParam)),
     setQuantity: (quant) => dispatch(setQuantity(quant))
   }
 }
 
 export const mapStateToProps = (store) => {
-  return { itemCount: store.itemCount };
+  return { itemCount: store.itemCount, searchString:store.searchString};
 }
 

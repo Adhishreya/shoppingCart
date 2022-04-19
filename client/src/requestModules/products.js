@@ -3,7 +3,8 @@ import axios from "axios";
 export const fetchAllProducts = () => {
     return new Promise((resolve, reject) => {
         axios.get("http://localhost:5000/products/").then(res => {
-            console.log(res.data);
+            // console.log(res.data);
+            resolve(res.data)
         });
     })
 }
@@ -40,7 +41,7 @@ export const discountDetails = () => {
 //         axios.get("http://localhost:5000/cart", { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => resolve(res));
 //     })
 // }
-
+ 
 
 export const cartDetails = (navigate) => {
     return new Promise((resolve, reject) => {

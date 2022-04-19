@@ -9,6 +9,7 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import { height } from '@mui/system';
+import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 
 import { productDetails, increment, fetchAllProducts, tagsDetails, discountDetails } from '../requestModules/products';
@@ -28,7 +29,7 @@ const styleComponent = {
 
 const Products = (props) => {
     let navigate = useNavigate();
-
+    // console.log(props.search)
     const [products, setProducts] = useState([]);
     const [tags, setTags] = useState([]);
     const [filters, setFilter] = useState([]);
@@ -42,9 +43,19 @@ const Products = (props) => {
             .catch(err => console.log(err));
     }, [tags]);
 
+    // useEffect(() => {
+    //     console.log("this is the searched string  =====" + localStorage.getItem("searchString"));
+    // }, [localStorage.getItem("searchString")])
+
     useEffect(() => {
-        console.log("this is the searched string  =====" + localStorage.getItem("searchString"));
-    }, [localStorage.getItem("searchString")])
+        // console.log("the changeed state due to connect is = "+ (props.search !== null) )
+        if (typeof props.search != undefined && props.search !== null) {
+            // if (!props.search.length)
+            //     fetchProducts();
+            // else
+                searchFilter(props.search)
+        }
+    }, [props.search]);
 
     useEffect(() => {
         axios.get('http://localhost:5000/tags')
@@ -88,12 +99,13 @@ const Products = (props) => {
 
     function fetchProducts() {
         fetchAllProducts().then(res => {
-            setProducts(res.data);
+            setProducts(res);
         })
     }
 
     function searchFilter(value) {
-        if (!value.length) return fetchProduct();
+        // console.log("checking errorrrrr "+(!value.length))
+        if (!value.length) return fetchProducts();
         let serachedResults = products.filter(items => items.productName.toLowerCase().includes(value.toLowerCase()));
         if (serachedResults.length)
             setProducts(serachedResults);

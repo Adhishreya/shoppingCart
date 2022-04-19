@@ -43,6 +43,20 @@ const ProductDetails = (props) => {
                             <h6>Cost <span>&#8377;{data.price}</span></h6>
                             <p>{data.averageRating > 0 ? data.averageRating : "Rating is not available for this product"}</p>
                         </div>
+                        <div>
+                    <Button style={{margin: "3% 4%"}} onClick={() =>  setDetails(showDetails => !showDetails)}>{showDetails ? "Hide Details ": "Get Vendor details"}</Button>
+                    {
+                        showDetails && data.vendorDetails ?
+                            <div>
+                                {data.vendorDetails.map((item, index) => <div key={index}><p>{item.companyAddress}</p>
+                                    <p>{item.companyEmail}</p>
+                                    <p>{item.companyName}</p>
+                                    <p>{item.companyWebsite}</p>
+                                    <p>{item.companyPhone}</p></div>)}
+
+                            </div> : null
+                    }
+                    </div>
                     </div>
                     <p style={{ display: "flex", margin: "auto 4%", width: "76%" }}>{data.description ? data.description : null}</p>
 
@@ -57,19 +71,7 @@ const ProductDetails = (props) => {
                             }
                         </div> : <p style={{margin: "6% 4%"}}>Reviews on this product is not yet available</p>
                     }
-
-                    <Button style={{margin: "3% 4%"}} onClick={() => { setDetails(showDetails => !showDetails); console.log(showDetails) }}>Get Vendor details</Button>
-                    {
-                        showDetails && data.vendorDetails ?
-                            <div>
-                                {data.vendorDetails.map((item, index) => <div key={index}><p>{item.companyAddress}</p>
-                                    <p>{item.companyEmail}</p>
-                                    <p>{item.companyName}</p>
-                                    <p>{item.companyWebsite}</p>
-                                    <p>{item.companyPhone}</p></div>)}
-
-                            </div> : null
-                    }
+                    
                 </div>
 
                 // data.productName
