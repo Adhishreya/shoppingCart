@@ -18,8 +18,12 @@
 - [react-hooks-cant-perform-a-react-state-update-on-an-unmounted-component](https://stackoverflow.com/questions/56442582/react-hooks-cant-perform-a-react-state-update-on-an-unmounted-component)
 - [Interceptors](https://axios-http.com/docs/interceptors)
 - https://github.com/reduxjs/redux
+- [my-redux-state-has-changed-why-doesnt-react-trigger-a-re-render](https://stackoverflow.com/questions/39513753/my-redux-state-has-changed-why-doesnt-react-trigger-a-re-render)
+- [how-can-i-access-current-redux-state-from-useeffect](https://stackoverflow.com/questions/58112704/how-can-i-access-current-redux-state-from-useeffect)
 
 - http://expressjs.com/en/resources/middleware/multer.html
+
+- [express-redirect-post-to-put-with-same-url](https://stackoverflow.com/questions/48976539/express-redirect-post-to-put-with-same-url)
 
 - [React Router]
 - https://medium.com/age-of-awareness/amazing-new-stuff-in-react-router-v6-895ba3fab6af

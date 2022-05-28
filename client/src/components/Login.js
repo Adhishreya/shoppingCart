@@ -14,8 +14,6 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: '50%',
     height: '50%',
-
-    // bgcolor: 'background.paper',
     background: '#d4d4d8',
     border: '2px solid #000',
     boxShadow: 24,
@@ -48,12 +46,8 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userError, setUserError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
-
-    // console.log("This is the props" + setCount)
-
     // const [error,setError] = useState(false);
     const handleChange = (e) => {
-        // console.log(e.target.name);
         if (e.target.name === 'name') {
             setUserName(e.target.value);
             if (userName.length < 5) {
@@ -63,10 +57,8 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                 setUserErrorMessage("");
                 setUserError(false);
             }
-            // console.log(userName);
         } else {
             if (password.length < 7) {
-                // console.log(password);
                 setPasswordErrorMessage("Cannot be less than 8 characters");
                 setPasswordError(true);
             }
@@ -78,7 +70,6 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
         }
     }
     // useEffect(() => {
-    //     console.log(userLog);
     // }, [userName, password]);
     const toggleLog = () => {
         setToggleLog(!userLog);
@@ -86,7 +77,6 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
 
 
     useEffect(() => {
-        // console.log(localStorage.getItem("token"))
         if (localStorage.getItem("token") != null || localStorage.getItem("token") !== undefined) {
             handleClose();
             navigate("/")
@@ -114,7 +104,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                             <div style={componentStyle}>
                                 <form action='POST' onSubmit="return false;">
                                     <FormGroup role="form">
-                                        <FormControl style={{ width: "50%", margin: "2% auto" }} onSubmit={() => alert('submit')}>
+                                        <FormControl style={{ width: "fit-content", margin: "2% auto" }} onSubmit={() => alert('submit')}>
                                             <TextField id="standard-basic" name="name" label="Username" error={userError} required
                                                 helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
                                             <TextField

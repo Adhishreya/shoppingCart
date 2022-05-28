@@ -4,7 +4,7 @@ const passport = require('passport');
 const authenticate = require('../authentication');
 productsRouter.route('/')
     .get((req, res) => {
-        Products.find({},'productName images price _id tags availability').populate('vendorDetails','companyName').then((data) => {
+        Products.find({},'productName images price _id tags availability discount').populate('vendorDetails','companyName').then((data) => {
             // .populate('vendorDetails').populate('discount').populate('reviews.userId').then((data)=>{
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');

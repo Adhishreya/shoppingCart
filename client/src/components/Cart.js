@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { cartDetails, increment, decrement, deleteCartItem } from '../requestModules/products'
 import DeleteIcon from '@mui/icons-material/Delete';
+// import Box from '@mui/material/Box';
 const Cart = (props) => {
     const [cartData, setCartData] = useState(null);
     let navigate = useNavigate();
