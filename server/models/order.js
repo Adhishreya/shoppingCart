@@ -7,7 +7,7 @@ const order = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    orderSummary:[],
+    // orderSummary:[],
     // status: {
     //     type: String,
     //     enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
@@ -19,9 +19,9 @@ const order = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    itemCount: {
-        type: Number
-    },  // no of items in the cart
+    // itemCount: {
+    //     type: Number
+    // },  // no of items in the cart
     shippingAddress: {
         type: String
     },

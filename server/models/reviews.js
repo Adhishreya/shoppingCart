@@ -19,6 +19,10 @@ const reviews = new mongoose.Schema({
     createdAt:{
         type:Date,
         default:Date.now
+    },
+    productId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Products'
     }
 });
 module.exports = mongoose.model("Reviews",reviews);

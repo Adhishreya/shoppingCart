@@ -38,25 +38,30 @@ const products = new mongoose.Schema({
             }
         }
     },
-    reviews: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: Reviews
-        }
-    ],
+    // reviews: [
+    //     {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: Reviews
+    //     }
+    // ],
     colours: [{
         type: String
     }],
+    sizes:[{type:String}],
     averageRating: {
         default: 0,
         type: Number
     },
-    discount: {
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: 'Discount'
-        type:mongoose.Schema.Types.Number,
-        default:0
-    },
+    discount:[ {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Discount'
+        // type:mongoose.Schema.Types.Number,
+        // default:0
+    }],
+    category:[ {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    }],
     tags: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: Tags

@@ -3,17 +3,19 @@ const CartRouter = express.Router();
 const Products = require('../models/products');
 const mongoose = require('mongoose');
 const authenticate = require('../authentication');
-const { Cart, CartItem } = require('../models/cart');
+const CartItem = require('../models/cart_items');
 const { isNull } = require('lodash');
+const Session = require('../models/session');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Cart.find({ userId: req.user._id }).populate({ path: 'products', populate: { path: "productId", select: "images productName" } }).then(data => {
+        CartItem.find({ sessionId: req.body.sessionId }).then(data => {
+            // .populate({ path: 'products', populate: { path: "productId", select: "images productName" } }).then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
         }).catch(err => next(err))
 
-    })
+    });
 // .post((req, res, next) => {
 
 //     console.log(req.body);
@@ -25,71 +27,89 @@ CartRouter.route('/')
 //     }, err => next(err)).catch(e => console.log(e));
 // })
 
-CartRouter.route('/cartItem/:id')
+CartRouter.route('/')
     .post(authenticate.verifyUser, (req, res, next) => {
-        let id = req.params.id;
-        let { quantity } = req.body;
-        var cartItem;
-        console.log(req.url);
-        Products.findById({ _id: id }, (err, product) => {
-            if (err) {
-                console.log(err);
-            }
-            console.log(quantity == undefined);
-            if (quantity == undefined) {
-                quantity = 1;
-            }
-            // number = quantity
-            product.updateAvailability(id, -quantity, next).then(() => {
-                CartItem.create({ productId: id, quantity: quantity }, (err, doc) => {
-                    if (err) {
-                        next(err);
-                    }
-                    else {
-                        cartItem = doc;
-                        Cart.findOne({ userId: req.user._id }, (err, docs) => {
+        // let id = req.params.id;
+        let { id, quantity } = req.body;
+        Session.find({ userId: req.user.id }).then(data => {
+            let sessionId = data[0]._id;
+            Products.findById(id).then(product => {
+                if (quantity == undefined) {
+                    quantity = 1;
+                }
+                if (product.availability - quantity >= 0) {
+                    product.updateAvailability(id, -quantity, next).then(() => {
+                        CartItem.create({ sessionId: sessionId, productId: id, quantity: quantity }, (err, doc) => {
                             if (err) {
                                 next(err);
                             }
                             else {
-                                docs.products.push(cartItem);
-                                docs.save();
                                 res.statusCode = 200;
                                 res.setHeader('Content-Type', 'application/json');
-                                res.json(docs);
+                                res.json(doc);
+                                // cartItem = doc;
+                                // Cart.findOne({ userId: req.user._id }, (err, docs) => {
+                                //     if (err) {
+                                //         next(err);
+                                //     }
+                                //     else {
+                                //         docs.products.push(cartItem);
+                                //         docs.save();
+                                //         res.statusCode = 200;
+                                //         res.setHeader('Content-Type', 'application/json');
+                                //         res.json(docs);
+                                //     }
+                                // })
                             }
                         })
-                    }
-                })
-            })
-        }
-        )
+                    })
+                } else {
+                    res.statusCode = 200;
+                    res.setHeader('ContentType', 'application/json');
+                    res.json('Item not available')
+                }
+            }).catch(err => next(err))
+
+        }, err => next(err))
+
+
     })
 
-CartRouter.route('/deleteCartItem/:id')
-    .post(authenticate.verifyUser, (req, res) => {
+CartRouter.route('/delete/:id')
+    .delete(authenticate.verifyUser, (req, res, next) => {
         // let { cartId } = req.body;
-        let cartId = req.params.id;
-        Cart.findByIdAndUpdate({ _id: cartId }, {
-            $pull: {
-                products: mongoose.Types.ObjectId(req.params.id)
-            }
-        }
-        ).then(() => {
-            CartItem.findByIdAndDelete({ _id: req.params.id }).then(data => {
-                console.log(data);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(data);
-            })
+        // let cartId = req.params.id;
+        // Cart.findByIdAndUpdate({ _id: cartId }, {
+        //     $pull: {
+        //         products: mongoose.Types.ObjectId(req.params.id)
+        //     }
+        // }
+        // ).then(() => {
+        // AndDelete
+        CartItem.findByIdAndDelete({ _id: req.params.id }).then(data => {
+            Products.findById(data.productId).then(
+                product => {
+                    product.updateAvailability(product._id, data.quantity, next).then(result => {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(data);
+                    })
+                }, err => next(err)
+            )
+            // console.log(data)
+            // console.log(data);
+            // res.statusCode = 200;
+            // res.setHeader('Content-Type', 'application/json');
+            // res.json(data);
         })
-    }) 
-
-CartRouter.route('/incr/:id')
-    .post(authenticate.verifyUser, (req, res, next) => {
-        console.log(req.headers)
-        res.json();
+        // })
     })
+
+// CartRouter.route('/incr/:id')
+//     .post(authenticate.verifyUser, (req, res, next) => {
+//         console.log(req.headers)
+//         res.json();
+//     })
 
 CartRouter.route('/increment/:id')
     .post(authenticate.verifyUser, (req, res, next) => {
@@ -113,27 +133,33 @@ CartRouter.route('/increment/:id')
                         next(err);
                     }
                     else {
-                        product.updateAvailability(product._id, -1, next)
-                            .then((data) => {
-                                console.log("Dataaaaaa" + data)
-                                if (err) {
-                                    next(err);
-                                }
-                                // else{
-                                doc.increment(doc._id, next).then(result => {
-                                    res.statusCode = 200;
-                                    res.setHeader('Content-Type', 'application/json');
-                                    res.json(result);
-                                }
-                                    , err => next(err)
-                                );
-                                // res.statusCode = 200;
-                                // res.setHeader('Content-Type', 'application/json');
-                                // res.json(doc);
-                                // }
+                        if (product.availability - 1 >= 0) {
+                            product.updateAvailability(product._id, -1, next)
+                                .then((data) => {
+                                    console.log("Dataaaaaa" + data)
+                                    if (err) {
+                                        next(err);
+                                    }
+                                    // else{
+                                    doc.increment(doc._id, next).then(result => {
+                                        res.statusCode = 200;
+                                        res.setHeader('Content-Type', 'application/json');
+                                        res.json(result);
+                                    }
+                                        , err => next(err)
+                                    );
+                                    // res.statusCode = 200;
+                                    // res.setHeader('Content-Type', 'application/json');
+                                    // res.json(doc);
+                                    // }
 
-                            }, err => next(err));
-                        ;
+                                }, err => next(err));
+                            ;
+                        } else {
+                            res.statusCode = 200;
+                            res.setHeader('ContentType', 'application/json');
+                            res.json('Item not available')
+                        }
                     }
                 }).clone()
 
@@ -142,9 +168,10 @@ CartRouter.route('/increment/:id')
         });
     });
 
-CartRouter.route('/decrement')
+CartRouter.route('/decrement/:id')
     .post(authenticate.verifyUser, (req, res, next) => {
-        let { orderId } = req.body;
+        // let { orderId } = req.body;
+        let orderId = req.params.id;
         // const cartSession = mongoose.startSession();//creating a session to create a transaction
         // (await cartSession).startTransaction(() => {//starting a transaction
         CartItem.findById({ _id: orderId }, (err, doc) => {
@@ -164,18 +191,26 @@ CartRouter.route('/decrement')
                                 if (err) {
                                     next(err);
                                 }
-                                doc.decrement(doc._id, next).then(result => {
-                                    if (result.quantity == 0) {
-                                        res.redirect(307, "/cart/deleteCartItem/" + orderId);
-                                    } else {
+                                if (doc.quantity - 1 > 0) {
+                                    doc.decrement(doc._id, next).then(result => {
+                                        if (result.quantity == 0) {
+                                            res.redirect(307, "/cart/deleteCartItem/" + orderId);
+                                        } else {
+                                            res.statusCode = 200;
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json(result);
+                                        }
+                                        // res.statusCode = 200;
+                                        // res.setHeader('Content-Type', 'application/json');
+                                        // res.json(result);
+                                    }, err => next(err));
+                                } else {
+                                    doc.delete(doc._id, next).then(result => {
                                         res.statusCode = 200;
                                         res.setHeader('Content-Type', 'application/json');
                                         res.json(result);
-                                    }
-                                    // res.statusCode = 200;
-                                    // res.setHeader('Content-Type', 'application/json');
-                                    // res.json(result);
-                                }, err => next(err));
+                                    })
+                                }
                             }, err => next(err));
                     }
                 }).clone()

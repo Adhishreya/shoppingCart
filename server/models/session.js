@@ -8,8 +8,14 @@ const sessionData = new mongoose.Schema({
     },
     total:{
         type: Number,
-        required: true
+        required: true,
+        default: 0,
     },
-    timestamp
+    createdAt:{
+        type:Date,        
+    },
+    modifiedAt:{
+        type:Date
+    }
 });
-module.exports = mongoose.Schema("Sessions",sessionData);
+module.exports = mongoose.model("Sessions",sessionData);

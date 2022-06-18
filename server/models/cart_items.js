@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 
 const cartItemsSchema = new mongoose.Schema({
+    sessionId:{
+      type:mongoose.Schema.Types.ObjectId,  
+      ref:'Sessions',
+    },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Products',
@@ -42,7 +46,7 @@ cartItemsSchema.methods.decrement = function (id, next) {
         }
     }, { new: true, runValidators: true },
         (err, doc) => {
-            if (err) {
+            if (err) { 
                 next(err);
             }
             // else {
@@ -58,7 +62,20 @@ cartItemsSchema.methods.decrement = function (id, next) {
             // }
         }).clone();
 }
-const cart = new mongoose.Schema({
+
+
+cartItemsSchema.methods.delete = function (id, next) {
+    return this.model(this.constructor.modelName, this.schema).findByIdAndDelete({ _id: id },
+        (err, doc) => {
+            if (err) {
+                console.log(err);
+                next(err);
+            }
+            console.log(doc);
+        }).clone();
+}
+
+// const cart = new mongoose.Schema({
     // cartItemId:{
     //     unique:true,
     //     type:mongoose.Schema.Types.ObjectId
@@ -71,20 +88,21 @@ const cart = new mongoose.Schema({
     // quantity:{
 
     // }
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CartItem' }],
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users'
-    },
-    sessionId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Sessions'
-    }
+    // products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CartItem' }],
+    // userId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Users'
+    // },
+    // sessionId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Sessions'
+    // }
 
 
-});
+// });
 // module.exports = mongoose.model("Cart",cart);
 
-const Cart = mongoose.model('Cart', cart);
-const CartItem = mongoose.model('CartItem', cartItemsSchema);
-module.exports = { Cart, CartItem };
+// const Cart = mongoose.model('Cart', cart);
+// const CartItem = mongoose.model('CartItem', cartItemsSchema);
+// module.exports = { Cart, CartItem };
+module.exports = mongoose.model('CartItem', cartItemsSchema);

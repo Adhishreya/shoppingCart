@@ -1,4 +1,4 @@
-const express = require('express');;
+const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -15,10 +15,11 @@ const userRouter = require('./routers/userRouter');
 const vendorRouter = require('./routers/vendorRouter');
 const productsRouter = require('./routers/productRouter');
 const CartRouter = require('./routers/cartRouter');
-const CardRouter = require('./routers/cardDetailsRouter');
+// const CardRouter = require('./routers/cardDetailsRouter');
+const UserPaymentRouter = require('./routers/user_paymentRouter');
 var flash = require('connect-flash');
 
-// const categoryRouter = require('./routers/categoryRouter');
+const categoryRouter = require('./routers/categoryRouter');
 require('dotenv').config();
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
@@ -27,6 +28,7 @@ const passport = require('passport');
 const orderRouter = require('./routers/orderRouter');
 const TagRouter = require('./routers/tagRouter');
 const DiscountRouter = require('./routers/discountRouter');
+const addressRouter = require('./routers/addressRouter');
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
@@ -72,18 +74,21 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
     }
   })
 }
-
+ 
 ));
 
 app.use('/users', userRouter);
+app.use('/address', addressRouter);
 app.use('/vendor', vendorRouter);
 app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
-app.use('/saveCard', CardRouter);
-app.use('/checkout',orderRouter);
+app.use('/categories',categoryRouter);
+// app.use('/saveCard', CardRouter); 
+app.use('/payment/methods', UserPaymentRouter);
+app.use('/orders',orderRouter);
 app.use('/tags',TagRouter);
 app.use('/discount',DiscountRouter);
-app.use('/pay',paymentRouter);
+app.use('/payment',paymentRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);

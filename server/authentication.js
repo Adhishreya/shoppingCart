@@ -4,39 +4,63 @@ let LocalStrategy = require('passport-local').Strategy;
 const Users = require('./models/user');
 const jwt = require('jsonwebtoken');//create ,sign and verify tokens
 const config = require('./config');
-passport.serializeUser((user,done)=>{
+const vendor = require('./models/vendor');
+passport.serializeUser((user, done) => {
     // console.log(user)
-    done(null,user.id);
+    done(null, user.id);
 });
 
-passport.deserializeUser((id,done)=>{
-    Users.findById(id,(err,user)=>{
-        done(err,user);
+passport.deserializeUser((id, done) => {
+    Users.findById(id, (err, user) => {
+        done(err, user);
     });
 });
 
-exports.getTokens = (user)=>{
-    return jwt.sign(user,config.secretKey,{expiresIn:30*24*3600});
+exports.getTokens = (user) => {
+    return jwt.sign(user, config.secretKey, { expiresIn: 30 * 24 * 3600 });
     //requesting the user to sign in after every 30 days ie here token expires after approx a month
 }
-exports.verifyUser = passport.authenticate('jwt',{session:false});
-exports.verifyAdmin=((req,res,next)=>{
-    if(req.user.admin == true){
+exports.verifyUser = passport.authenticate('jwt', { session: false });
+exports.verifyAdmin = ((req, res, next) => {
+    if (req.user.admin == true) {
         next()
     }
-    else{
+    else {
         var err = new Error('You are not authorized to perform this operation!');
         err.status = 403;
         next(err);
     }
 });
 
-exports.verifyVendor=((req,res,next)=>{
-    if(req.user.vendor == true){
+exports.verifyVendor = ((req, res, next) => {
+    vendor.findOne({ vendorId: req.user.vendorId }, (err, vendor) => {
+        if (err) {
+            var err = new Error('You are not authorized to perform this operation!');
+            err.status = 403;
+            next(err);
+        }
+        else {
+            next();
+        }
+    })
+}
+);
+//     if(req.user.vendor == true){
+//         next()
+//     }
+//     else{
+//         var err = new Error('You are not registered as a vendor yet!');
+//         err.status = 403;
+//         next(err);
+//     }
+// });
+
+exports.verifyAdmin = ((req, res, next) => {
+    if (req.user.admin == true) {
         next()
     }
-    else{
-        var err = new Error('You are not registered as a vendor yet!');
+    else {
+        var err = new Error('You are not an admin!');
         err.status = 403;
         next(err);
     }
@@ -46,7 +70,7 @@ exports.verifyVendor=((req,res,next)=>{
 //     //verify credentials callback
 //         Users.findOne({username:username},(err,user)=>{
 //             if(err){
-//                 //server error 
+//                 //server error
 //                 return done(err);
 //             }
 //             if(!user || !user.authenticate(password)){
