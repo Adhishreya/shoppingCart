@@ -55,7 +55,7 @@ productsRouter.route('/filter')
         if (typeof lower !== "undefined" && lower !== null && typeof upper !== "undefined" && upper !== null)
             filters.price = { $lt: parseInt(upper), $gt: parseInt(lower) }
 
-        Products.find(filters).then(data => {
+        Products.find(filters).populate('discount').populate('category').populate('tags').then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);

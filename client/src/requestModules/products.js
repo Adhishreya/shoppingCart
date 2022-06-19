@@ -68,6 +68,14 @@ export const getProductByDiscount = (id) => {
     })
 }
 
+export const filterProducts = (customUrl) =>{
+    return new Promise((resolve, reject) => {
+        axios.get(`${url}products/filter${customUrl}`).then(res => {
+            resolve(res.data);
+        })
+    })
+}
+
 // const tage = ["Refurbished","New","Used","Damaged","Discontinued","Refurbished","NewArivals","Used","Damaged","Discontinued"];
 // export const cartDetails = () => {
 //     return new Promise((resolve, reject) => {
