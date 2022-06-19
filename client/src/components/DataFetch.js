@@ -1,18 +1,21 @@
-import axios from 'axios';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { Button, CardActionArea, CardActions, Slider, TextField } from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import IconButton from '@mui/material/IconButton';
 import { height } from '@mui/system';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
 
-import { productDetails, increment, fetchAllProducts, tagsDetails, discountDetails } from '../requestModules/products';
+import {
+    productDetails, increment, fetchAllProducts, tagsDetails, discountDetails, getCategories, getProductByCategory,
+    getProductByTag,
+    getProductByDiscount
+} from '../requestModules/products';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -31,60 +34,108 @@ const Products = (props) => {
     let navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [tags, setTags] = useState([]);
-    const [filters, setFilter] = useState([]);
+    const [filters, setFilter] = useState({ tags: null, discount: null, lower: null, upper: null });
+    const [categories, setCategories] = useState([]);
     const [discount, setDiscount] = useState([]);
+    const [value, setValue] = useState([100, 100000]);
+    const [value1, setValue1] = useState(1000);
+    const [value2, setValue2] = useState(9999);
+
+    let minDistance = 100;
+
+    const lowerValueRef = useRef();
+    const upperValueRef = useRef();
+
+
 
     useEffect(() => {
-        axios.get('http://localhost:5000/products')
+        fetchAllProducts()
             .then(res => {
-                setProducts(res.data);
+                setProducts(res);
             })
             .catch(err => console.log(err));
-    }, [tags]);
+    }, []);
+
     useEffect(() => {
         if (typeof props.search != undefined && props.search !== null) {
 
-                searchFilter(props.search)
+            searchFilter(props.search)
         }
     }, [props.search]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/tags')
+        tagsDetails()
             .then(res => {
-                setTags(res.data);
+                setTags(res);
             })
             .catch(err => console.log(err));
     }, []);
 
     useEffect(() => {
+        getCategories().then(res => {
+            setCategories(res)
+        }).catch(err => console.log(err))
+    }, [])
 
-        // discountDetails()
-        //     .then(res => {
-        //         setDiscount(res.data);
-        //     })
-        //     .catch(err => console.log(err));
-        axios.get('http://localhost:5000/discount')
+    useEffect(() => {
+        discountDetails()
             .then(res => {
-                setDiscount(res.data);
+                setDiscount(res);
             })
             .catch(err => console.log(err));
     }, []);
 
+    useEffect(() => {
+        // console.log(filters)
+        applyAll();
+    }, [filters]);
 
-    function tagFilter(value) {
-        // let tagFilter = products.filter(item=>item.tags.includes(value));
-        // setProducts(tagFilter);
-        setFilter([...filters, value])
+    const addCategory = (category) => {
+        // console.log(category)
+    }
+
+    function addFilter(value) {
+        setFilter(Object.assign({}, filters, value));
     }
 
     function applyAll() {
+        const filteredProducts = products.filter((item) => {
+            if (filters.price != null) {
+                var priceRange = filters.price.split('-');
+                if (priceRange.length === 1 && (parseFloat(item.price) <= parseFloat(priceRange[0]) || parseFloat(item.price) >= parseFloat(priceRange[0]))) {
+                    console.log(item.price + '  ' + parseFloat(priceRange[0]))
+                    console.log(parseFloat(item.price) <= parseFloat(priceRange[0]))
+                    return true;
+                } else (priceRange.length === 2 && parseFloat(priceRange[0]) <= parseFloat(item.price) && parseFloat(item.price) <= parseFloat(priceRange[1]))
+                {
+                    return true;
+                }
+            }
+            else if (filters.tags != null && item.tags.length && item.tags.includes(filters.tags))
+                return true
+            else if (filters.discount != null && item.discount > 0 && item.discount == parseInt(filters.discount.split('%')[0])
+            )
+                return true
+            else
+                return false;
+        });
+        if (filteredProducts.length) {
+            setProducts(filteredProducts)
+        }
+        else
+            // 
+            setProducts([]);
+        if (filters.discount === null && filters.price === null && filters.tags === null)
+            fetchProducts();
 
     }
 
-    function tagRemoveFilter(value) {
+    function removeFilter(data) {
+        console.log({ [data]: null });
+        // console.log( {value.valueOf():null})
         // let filteredProducts = products.filter(item=>item.name!==value);
-        let remainingFilters = tags.filter(item => item !== value);
-        setTags(remainingFilters);
+        // let remainingFilters = tags.filter(item => item !== value);
+        setFilter(Object.assign({}, filters, { [data]: null }));
 
     }
 
@@ -94,6 +145,16 @@ const Products = (props) => {
         })
     }
 
+    useEffect(() => {
+        lowerValueRef.current.value = value[0];
+        upperValueRef.current.value = value[1];
+        console.log(lowerValueRef.current.value, upperValueRef.current.value);
+    }, [value])
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
     function searchFilter(value) {
         if (!value.length) return fetchProducts();
         let serachedResults = products.filter(items => items.productName.toLowerCase().includes(value.toLowerCase()));
@@ -101,31 +162,61 @@ const Products = (props) => {
             setProducts(serachedResults);
     }
 
+    useEffect(() => {
+        // return () => 
+        handleChange(null, [value1, value[1]])
+    }, [value1])
+
+    useEffect(() => {
+        return () => handleChange(null, [value[0], value2])
+    }, [value2])
+
     return (
         <>
             <div>
                 <ul>
-                    {filters.map((item, index) => <li key={`${item}-${index}`} onClick={() => tagRemoveFilter(item)}>{item}</li>)}
+                    {filters && Object.keys(filters).map((item, index) => {
+                        return (<li key={`${item}-${filters.item}`} onClick={() => removeFilter(item)}>{filters[item]}</li>)
+
+                    })}
                 </ul>
             </div>
             <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", margin: "2rem" }}>
                 <ul style={{ width: "20%" }}>
                     <div>
                         <h6>Price Range</h6>
-                        <ul >
-                            <li><label><input name="price" type="radio" value={1000} />Under 1000</label></li>
-                            <li><label><input name="price" type="radio" value={10000} />₹10,000 - ₹10,000</label></li>
-                            <li><label><input name="price" type="radio" value={15000} />₹15,000 - ₹20,000</label></li>
-                            <li><label><input name="price" type="radio" value={20000} />₹20,000 - ₹30,000</label></li>
-                            <li><label><input name="price" type="radio" value={30000} />Over ₹30,000</label></li>
-                        </ul>
+                        <Slider
+                            getAriaLabel={() => 'Minimum distance'}
+                            value={value}
+                            onChange={handleChange}
+                            valueLabelDisplay="auto"
+                            // getAriaValueText={valuetext}
+                            disableSwap
+                            min={0}
+                            step={1500}
+                            max={100000}
+                        />
+                        <div className='flex' style={styleComponent}>
+                            <TextField id="standard-basic" name="value1" label="lower value" value={value1}
+                                className='width-sm' ref={lowerValueRef} onChange={(e) => setValue1(e.target.value)} />
+                            <TextField id="standard-basic" name="value2" label="upper value"
+                                className='width-sm' ref={upperValueRef} onChange={(e) => setValue2(e.target.value)} />
+                        </div>
+
+                        {/* <ul >
+                            <li><label><input name="price" onChange={e => addFilter({ "price": `${e.target.value}` })} type="radio" value={1000} />Under 1000</label></li>
+                            <li><label><input name="price" onChange={e => addFilter({ "price": `1000-${e.target.value}` })} type="radio" value={10000} />₹1,000 - ₹10,000</label></li>
+                            <li><label><input name="price" onChange={e => addFilter({ "price": `10000-${e.target.value}` })} type="radio" value={15000} />₹15,000 - ₹20,000</label></li>
+                            <li><label><input name="price" onChange={e => addFilter({ "price": `15000-${e.target.value}` })} type="radio" value={20000} />₹20,000 - ₹30,000</label></li>
+                            <li><label><input name="price" onChange={e => addFilter({ "price": `20000-${e.target.value}` })} type="radio" value={30000} />Over ₹30,000</label></li>
+                        </ul> */}
                     </div>
                     <div>
                         <h6>Discount</h6>
                         <ul>
                             {
                                 discount.map(item => <li key={item.id}><label><input
-                                    onChange={(e) => tagFilter(e.target.value)} name="tag" type="radio" value={item.value} />{item.value}%</label></li>)
+                                    onChange={(e) => addFilter({ "discount": `${e.target.value}%` })} name="discount" type="radio" value={item.value} />{item.value}%,{item.name}</label></li>)
                             }
                         </ul>
                     </div>
@@ -134,13 +225,22 @@ const Products = (props) => {
                         <h6>Tags</h6>
                         <ul>
                             {
-                                tags.map(item => <li key={item.id}><label><input
-                                    onChange={(e) => tagFilter(e.target.value)} name="tag" type="radio" value={item.name} />{item.name}</label></li>)
+                                tags && tags.map(item => <li key={item.id}><label><input
+                                    onChange={(e) => addFilter({ "tags": e.target.value })} name="tag" type="radio" value={item.tagNAme} />{item.tagNAme}</label></li>)
+                            }
+                        </ul>
+                    </div>
+                    <div>
+                        <h6>Categories</h6>
+                        <ul>
+                            {
+                                categories && categories.map(item => <li key={item.id}><label><input
+                                    onChange={(e) => addCategory({ "category": e.target.value })} name="category" type="radio" value={item.categoryName} />{item.categoryName}</label></li>)
                             }
                         </ul>
                     </div>
                 </ul>
-                <ul className="grid" style={{ width: "80%" }}>
+                {products.length === 0 ? <h6>Could not fetch the products</h6> : <ul className="grid" style={{ width: "80%" }}>
                     {//product.availability > 0
                         products.map(product => (
                             <li key={product._id}>
@@ -158,7 +258,8 @@ const Products = (props) => {
                                     </Link>
                                     <CardContent>
                                         <Typography gutterBottom variant="body" component="div">
-                                            {product.productName.slice(0, 10)}
+                                            {/* {product.productName.slice(0, 10)} */}
+                                            {product.productName}
                                         </Typography>
                                     </CardContent>
                                     {/* </CardActionArea> */}
@@ -190,7 +291,7 @@ const Products = (props) => {
                         )
                         )
                     }
-                </ul>
+                </ul>}
             </div>
         </>
     );

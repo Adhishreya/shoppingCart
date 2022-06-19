@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -42,6 +42,12 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
 
+    const nameRef  = useRef();
+    const passRef  = useRef();
+    const emailRef = useRef();
+    const phoneRef = useRef();
+
+
     const [userErrorMessage, setUserErrorMessage] = useState('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userError, setUserError] = useState(false);
@@ -50,7 +56,10 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
     const handleChange = (e) => {
         if (e.target.name === 'name') {
             setUserName(e.target.value);
-            if (userName.length < 5) {
+            if (userName.length < 5 ) {
+                //&& document.activeElement ===nameRef.current
+                console.log(document.activeElement);
+                console.log(nameRef.current);
                 setUserErrorMessage("Cannot be less than 5 characters");
                 setUserError(true);
             } else {
@@ -105,7 +114,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                                 <form action='POST' onSubmit="return false;">
                                     <FormGroup role="form">
                                         <FormControl style={{ width: "fit-content", margin: "2% auto" }} onSubmit={() => alert('submit')}>
-                                            <TextField id="standard-basic" name="name" label="Username" error={userError} required
+                                            <TextField id="standard-basic" name="name" label="Username" ref={nameRef} error={userError} required
                                                 helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
                                             <TextField
                                                 id="standard-password-input"
@@ -116,6 +125,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                                                 type="password"
                                                 variant="standard"
                                                 name="password"
+                                                ref={passRef}
                                                 onChange={(e) => handleChange(e)}
                                                 onFocus={(e) => handleChange(e)}
                                             />
@@ -135,15 +145,16 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                                     <FormGroup role="form">
                                         <FormControl style={{ width: "50%", margin: "2% auto" }} onSubmit={() => alert('submit')}>
                                             <TextField id="standard-basic" name="name" label="Username" error={userError} required
-                                                helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
-                                            <TextField id="standard-basic" label="Email" type="email" variant="standard" required onChange={(e) => setEmail(e.target.value)} />
-                                            <TextField id="standard-basic" label="Phone No" variant="standard" type="tel" required onChange={(e) => setPhone(e.target.value)} />
+                                                helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)}  ref={nameRef}/>
+                                            <TextField id="standard-basic" label="Email" ref={emailRef} type="email" variant="standard" required onChange={(e) => setEmail(e.target.value)} />
+                                            <TextField id="standard-basic" label="Phone No" ref={phoneRef} variant="standard" type="tel" required onChange={(e) => setPhone(e.target.value)} />
                                             <TextField
                                                 id="standard-password-input"
                                                 required={true}
                                                 label="Password"
                                                 error={passwordError}
                                                 helperText={passwordErrorMessage}
+                                                ref={passRef}
                                                 type="password"
                                                 variant="standard"
                                                 name="password"

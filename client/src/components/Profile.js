@@ -27,9 +27,6 @@ const Profile = () => {
                 // refAddress.current.value=+result.data[0].address[0];
             }
         })
-      
-        // console.log(profile)
-        // console.log(refAddress.current.value)
     }, [])
     return (<div style={{ background: "" }}>
         {

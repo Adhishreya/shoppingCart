@@ -11,12 +11,9 @@ paymentRouter.route('/success')
             Payments.findOneAndUpdate({ orderId: order_id }, { $set: { paymentStatus: 'Success', amount: order.total, paymentMode: paymentMode } }).then(result => {
                 Sessions.findOneAndUpdate({ userId: req.user._id }, { $set: { total: 0 } }).then(result => {
                     CartItem.deleteMany({ userId: req.user._id }).then(result => {
-                        // console.log(result)
-                        // res.redirect('/');
                         res.statusCode = 200;
                         res.setHeader('ContentType', 'application/json');
                         res.json('Order placed successfully')
-                        //     }).catch(err => next(err));
                     })
                 })
             }).catch(err => next(err));
