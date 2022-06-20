@@ -16,10 +16,10 @@ export const loginRequest = ({ username, password }, navigate, setCount) => {
                     console.log(res.data)
                     res.data[0].products.forEach(element => {
                         quantity += element.quantity;
-                        var temp1 = {"id":element._id,"quantity":element.quantity};
+                        var temp1 = { "id": element._id, "quantity": element.quantity };
                         cartItems.push(temp1);
                     });
-                    localStorage.setItem("cartDetails",JSON.stringify(cartItems));
+                    localStorage.setItem("cartDetails", JSON.stringify(cartItems));
                     setCount(quantity);
                 }
             })
@@ -58,5 +58,40 @@ export const uploadImage = (image, navigate) => {
 
 export const changeAddress = (address, navigate) => {
 
-    axios.post("http://localhost:5000/users/addressUpdate", {address:address}, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
+    axios.post("http://localhost:5000/users/addressUpdate", { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
+}
+
+export const addAddress = (address, navigate) => {
+    console.log(address)
+    axios.post("http://localhost:5000/address", { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") ;window.location.reload();} }, err => { console.log(err.response); navigate("/error") })
+}
+
+export const profileDetails = () => {
+    // axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
+    return new Promise((resolve, reject) => {
+        axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).
+            then(res => {
+                console.log(res.data);
+                resolve(res.data);
+                //  console.log(res.data); if (res.data) { req(res.data) } }
+                // , err => {
+                //     console.log(err.response);
+                //     navigate("/error")
+            })
+    })
+}
+export const deleteAddress = (id, navigate) => {
+    console.log("http://localhost:5000/address/" + id)
+    axios.delete('http://localhost:5000/address/' + id,  { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } })
+        .then(res => {
+            if (res.data) {
+                // console.log(res.data)
+                navigate("/profile");
+                window.location.reload();
+            }
+        }).catch(err => {
+            // if(res)
+            console.log(err.response)
+            navigate("/error")
+        })
 }
