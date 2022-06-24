@@ -43,7 +43,7 @@ const ProductDetails = (props) => {
                         </div>
                         <div >
                             <h4>{data.productName}</h4>
-                            <h6>Cost <span>&#8377;{data.price}</span></h6>
+                            <h6>Cost <strike><span>&#8377;{`${data.price/100}  `}</span></strike><span>&#8377;{((data.price)/100)*(1-(data.discount[0].value/100))}</span></h6>
                             <p>{data.averageRating > 0 ? data.averageRating : "Rating is not available for this product"}</p>
                         </div>
                         <div>

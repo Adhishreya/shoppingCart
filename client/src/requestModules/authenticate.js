@@ -56,14 +56,14 @@ export const uploadImage = (image, navigate) => {
 }
 
 
-export const changeAddress = (address, navigate) => {
-
-    axios.post("http://localhost:5000/users/addressUpdate", { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
+export const changeAddress = (id, address, navigate) => {
+    // console.log("http://localhost:5000/address/" + id)
+    axios.post("http://localhost:5000/address/" + id, { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile"); window.location.reload(); } }, err => { console.log(err.response); navigate("/error") })
 }
 
 export const addAddress = (address, navigate) => {
     console.log(address)
-    axios.post("http://localhost:5000/address", { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") ;window.location.reload();} }, err => { console.log(err.response); navigate("/error") })
+    axios.post("http://localhost:5000/address", { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile"); window.location.reload(); } }, err => { console.log(err.response); navigate("/error") })
 }
 
 export const profileDetails = () => {
@@ -82,7 +82,7 @@ export const profileDetails = () => {
 }
 export const deleteAddress = (id, navigate) => {
     console.log("http://localhost:5000/address/" + id)
-    axios.delete('http://localhost:5000/address/' + id,  { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } })
+    axios.delete('http://localhost:5000/address/' + id, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } })
         .then(res => {
             if (res.data) {
                 // console.log(res.data)
@@ -94,4 +94,33 @@ export const deleteAddress = (id, navigate) => {
             console.log(err.response)
             navigate("/error")
         })
+}
+
+export const userVendorProfile = () => {
+    return new Promise((resolve, reject) => {
+        axios.get("http://localhost:5000/vendor/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => {
+            console.log(res.data)
+            resolve(res.data)
+        }
+        ).catch(err => {
+            reject(err.response)
+        })
+    })
+}
+
+export const vendorRegister = (vendorDetails,navigate) => {
+    console.log(vendorDetails);
+    return new Promise((resolve, reject) => {
+        axios.post("http://localhost:5000/vendor/profile", { vendorDetails }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => {
+            if (res.data) {
+                // console.log(res.data)
+                navigate("/vendor");
+                window.location.reload();
+            }
+        }).catch(err => {
+            // if(res)
+            console.log(err.response)
+            navigate("/error")
+        })
+    })
 }

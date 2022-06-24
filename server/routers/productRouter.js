@@ -16,7 +16,7 @@ productsRouter.route('/')
     .post(authenticate.verifyUser, authenticate.verifyVendor, (req, res, next) => {
         let { productName, description, sku, images, price, vendorDetails, availability, discount,
             category,
-            tags } = req.body;
+            tags } = req.body.productDetails;
         vendorDetails = mongoose.Types.ObjectId(vendorDetails);
         Products.create({
             productName, description, sku, images, price, vendorDetails, availability, discount,
@@ -44,18 +44,17 @@ productsRouter.route('/update/inventory/:productId')
 productsRouter.route('/filter')
     .get((req, res, next) => {
         let { category, tags, discount, lower, upper } = req.query;
+        // console.log(req.query);
         let filters = {}
         if (typeof category !== "undefined" && category !== null)
             filters.category = { $in: [mongoose.Types.ObjectId(category)] }
         if (typeof tags !== "undefined" && tags !== null)
             filters.tags = { $in: [mongoose.Types.ObjectId(tags)] }
         if (typeof discount !== "undefined" && discount !== null)
-            filters.discount = { $in: [mongoose.Types.ObjectId(discount)] }
-        console.log(filters);
+            filters.discount = { $in: [discount] }
         if (typeof lower !== "undefined" && lower !== null && typeof upper !== "undefined" && upper !== null)
-            filters.price = { $lt: parseInt(upper), $gt: parseInt(lower) }
-
-        Products.find(filters).populate('discount').populate('category').populate('tags').then(data => {
+            {filters.price = { $lt: parseInt(upper)*100, $gt: parseInt(lower)*100 }}
+        Products.find(filters).populate('vendorDetails').populate('discount').populate('category').populate('tags').then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);

@@ -22,7 +22,6 @@ AddressRouter.route('/')
             telephone = req.body.telephone;
         if (req.body.address.mobile)
             mobile = req.body.address.mobile;
-        console.log(telephone, mobile);
         Address.create({ u_id, addressLine1, addressLine2, city, post_code, country, telephone, mobile, country_code }).then((address) => {
             Users.findByIdAndUpdate({ _id: u_id }, { $push: { address: address } }, (err, user) => {
                 if (err) {
@@ -46,7 +45,7 @@ AddressRouter.route('/:id')
     })
     .post(authenticate.verifyUser, (req, res) => {
         const { id } = req.params;
-        Address.findByIdAndUpdate({ _id: id }, { $set: req.body }).then(data => {
+        Address.findByIdAndUpdate({ _id: id }, { $set: req.body.address }).then(data => {
             res.statusCode = 200;
             res.setHeader('ContentType', 'application/json');
             res.json(data);

@@ -43,10 +43,21 @@ export const discountDetails = () => {
     })
 }
 
+export const sellProduct = (productDetails) => {
+    console.log(productDetails);
+    return new Promise((resolve, reject) => {
+        axios.post(`${url}products/`, { productDetails: productDetails }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
+            // console.log(result)
+            resolve(result)
+        })
+    })
+}
+
 
 export const getProductByCategory = (id) => {
     return new Promise((resolve, reject) => {
         axios.get(`${url}products/category/${id}`).then(res => {
+            conosole.log(res.data);
             resolve(res.data);
         })
     })
@@ -68,7 +79,7 @@ export const getProductByDiscount = (id) => {
     })
 }
 
-export const filterProducts = (customUrl) =>{
+export const filterProducts = (customUrl) => {
     return new Promise((resolve, reject) => {
         axios.get(`${url}products/filter${customUrl}`).then(res => {
             resolve(res.data);
@@ -119,13 +130,33 @@ export const decrement = (id, navigate) => {
 }
 
 export const deleteCartItem = (id, navigate) => {
+    // return new Promise((resolve, reject) => {
+    //     axios.delete("http://localhost:5000/cart/delete/" + id, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+    //         resolve(res)
+    //     }).catch(err => {
+    //         console.log(err.response);
+    //         navigate("/error")
+    //     });
+    // })
+
+    // let { data } = axios({
+    //     url: "http://localhost:5000/cart/delete/" + id,
+    //     method: 'delete',
+    //     data: { orderId: id },
+    //     headers: { Authorization: "bearer " + localStorage.getItem("token") }
+    // });
+
+    // return data;
+
     return new Promise((resolve, reject) => {
-        axios.post("http://localhost:5000/cart/deleteCartItem/" + id, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
-            resolve(res)
-        }).catch(err => {
-            console.log(err.response);
-            navigate("/error")
-        });
+        axios({
+            url: "http://localhost:5000/cart/delete/" + id,
+            method: 'delete',
+            data: { orderId: id },
+            headers: { Authorization: "bearer " + localStorage.getItem("token") }
+        }).then(res => {
+            resolve(res.data);
+        })
     })
 }
 

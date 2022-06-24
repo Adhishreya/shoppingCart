@@ -35,10 +35,10 @@ const Products = (props) => {
     let navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [tags, setTags] = useState([]);
-    const [filters, setFilter] = useState({ tags: null, discount: null, lower: null, upper: null });
+    const [filters, setFilter] = useState({ tags: null, discount: null });
     const [categories, setCategories] = useState([]);
     const [discount, setDiscount] = useState([]);
-    const [value, setValue] = useState([100, 100000]);
+    const [value, setValue] = useState([100, 200000]);
     const [value1, setValue1] = useState(1000);
     const [value2, setValue2] = useState(9999);
 
@@ -88,29 +88,32 @@ const Products = (props) => {
 
 
     function addFilter(value) {
+
         setFilter(Object.assign({}, filters, value));
     }
 
     useEffect(() => {
+
         let url = '?';
         if (filters.tags != null) {
-            url += `tags=${filters.tags.id}`
+            url += `tags=${filters.tags.id}&`
         }
         if (filters.discount != null) {
-            url += `&discount=${filters.discount.id}`
+            url += `discount=${filters.discount.id}&`
         }
         if (filters.category != null) {
-            url += `&category=${filters.category.id}`
+            url += `category=${filters.category.id}&`
         }
-        url += `&lower=${value[0]}&upper=${value[1]}`;
+        url += `lower=${value[0]}&upper=${value[1]}&`;
 
+        console.log(url);
         if (url !== '?') {
             filterProducts(url)
-            .then(res => {
-                setProducts(res);
-            }).catch(err => console.log(err))
+                .then(res => {
+                    setProducts(res);
+                }).catch(err => console.log(err))
         }
-    }, [filters,value])
+    }, [filters, value])
 
 
     function removeFilter(data) {
@@ -176,12 +179,6 @@ const Products = (props) => {
                             step={1500}
                             max={100000}
                         />
-                        {/* <div className='flex' style={styleComponent}>
-                            <TextField id="standard-basic" name="value1" label="lower value" value={value1}
-                                className='width-sm' ref={lowerValueRef} onChange={(e) => setValue1(e.target.value)} />
-                            <TextField id="standard-basic" name="value2" label="upper value"
-                                className='width-sm' ref={upperValueRef} onChange={(e) => setValue2(e.target.value)} />
-                        </div> */}
                     </div>
                     <div>
                         <h6>Discount</h6>
@@ -237,7 +234,8 @@ const Products = (props) => {
                                     {/* </CardActionArea> */}
                                     <div style={styleComponent}>
                                         <Typography variant="subtitle1" color="text.primary">
-                                            <b>{'\u20B9'}</b>{product.price}
+                                            <b>{'\u20B9'}</b><strike>{(product.price) / 100}</strike>
+                                            <span>&#8377;{((product.price) / 100) * (1 - (product.discount[0].value / 100))}</span>
                                         </Typography>
                                         <CardActions>
                                             {

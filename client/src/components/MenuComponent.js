@@ -250,6 +250,8 @@ const MenuComponent = (props) => {
 
             />
           </Search>
+          <Link  style={{color:"#f1f5f9"}} to="/vendor">Vendor</Link>
+          <Link  style={{color:"#f1f5f9"}} to="/admin">Admin</Link>
           <div style={{ justifySelf: "flex-end" ,display:"flex" }}>
             <Link to="/cart" style={{color:"#f1f5f9"}}>
               <IconButton color="inherit" aria-label="add to shopping cart">

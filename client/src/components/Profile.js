@@ -17,26 +17,10 @@ const Profile = () => {
     let navigate = useNavigate();
     const [uploadFile, setUploadFile] = useState(null);
     const [profile, setProfile] = useState(null);
-    const refAddress = useRef(null);
-    // const [address, setAddress] = useState(null);
     const [editAdd, setEditAdd] = useState(false);
-
-    const [addressLine1, setAddressLine1] = useState(null);
-    const [addressLine2, setAddressLine2] = useState(null);
-    const [city, setCity] = useState(null);
-    const [post_code, setPost_code] = useState(null);
-    const [country, setCountry] = useState(null);
-    const [country_code, setCountry_code] = useState(null);
-    const [mobile, setMobile] = useState(null);
+    const [editAddress, setEditAddress] = useState(false);
 
     useEffect(() => {
-        // axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => {
-        //     console.log(result)
-        //     setProfile(result.data[0])
-        //     if (result.data[0].address !== null && typeof result.data[0].address !== undefined) {
-        //         // refAddress.current.value=+result.data[0].address[0];
-        //     }
-        // })
         profileDetails()
             .then(data => setProfile(data[0]))
             .catch(err => console.log(err))
@@ -44,31 +28,10 @@ const Profile = () => {
         console.log(profile)
     }, [])
 
-    const submitAddress = (e) => {
-        e.preventDefault();
-        const address = {
-            addressLine1: addressLine1,
-            addressLine2: addressLine2,
-            city: city,
-            post_code: post_code,
-            country: country,
-            country_code: country_code,
-            mobile: mobile
-        }
-        setEditAdd(false)
-        addAddress(address, navigate)
-        // .then(res => {
-        //     console.log(res);
-        // }).catch(err => {
-        //     console.log(err);
-        // })
-    }
-
     return (<div style={{ background: "" }}>
         {
             profile ? <div>
                 <div>
-
                     <label htmlFor="contained-button-file">
                         <Input encType="multipart/form-data" accept="image/*" name="image" id="contained-button-file" multiple type="file" onChange={(e) => {
                             setUploadFile(e.target.files[0]);
@@ -81,77 +44,50 @@ const Profile = () => {
                         {uploadFile && typeof (uploadFile) !== "undefined"
                             ? <Button onClick={() => uploadImage(uploadFile, navigate)}>Save</Button> : null}
                     </label>
-
                 </div>
                 <p>Username : {profile.username}</p>
                 <p>Phone : {profile.phoneNumber}</p>
                 <div>Address :
                     {editAdd ? <div>
-                        {/* <textarea ref={refAddress} value={refAddress.current==null?null:refAddress.current.value} onChange={(e) => { setAddress(e.target.value) }} /> */}
-                        <form onSubmit={(e) => submitAddress(e)}>
-                            <TextField id="outlined-basic" label="Address Line1" variant="outlined" name="addressLine1" required onChange={e => setAddressLine1(e.target.value)} />
-                            <TextField id="outlined-basic" label="Address Line1" variant="outlined" name="addressLine2" required onChange={e => setAddressLine2(e.target.value)} />
-                            <TextField id="outlined-basic" label="City" variant="outlined" name="city" required onChange={e => setCity(e.target.value)} />
-                            <TextField id="outlined-basic" label="Post Code" variant="outlined" name="post_code" required onChange={e => setPost_code(e.target.value)} />
-                            <TextField id="outlined-basic" label="Country" variant="outlined" name="country" required onChange={e => setCountry(e.target.value)} />
-                            <TextField id="outlined-basic" label="Country code" variant="outlined" name="country_code" inputProps={{ pattern: "[A-Za-z]{3}" }} required onChange={e => setCountry_code(e.target.value)} />
-                            <TextField id="outlined-basic" label="Mobile" variant="outlined" name="mobile" type="tel" inputProps={{ pattern: "[1-9]{1}[0-9]{9}" }}  onChange={e => setMobile(e.target.value)} />
-                            <Button color="success" type="submit">
-                                <CheckIcon
-                                //   onClick={() => {
-                                //     // setAddress
-                                //     changeAddress(address, navigate);
-                                //     window.location.reload();
-
-                                // }} 
-                                />
-                            </Button>
-                        </form>
-
-                        {/* <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            // value={age}
-                            label="Age"
-                        // onChange={}
-                        >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
-                        </Select> */}
-
+                        <EditProfie addLine1='' addLine2='' addCity='' addPost_code='' addCountry='' addCountry_code='' addMobile='' setEditAdd={setEditAdd} setEditAddress={setEditAddress} navigate={navigate} id={null} />
 
                         <CloseIcon onClick={() => setEditAdd(editAdd => !editAdd)} />
-
-
                     </div>
                         : <div>
                             <ModeEditIcon onClick={() => {
                                 setEditAdd(editAdd => !editAdd)
-                                //  if(profile.address!==null && typeof profile.address!==undefined){
-                                //     refAddress.current.value=profile.address[0];
-                                // }
                             }} />
                             <div>
-
                                 {
                                     profile.address.map((item, index) =>
                                         <>
                                             <hr />
-                                            <p key={index}>{item.addressLine1},{item.addressLine2}</p>
-                                            <p key={index}>{item.city},{item.country}</p>
-                                            <p key={index}>{item.country_code},{item.mobile}</p>
-                                            <p key={index}>{item.post_code}</p>
-                                            <ModeEditIcon />
-                                            <CloseIcon onClick={() => deleteAddress(item._id, navigate)} />
+                                            {!editAddress ?
+                                                <>
+                                                    <p key={index}>{item.addressLine1},{item.addressLine2}</p>
+                                                    <p key={index}>{item.city},{item.country}</p>
+                                                    <p key={index}>{item.country_code},{item.mobile}</p>
+                                                    <p key={index}>{item.post_code}</p>
+
+                                                    <ModeEditIcon onClick={() => {
+                                                        setEditAddress(true)
+                                                    }} />
+                                                </>
+                                                :
+                                                <>
+                                                    <EditProfie id={item._id} addLine1={item.addressLine1} addLine2={item.addressLine2} addCity={item.city} addPost_code={item.post_code} addCountry={item.country} addCountry_code={item.country_code} addMobile={item.mobile} setEditAdd={setEditAdd} setEditAddress={setEditAddress} navigate={navigate} />
+                                                    <CloseIcon onClick={() => window.location.reload()} />
+                                                </>
+                                            }
+
+                                            <div onClick={() => deleteAddress(item._id, navigate)} >Delete</div>
                                             <hr />
                                         </>
                                     )
                                 }
-
                             </div>
-                        </div>}
+                        </div>
+                    }
                 </div>
             </div> : null
 
@@ -160,6 +96,51 @@ const Profile = () => {
 }
 
 
-// const EditProfi
+const EditProfie = ({ setEditAdd, setEditAddress, id, navigate, addLine1, addLine2, addCity, addPost_code, addCountry, addCountry_code, addMobile }) => {
+    const [addressLine1, setAddressLine1] = useState(addLine1);
+    const [addressLine2, setAddressLine2] = useState(addLine2);
+    const [city, setCity] = useState(addCity);
+    const [post_code, setPost_code] = useState(addPost_code);
+    const [country, setCountry] = useState(addCountry);
+    const [country_code, setCountry_code] = useState(addCountry_code);
+    const [mobile, setMobile] = useState(addMobile);
+
+
+    const submitAddress = (e) => {
+        e.preventDefault();
+        const address = {
+            addressLine1: addressLine1,
+            addressLine2: addressLine2,
+            city: city,
+            post_code: post_code,
+            country: country,
+            country_code: country_code,
+            mobile: mobile
+        }
+
+        if (id === null) {
+            setEditAdd(false)
+            addAddress(address, navigate);
+        }
+        else {
+            changeAddress(id, address, navigate);
+        }
+    }
+
+    return (
+        <form onSubmit={(e) => submitAddress(e)}>
+            <TextField id="outlined-basic" label="Address Line1" variant="outlined" name="addressLine1" value={addressLine1} required onChange={e => setAddressLine1(e.target.value)} />
+            <TextField id="outlined-basic" label="Address Line2" variant="outlined" name="addressLine2" value={addressLine2} required onChange={e => setAddressLine2(e.target.value)} />
+            <TextField id="outlined-basic" label="City" variant="outlined" name="city" value={city} required onChange={e => setCity(e.target.value)} />
+            <TextField id="outlined-basic" label="Post Code" variant="outlined" name="post_code" value={post_code} required onChange={e => setPost_code(e.target.value)} />
+            <TextField id="outlined-basic" label="Country" variant="outlined" name="country" value={country} required onChange={e => setCountry(e.target.value)} />
+            <TextField id="outlined-basic" label="Country code" variant="outlined" name="country_code" inputProps={{ pattern: "[A-Za-z]{3}" }} value={country_code} required onChange={e => setCountry_code(e.target.value)} />
+            <TextField id="outlined-basic" label="Mobile" variant="outlined" name="mobile" type="tel" value={mobile} inputProps={{ pattern: "[1-9]{1}[0-9]{9}" }} onChange={e => setMobile(e.target.value)} />
+            <Button color="success" type="submit">
+                <CheckIcon />
+            </Button>
+        </form>
+    )
+}
 
 export default Profile;
