@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { cartDetails, increment, decrement, deleteCartItem } from '../requestModules/products'
+import { cartDetails, increment, decrement, deleteCartItem ,orderCheckout} from '../requestModules/products'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 const Cart = (props) => {
@@ -59,7 +59,9 @@ const Cart = (props) => {
             }</div>}
         {
             (cartData !== null || typeof cartData !== "undefined") ? (<div className=''>
-                <Button variant="contained">Checkout</Button>
+                <Button variant="contained" onClick={()=>orderCheckout().then(res=>{
+                    console.log(res)
+                })}>Checkout</Button>
             </div>) : null
 
         }

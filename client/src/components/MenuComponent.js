@@ -167,6 +167,15 @@ function AccountMenu(props) {
 
         <Divider />
         <MenuItem onClick={() => {
+          navigate("/")
+        }}>
+          {/* <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon> */}
+          <Link to="/orders">Orders</Link>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => {
           localStorage.clear();
           props.setCount(0);
           navigate("/")
@@ -199,7 +208,7 @@ function BasicModal() {
           <Button onClick={() => handleClose()}>click</Button>
         </Box>
       </Modal>
-      <Button><Link to="/" style={{color:"#f1f5f9"}}>Home</Link></Button>
+      <Button><Link to="/" style={{ color: "#f1f5f9" }}>Home</Link></Button>
       {/* <Button onClick={handleOpen}><Link to="/">Home</Link></Button> */}
       {/* <conMenu></IconMenu> */}
     </>
@@ -214,11 +223,11 @@ const MenuComponent = (props) => {
   const [input, setInput] = React.useState();
   const [searchParams, setSearchparams] = useSearchParams();
 
-  return ( 
+  return (
     //style={{ styleComponent }}
     <Box sx={{ flexGrow: 1 }} >
       <AppBar position="static" style={styleComponent}>
-        <Toolbar style={{ display: 'flex', flexDirection: "row",background:"#374151", width: "100%", justifyContent: "space-around" }}>
+        <Toolbar style={{ display: 'flex', flexDirection: "row", background: "#374151", width: "100%", justifyContent: "space-around" }}>
           <IconButton
             size="large"
             edge="start"
@@ -238,22 +247,20 @@ const MenuComponent = (props) => {
               inputProps={{ 'aria-label': 'search' }}
               onChange={(e) => {
                 let searchValue = e.target.value;
-                if(searchValue.length)
-                {
+                if (searchValue.length) {
                   props.searchString(searchValue);
                 }
-                else
-                {
+                else {
                   props.searchString("");
                 }
               }}
 
             />
           </Search>
-          <Link  style={{color:"#f1f5f9"}} to="/vendor">Vendor</Link>
-          <Link  style={{color:"#f1f5f9"}} to="/admin">Admin</Link>
-          <div style={{ justifySelf: "flex-end" ,display:"flex" }}>
-            <Link to="/cart" style={{color:"#f1f5f9"}}>
+          <Link style={{ color: "#f1f5f9" }} to="/vendor">Vendor</Link>
+          <Link style={{ color: "#f1f5f9" }} to="/admin">Admin</Link>
+          <div style={{ justifySelf: "flex-end", display: "flex" }}>
+            <Link to="/cart" style={{ color: "#f1f5f9" }}>
               <IconButton color="inherit" aria-label="add to shopping cart">
                 <AddShoppingCartIcon backgroundcolor="white" />
               </IconButton>

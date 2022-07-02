@@ -7,11 +7,13 @@ const order = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    // orderSummary:[],
-    // status: {
-    //     type: String,
-    //     enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
-    // },
+    orderSummary:[],
+    status: {
+        type: String,
+        enum: { values: ['Delivered', 'Pending'] },
+        default:'Pending'
+        // enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
+    },
     total: {
         type: currency
     },

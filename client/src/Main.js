@@ -17,6 +17,7 @@ import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
 import Cart from "./components/Cart";
 import Vendor from "./components/Vendor";
 import Admin from "./components/Admin";
+import Order from "./components/Order";
 class Main extends Component {
     render() {
         return (
@@ -32,6 +33,7 @@ class Main extends Component {
                     <Route path="/cart" element={<Cart value={this.props} />} />
                     <Route path="/vendor" element={<Vendor/>}/>
                     <Route path="/admin" element={<Admin/>}/>
+                    <Route path="/order" element={<Order/>}/>
                     <Route path="/" element={<Products value={this.props} search={this.props.searchString} />} />
                 </Routes>
 

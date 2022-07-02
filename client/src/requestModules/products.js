@@ -2,9 +2,9 @@ import axios from "axios";
 
 const url = "http://localhost:5000/";
 
-export const fetchAllProducts = () => {
+export const fetchAllProducts = (pageNumber) => {
     return new Promise((resolve, reject) => {
-        axios.get(`${url}products`).then(res => {
+        axios.get(`${url}products?pageNumber=${pageNumber}`).then(res => {
             resolve(res.data)
         });
     })
@@ -44,10 +44,8 @@ export const discountDetails = () => {
 }
 
 export const sellProduct = (productDetails) => {
-    console.log(productDetails);
     return new Promise((resolve, reject) => {
         axios.post(`${url}products/`, { productDetails: productDetails }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
-            // console.log(result)
             resolve(result)
         })
     })
@@ -130,24 +128,6 @@ export const decrement = (id, navigate) => {
 }
 
 export const deleteCartItem = (id, navigate) => {
-    // return new Promise((resolve, reject) => {
-    //     axios.delete("http://localhost:5000/cart/delete/" + id, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
-    //         resolve(res)
-    //     }).catch(err => {
-    //         console.log(err.response);
-    //         navigate("/error")
-    //     });
-    // })
-
-    // let { data } = axios({
-    //     url: "http://localhost:5000/cart/delete/" + id,
-    //     method: 'delete',
-    //     data: { orderId: id },
-    //     headers: { Authorization: "bearer " + localStorage.getItem("token") }
-    // });
-
-    // return data;
-
     return new Promise((resolve, reject) => {
         axios({
             url: "http://localhost:5000/cart/delete/" + id,
@@ -175,4 +155,24 @@ export const localItems = () => {
     }
 
     return itemC;
+}
+
+export const orderCheckout = () => {
+    return new Promise((resolve, reject) => {
+        axios.post('http://localhost:5000/orders/checkout', { data: "" },
+            { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+                // resolve(res.data)
+                // res.statucs/
+                // console.log(res.status)
+                if (res.status === 200) {
+                    axios.post('http://localhost:5000/payment/success', {
+                        order_id: res.data,
+                        paymentMode: "COD"
+                    }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result=>{
+                        resolve("Payment successful")
+                    })
+                }
+            }
+            )
+    })
 }

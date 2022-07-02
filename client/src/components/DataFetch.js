@@ -10,6 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import { height } from '@mui/system';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
 
 import {
     productDetails, increment, fetchAllProducts, tagsDetails, discountDetails, getCategories, getProductByCategory,
@@ -42,6 +45,8 @@ const Products = (props) => {
     const [value1, setValue1] = useState(1000);
     const [value2, setValue2] = useState(9999);
 
+    const [pageNumber,setPageNumber] = useState(1);
+
     let minDistance = 100;
 
     const lowerValueRef = useRef();
@@ -50,7 +55,7 @@ const Products = (props) => {
 
 
     useEffect(() => {
-        fetchAllProducts()
+        fetchAllProducts(pageNumber)
             .then(res => {
                 setProducts(res);
             })
@@ -104,7 +109,7 @@ const Products = (props) => {
         if (filters.category != null) {
             url += `category=${filters.category.id}&`
         }
-        url += `lower=${value[0]}&upper=${value[1]}&`;
+        url += `lower=${value[0]}&upper=${value[1]}&pageNumber=${pageNumber}`;
 
         console.log(url);
         if (url !== '?') {
@@ -113,7 +118,7 @@ const Products = (props) => {
                     setProducts(res);
                 }).catch(err => console.log(err))
         }
-    }, [filters, value])
+    }, [filters, value,pageNumber])
 
 
     function removeFilter(data) {
@@ -213,8 +218,8 @@ const Products = (props) => {
                     {
                         products.map(product => (
                             <li key={product._id}>
-                                <Card style={{ width: '100%', padding: "0.5rem", display: "flex", flexDirection: "column" }}>
-                                    <Link to={`/products/${product._id}`}>
+                                <Card style={{ width: '100%', padding: "0.5rem", display: "flex", flexDirection: "column", opacity: `${product.availability > 0 ? 1 : 0.5}` }}>
+                                    <Link to={`${product.availability > 0 ? `/products/${product._id}` : ''}  `}>
                                         <CardMedia
                                             component="img"
                                             height="140"
@@ -263,6 +268,9 @@ const Products = (props) => {
                     }
                 </ul>}
             </div>
+            <Stack spacing={2}>
+                <Pagination count={3} color="secondary" onChange={(event,value)=>setPageNumber(value)} />
+            </Stack>
         </>
     );
 }

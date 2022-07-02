@@ -11,7 +11,8 @@ const Tags = require('../models/tags');
 
 const products = new mongoose.Schema({
     productName: {
-        type: String
+        type: String,
+        index:true
     },
     description: {
         type: String,
@@ -83,4 +84,6 @@ products.methods.updateAvailability = function (id, number, next) {
         }
     }).clone();
 }
+
+// products.createIndex({name:"text",description:"text"})
 module.exports = mongoose.model("Products", products);

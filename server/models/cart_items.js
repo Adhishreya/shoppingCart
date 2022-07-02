@@ -34,7 +34,6 @@ cartItemsSchema.methods.increment = function (id, next) {
                 console.log(err);
                 next(err);
             }
-            console.log(doc);
         }).clone();
 }
 
@@ -49,17 +48,6 @@ cartItemsSchema.methods.decrement = function (id, next) {
             if (err) { 
                 next(err);
             }
-            // else {
-            //     Products.findById(doc.productId, (err, product) => {
-            //         if (err) {
-            //             console.log(err);
-            //         }
-            //         else {
-            //             product.updateAvailability(product._id, +1, next);
-            //         }
-            //     })
-            //     console.log(doc);
-            // }
         }).clone();
 }
 
@@ -71,7 +59,6 @@ cartItemsSchema.methods.delete = function (id, next) {
                 console.log(err);
                 next(err);
             }
-            console.log(doc);
         }).clone();
 }
 

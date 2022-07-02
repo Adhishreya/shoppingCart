@@ -6,8 +6,14 @@ const mongoose = require('mongoose');
 
 productsRouter.route('/')
     .get((req, res) => {
-        Products.find({}, 'productName images price _id tags availability discount').populate('vendorDetails', 'companyName').populate('discount').populate('category').populate('tags').then((data) => {
+        const pageNumber = req.query.pageNumber - 1;
+        const nPerPage = 1;
+        // console.log(pageNumber)
+        // .skip(pageNumber>0?((pageNumber-1)*nPerPage):0)
+        //.limit(nPerPage)
+        Products.find({}, 'productName images price _id tags availability discount').skip(2).populate('vendorDetails', 'companyName').populate('discount').populate('category').populate('tags').then((data) => {
             // .populate('vendorDetails').populate('discount').populate('reviews.userId').then((data)=>{
+            // console.log(req.query.pageNumber)
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
@@ -43,8 +49,11 @@ productsRouter.route('/update/inventory/:productId')
     );
 productsRouter.route('/filter')
     .get((req, res, next) => {
-        let { category, tags, discount, lower, upper } = req.query;
-        // console.log(req.query);
+        let { category, tags, discount, lower, upper, pageNumber } = req.query;
+        const nPerPage = 2;
+        let page = pageNumber - 1;
+        // .skip(pageNumber>0?((pageNumber-1)*nPerPage):0)
+        //.limit(nPerPage)
         let filters = {}
         if (typeof category !== "undefined" && category !== null)
             filters.category = { $in: [mongoose.Types.ObjectId(category)] }
@@ -52,9 +61,9 @@ productsRouter.route('/filter')
             filters.tags = { $in: [mongoose.Types.ObjectId(tags)] }
         if (typeof discount !== "undefined" && discount !== null)
             filters.discount = { $in: [discount] }
-        if (typeof lower !== "undefined" && lower !== null && typeof upper !== "undefined" && upper !== null)
-            {filters.price = { $lt: parseInt(upper)*100, $gt: parseInt(lower)*100 }}
-        Products.find(filters).populate('vendorDetails').populate('discount').populate('category').populate('tags').then(data => {
+        if (typeof lower !== "undefined" && lower !== null && typeof upper !== "undefined" && upper !== null) { filters.price = { $lt: parseInt(upper) * 100, $gt: parseInt(lower) * 100 } }
+        // filters.
+        Products.find(filters).populate('vendorDetails').skip(page > 0 ? (page * nPerPage) : 0).limit(nPerPage).populate('discount').populate('category').populate('tags').then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
