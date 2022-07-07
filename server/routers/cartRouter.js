@@ -31,7 +31,7 @@ CartRouter.route('/:id')
                     quantity = 1;
                 }
                 if (product.availability - quantity >= 0) {
-                    product.updateAvailability(id, -quantity, next).then(() => {
+                    product.updateAvailability(id, -quantity, next, data[0]._id, data[0].total).then(() => {
                         CartItem.create({ sessionId: sessionId, productId: id, quantity: quantity }, (err, doc) => {
                             if (err) {
                                 next(err);
@@ -40,19 +40,6 @@ CartRouter.route('/:id')
                                 res.statusCode = 200;
                                 res.setHeader('Content-Type', 'application/json');
                                 res.json(doc);
-                                // cartItem = doc;
-                                // Cart.findOne({ userId: req.user._id }, (err, docs) => {
-                                //     if (err) {
-                                //         next(err);
-                                //     }
-                                //     else {
-                                //         docs.products.push(cartItem);
-                                //         docs.save();
-                                //         res.statusCode = 200;
-                                //         res.setHeader('Content-Type', 'application/json');
-                                //         res.json(docs);
-                                //     }
-                                // })
                             }
                         })
                     })
@@ -66,116 +53,139 @@ CartRouter.route('/:id')
     })
 
 CartRouter.route('/delete/:id')
-    .delete(authenticate.verifyUser,(req, res, next) => {
-        CartItem.findByIdAndDelete({ _id: req.params.id }).then(data => {
-            Products.findById(data.productId).then(
-                product => {
-                    product.updateAvailability(product._id, data.quantity, next).then(result => {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(data);
-                    })
-                }, err => next(err)
-            )
+    .delete(authenticate.verifyUser, (req, res, next) => {
+        Session.find({ userId: req.user.id }, (error, session) => {
+
+            CartItem.findByIdAndDelete({ _id: req.params.id }).then(data => {
+                Products.findById(data.productId).then(
+                    product => {
+                        product.updateAvailability(product._id, data.quantity, next,session[0]._id, session[0].total).then(result => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(data);
+                        })
+                    }, err => next(err)
+                )
+            }, err => next(err), err => next(err))
         })
     })
 
 CartRouter.route('/increment/:id')
     .post(authenticate.verifyUser, (req, res, next) => {
         let id = req.params.id;
-        Session.find({ userId: req.user.id }).then(
-            session => {
-                CartItem.findById({ _id: id, sessionId: session._id }, (err, doc) => {
-                    if (doc === null) {
-                        // res.header('Authorization', req.headers.authentication);
-                        // res.json({id:id})
-                        // req.body = {id:id}
-                        // req.set("POST",{id:id})
-                        res.redirect(307, "/cart/" + id);
-                        // res.redirect(302,"/")
-                    }
-                    if (err) {
-                        next(err);
-                    }
-                    if (doc) {
-                        Products.findById(doc.productId, (err, product) => {
-                            if (err) {
-                                console.log(err);
-                                next(err);
+        Session.find({ userId: req.user.id }, (error, session) => {
+            CartItem.find({ productId: id, sessionId: session[0]._id }, (err, doc) => {
+                if (doc === null || doc.length===0) {
+                    console.log(doc.length)
+                    res.redirect(307, "/cart/" + id);
+                }
+                else if (err) {
+                    next(err);
+                }
+                // if (doc) 
+                else{
+                    console.log(doc)
+                    Products.findById(doc[0].productId, (err, product) => {
+                        if (err) {
+                            console.log(err);
+                            next(err);
+                        }
+                        else {
+                            if (product.availability - 1 >= 0) {
+                                product.updateAvailability(product._id, -1, next, session[0]._id, session[0].total)
+                                    .then((data) => {
+                                        if (err) {
+                                            next(err);
+                                        }
+                                        doc[0].increment(doc[0]._id, next).then(result => {
+                                            res.statusCode = 200;
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json(result);
+                                            // session.total+=
+                                            // session.calculteTotal(session._id,product.price,)
+                                        }
+                                            , err => next(err)
+                                        );
+                                    }, err => next(err));
                             }
                             else {
-                                if (product.availability - 1 >= 0) {
-                                    product.updateAvailability(product._id, -1, next)
-                                        .then((data) => {
-                                            if (err) {
-                                                next(err);
-                                            }
-                                            // else{
-                                            doc.increment(doc._id, next).then(result => {
-                                                res.statusCode = 200;
-                                                res.setHeader('Content-Type', 'application/json');
-                                                res.json(result);
-                                            }
-                                                , err => next(err)
-                                            );
-                                        }, err => next(err));
-                                } else {
-                                    res.statusCode = 200;
-                                    res.setHeader('ContentType', 'application/json');
-                                    res.json('Item not available')
-                                }
+                                res.statusCode = 200;
+                                res.setHeader('ContentType', 'application/json');
+                                res.json('Item not available')
                             }
-                        }).clone()
-                    }
-                });
-            }, err => next(err)
-        )
+                        }
+                    }).clone()
+                }
+            })
+        })
     });
 
 CartRouter.route('/decrement/:id')
     .post(authenticate.verifyUser, (req, res, next) => {
         let orderId = req.params.id;
-        // const cartSession = mongoose.startSession();//creating a session to create a transaction
-        // (await cartSession).startTransaction(() => {//starting a transaction
-        CartItem.findById({ _id: orderId }, (err, doc) => {
-            if (err) {
-                next(err);
-            }
-            else {
-                Products.findById(doc.productId, (err, product) => {
-                    if (err) {
-                        console.log(err);
-                        next(err);
-                    }
-                    else {
-                        product.updateAvailability(product._id, +1, next)
-                            .then((data) => {
-                                if (err) {
-                                    next(err);
-                                }
-                                if (doc.quantity - 1 > 0) {
-                                    doc.decrement(doc._id, next).then(result => {
-                                        if (result.quantity == 0) {
-                                            res.redirect(307, "/cart/deleteCartItem/" + orderId);
-                                        } else {
+        Session.find({ userId: req.user.id }).then(session => {
+            CartItem.find({ productId: orderId, sessionId: session[0]._id}, (err, doc) => {
+                if (err) {
+                    next(err);
+                }
+                else {
+                    Products.findById(doc[0].productId, (err, product) => {
+                        console.log(product)
+                        if (err) {
+                            console.log(err);
+                            next(err);
+                        }
+                        else {
+                            product.updateAvailability(product._id, +1, next, session[0]._id, session[0].total)
+                                .then((data) => {
+                                    if (err) {
+                                        next(err);
+                                    }
+                                    if (doc[0].quantity - 1 > 0) {
+                                        doc[0].decrement(doc[0]._id, next).then(result => {
+                                            if (result.quantity == 0) {
+                                                res.redirect(307, "/cart/deleteCartItem/" + orderId);
+                                            } else {
+                                                res.statusCode = 200;
+                                                res.setHeader('Content-Type', 'application/json');
+                                                res.json(result);
+                                            }
+                                        }, err => next(err));
+                                    } else {
+                                        doc[0].delete(doc[0]._id, next).then(result => {
                                             res.statusCode = 200;
                                             res.setHeader('Content-Type', 'application/json');
                                             res.json(result);
-                                        }
-                                    }, err => next(err));
-                                } else {
-                                    doc.delete(doc._id, next).then(result => {
-                                        res.statusCode = 200;
-                                        res.setHeader('Content-Type', 'application/json');
-                                        res.json(result);
-                                    })
-                                }
-                            }, err => next(err));
-                    }
-                }).clone()
-            }
-        });
+                                        })
+                                    }
+                                }, err => next(err));
+                        }
+                    }).clone()
+                }
+            });
+        }, err => next(err))
+    });
+
+CartRouter.route('/quantity/:id')
+    .get(authenticate.verifyUser,(req, res, next) => {
+        let id = req.params.id;
+        // Cart.find({productId:id,user})
+        console.log(req.user)
+        Session.find({ userId: req.user.id }).then(session => {
+            Cart.find({ productId: id, sessionId: session[0]._id }).then(data => {
+                res.setHeader('Content-Type', 'application/json');
+                if (data === null) {
+                    res.statusCode = 404;
+                    res.json(0)
+                }
+                else {
+                    res.statusCode = 200;
+                    res.json(data[0].quantity)
+                }
+            }, err => next(err))
+        }, err => next(err))
     })
+
 // CartRouter.route('/checkout')
 //     .get(authenticate.verifyUser, (req, res, next) => {
 //         Cart.findOne({ userId: req.user._id }).populate('products').then(data => {

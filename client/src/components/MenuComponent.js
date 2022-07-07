@@ -172,7 +172,7 @@ function AccountMenu(props) {
           {/* <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon> */}
-          <Link to="/orders">Orders</Link>
+          <Link to="/order">Orders</Link>
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => {

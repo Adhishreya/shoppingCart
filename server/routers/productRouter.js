@@ -8,12 +8,10 @@ productsRouter.route('/')
     .get((req, res) => {
         const pageNumber = req.query.pageNumber - 1;
         const nPerPage = 1;
-        // console.log(pageNumber)
         // .skip(pageNumber>0?((pageNumber-1)*nPerPage):0)
         //.limit(nPerPage)
-        Products.find({}, 'productName images price _id tags availability discount').skip(2).populate('vendorDetails', 'companyName').populate('discount').populate('category').populate('tags').then((data) => {
+        Products.find({}, 'productName images price _id tags availability discount').skip(2).lean().populate('vendorDetails', 'companyName').populate('discount').populate('category').populate('tags').then((data) => {
             // .populate('vendorDetails').populate('discount').populate('reviews.userId').then((data)=>{
-            // console.log(req.query.pageNumber)
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(data);
@@ -39,7 +37,6 @@ productsRouter.route('/update/inventory/:productId')
     .put((authenticate.verifyUser, authenticate.verifyVendor, (req, res, next) => {
         let productId = req.params.productId;
         let { availability } = req.body;
-        console.log(availability);
         Products.findByIdAndUpdate(productId, { $set: { availability } }, { new: true }).then((data) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
@@ -128,7 +125,6 @@ productsRouter.route('/discount/:id')
 
 productsRouter.route('/price/range/')
     .get((req, res, next) => {
-        console.log(req.query.lower);
         Products.find({ price: { $gt: parseInt(req.query.lower), $lt: parseInt(req.query.upper) } }).then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');

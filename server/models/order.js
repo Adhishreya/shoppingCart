@@ -7,11 +7,16 @@ const order = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    orderSummary:[],
+    orderSummary: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order_items'
+        }
+    ],
     status: {
         type: String,
         enum: { values: ['Delivered', 'Pending'] },
-        default:'Pending'
+        default: 'Pending'
         // enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
     },
     total: {
@@ -38,5 +43,5 @@ const order = new mongoose.Schema({
         type: currency
     },
 
-});
+}, { timestamp: true });
 module.exports = mongoose.model("Orders", order);

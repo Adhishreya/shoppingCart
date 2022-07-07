@@ -27,26 +27,17 @@ orderRouter.route('/checkout')
     .post(authenticate.verifyUser, (req, res, next) => {
         User.findById(req.user.id).then(user => {
             Sessions.findOne({ userId: user._id }, 'total').then(data => {
-                // console.log(data)
                 Orders.create({ userId: req.user._id, total: data.total }, (err, doc) => {
                     if (err) {
                         next(err);
                     }
                     else {
-                        //         const ordersFetchId = doc._id;
-                        //         console.log(doc)
                         Payment.create({ orderId: doc._id, amount: data.total }).then(payment => {
                             CartItem.find({ sessionId: data._id }).then(data => {
-                                // let documents = [];
-                                // console.log(data)
-                                // data.forEach(element => {
-                                // documents.push({ order_id: ordersFetchId, product_id: element.productId, quantity: element.quantity });
-                                // });
                                 Order_items.insertMany(data).then(() => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
                                     res.json(doc._id);
-                                    // res.json('ordersFetchId');
                                 }).catch(err => next(err));
                             }).catch(err => next(err))
                         }).catch(err => next(err));

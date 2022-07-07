@@ -3,16 +3,13 @@ require('mongoose-currency').loadType(mongoose);
 const currency = mongoose.Types.Currency;
 const Reviews = require('../models/reviews');
 const Tags = require('../models/tags');
-// const imageSchema = new mongoose.Schema({
-//     // data: Buffer,
-//     // contentType: String
-//     type: String
-// });
+const Discount = require('../models/discount');
+const Session = require('../models/session');
 
 const products = new mongoose.Schema({
     productName: {
         type: String,
-        index:true
+        index: true
     },
     description: {
         type: String,
@@ -48,18 +45,18 @@ const products = new mongoose.Schema({
     colours: [{
         type: String
     }],
-    sizes:[{type:String}],
+    sizes: [{ type: String }],
     averageRating: {
         default: 0,
         type: Number
     },
-    discount:[ {
+    discount: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Discount'
         // type:mongoose.Schema.Types.Number,
         // default:0
     }],
-    category:[ {
+    category: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     }],
@@ -68,8 +65,8 @@ const products = new mongoose.Schema({
         ref: Tags
     }]
 });
-products.methods.updateAvailability = function (id, number, next) {
-    console.log("inside number" + number);
+products.methods.updateAvailability = function (id, number, next,sessionId,total) {
+    // product._id, -1, next,session[0]._id,session[0].tota
     return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({ _id: id }, {
         $set: {
             availability: this.availability + number
@@ -80,10 +77,36 @@ products.methods.updateAvailability = function (id, number, next) {
             next(err);
         }
         else {
-            console.log(doc);
+            Discount.find({ _id: doc.discount[0] }).then(
+                disocunt => {
+                    // Session.calculteTotal(sessionId,doc.price,disocunt[0].value,number,next)
+                    Session.findById(sessionId).then(
+                        session=>session.calculteTotal(sessionId,doc.price,disocunt[0].value,number,next,total)
+                    )
+                    // Session.findByIdAndUpdate({ userId: req.user.id },{
+                    //     $set:{
+                    //         total:()=>{
+                    //             let discountedPrice = 
+                    //         }
+                    //     }
+                    // })
+                }
+            )
+            // return doc;
         }
     }).clone();
 }
+
+// products.methods.calculateTotal = function (id,next){
+//     // {((product.price) / 100) * (1 - (product.discount[0].value / 100))}
+//     // let discountedPrice = prod
+//     return this.model(this.constructor.modelName,this.schema).findByIdAndUpdate({_id:id},'discount',{
+//         $set:{price:()=>{
+//             Discount.findById
+//         }}
+
+//     })
+// }
 
 // products.createIndex({name:"text",description:"text"})
 module.exports = mongoose.model("Products", products);

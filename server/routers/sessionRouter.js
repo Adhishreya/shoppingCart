@@ -10,6 +10,8 @@ SessionRouter.route('/')
             res.setHeader('ContentType','application/json');
             res.json(data);
         })
-    });
-
+    })
+    .post(authenticate.verifyUser,(req,res,next)=>{
+        // Session
+    } )
 module.exports = SessionRouter;

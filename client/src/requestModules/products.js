@@ -116,6 +116,16 @@ export const increment = (id, navigate) => {
 }
 
 
+export const getQuantity = (id, navigate) => {
+     console.log("this is the id "+id)
+    return new Promise((resolve, reject) => {
+        axios.get(`${url}cart/quantity/${id}`, null, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+            console.log(res)
+            resolve(res)
+        }, err => navigate(err.response))
+    })
+}
+
 export const decrement = (id, navigate) => {
     return new Promise((resolve, reject) => {
         axios.post(`${url}cart/decrement/${id}`, { orderId: id }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
@@ -168,7 +178,7 @@ export const orderCheckout = () => {
                     axios.post('http://localhost:5000/payment/success', {
                         order_id: res.data,
                         paymentMode: "COD"
-                    }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result=>{
+                    }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
                         resolve("Payment successful")
                     })
                 }

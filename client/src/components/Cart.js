@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { cartDetails, increment, decrement, deleteCartItem ,orderCheckout} from '../requestModules/products'
+import { cartDetails, increment, decrement, deleteCartItem, orderCheckout } from '../requestModules/products'
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from '@mui/material';
+import { Box, Button, Modal, Typography } from '@mui/material';
 const Cart = (props) => {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const [cartData, setCartData] = useState(null);
     let navigate = useNavigate();
     var quantity = 0;
+
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
     useEffect(() => {
         cartDetails(navigate).then(res => {
             if (res.data !== null && typeof res.data !== 'undefined' && res.data.length > 0) {
@@ -26,19 +43,21 @@ const Cart = (props) => {
             </>
             : <div>{
                 cartData.map((cartItem, key) => {
+                    console.log(cartItem)
                     return (<div key={cartItem._id} className="grid">
                         <img style={{ height: "200px", width: "200px" }} src={cartItem.productId.images[0]} />
                         <div>
                             <h5>{cartItem.productId.productName}</h5>
                             <div style={{ display: "iflex" }}><button onClick={() => {
-                                decrement(cartItem._id, navigate).then(res => {
+                               
+                                decrement(cartItem.productId._id, navigate).then(res => {
                                     props.value.remove();
                                     window.location.reload();
                                 })
                             }}>-</button> <span>{
                                 cartItem.quantity
                             }</span><button onClick={() => {
-                                increment(cartItem._id, navigate).then(res => {
+                                increment(cartItem.productId._id, navigate).then(res => {
                                     props.value.add();
                                     window.location.reload();
                                 })
@@ -59,12 +78,40 @@ const Cart = (props) => {
             }</div>}
         {
             (cartData !== null || typeof cartData !== "undefined") ? (<div className=''>
-                <Button variant="contained" onClick={()=>orderCheckout().then(res=>{
-                    console.log(res)
-                })}>Checkout</Button>
+                <Button variant="contained"
+                    //  onClick={()=>orderCheckout().then(res=>{
+                    //     console.log(res)
+                    // })}
+                    onClick={handleOpen}
+                >Checkout</Button>
             </div>) : null
 
         }
+
+        <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Payment methods
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Cash On Delivery
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Debit/Credit
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    UPI
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Wallet
+                </Typography>
+            </Box>
+        </Modal>
     </div>)
 }
 export default Cart;
