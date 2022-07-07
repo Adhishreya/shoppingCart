@@ -25,6 +25,7 @@ orderRouter.route('/')
 
 orderRouter.route('/checkout')
     .post(authenticate.verifyUser, (req, res, next) => {
+        let {paymentMode,provider} = req.body
         User.findById(req.user.id).then(user => {
             Sessions.findOne({ userId: user._id }, 'total').then(data => {
                 Orders.create({ userId: req.user._id, total: data.total }, (err, doc) => {
@@ -32,7 +33,7 @@ orderRouter.route('/checkout')
                         next(err);
                     }
                     else {
-                        Payment.create({ orderId: doc._id, amount: data.total }).then(payment => {
+                        Payment.create({ orderId: doc._id, amount: data.total,paymentMode:paymentMode,provider:provider}).then(payment => {
                             CartItem.find({ sessionId: data._id }).then(data => {
                                 Order_items.insertMany(data).then(() => {
                                     res.statusCode = 200;

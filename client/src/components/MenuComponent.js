@@ -167,7 +167,7 @@ function AccountMenu(props) {
 
         <Divider />
         <MenuItem onClick={() => {
-          navigate("/")
+          // navigate("/")
         }}>
           {/* <ListItemIcon>
             <Logout fontSize="small" />

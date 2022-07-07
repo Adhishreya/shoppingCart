@@ -88,7 +88,7 @@ app.use('/payment/methods', UserPaymentRouter);
 app.use('/orders',orderRouter);
 app.use('/tags',TagRouter);
 app.use('/discount',DiscountRouter);
-app.use('/payment',paymentRouter);
+app.use('/status',paymentRouter);
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);

@@ -117,10 +117,8 @@ export const increment = (id, navigate) => {
 
 
 export const getQuantity = (id, navigate) => {
-     console.log("this is the id "+id)
     return new Promise((resolve, reject) => {
         axios.get(`${url}cart/quantity/${id}`, null, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
-            console.log(res)
             resolve(res)
         }, err => navigate(err.response))
     })
@@ -167,15 +165,12 @@ export const localItems = () => {
     return itemC;
 }
 
-export const orderCheckout = () => {
+export const orderCheckout = (paymentMode,provider) => {
     return new Promise((resolve, reject) => {
-        axios.post('http://localhost:5000/orders/checkout', { data: "" },
+        axios.post('http://localhost:5000/orders/checkout', { paymentMode: paymentMode,provider:provider },
             { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
-                // resolve(res.data)
-                // res.statucs/
-                // console.log(res.status)
                 if (res.status === 200) {
-                    axios.post('http://localhost:5000/payment/success', {
+                    axios.post('http://localhost:5000/status/success', {
                         order_id: res.data,
                         paymentMode: "COD"
                     }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
@@ -186,3 +181,24 @@ export const orderCheckout = () => {
             )
     })
 }
+
+export const getCardDetails = (navigate) => {
+    return new Promise((resolve, reject) => {
+        axios.get(`${url}payment/methods`, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+            resolve(res)
+        }, err => navigate('/error'))
+    })
+}
+
+// export const deleteCartItem = (id, navigate) => {
+//     return new Promise((resolve, reject) => {
+//         axios({
+//             url: "http://localhost:5000/cart/delete/" + id,
+//             method: 'delete',
+//             data: { orderId: id },
+//             headers: { Authorization: "bearer " + localStorage.getItem("token") }
+//         }).then(res => {
+//             resolve(res.data);
+//         })
+//     })
+// }
