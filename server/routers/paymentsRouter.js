@@ -1,9 +1,8 @@
 var paymentRouter = require('express').Router();
 var Payments = require('../models/payment');
 var authenticate = require('../authentication');
-var Orders = require('../models/order');
-const Sessions = require('../models/session');
-const CartItem = require('../models/cart_items');
+const { Sessions, CartItem, Orders } = require('../models');
+
 paymentRouter.route('/success')
     .post(authenticate.verifyUser, (req, res, next) => {
         let { order_id, paymentMode } = req.body;

@@ -1,7 +1,6 @@
 const vendorRouter = require('express').Router();
-const Vendor = require('../models/vendor');
+const {Vendor} = require('../models');
 const mongoose = require('mongoose');
-const passport = require('passport');
 const authenticate = require('../authentication');
 vendorRouter.route('/profile')
     .get(authenticate.verifyUser, (req, res, next) => {

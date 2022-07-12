@@ -1,5 +1,5 @@
 const DiscountRouter = require('express').Router();
-var Discount = require('../models/discount');
+var {Discount} = require('../models');
 const authenticate = require('../authentication');
 
 DiscountRouter.route('/')

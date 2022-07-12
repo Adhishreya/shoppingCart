@@ -1,5 +1,4 @@
-const PayDetails = require('../models/userPayment');
-const User = require('../models/user');
+const {PayDetails} = require('../models');
 const authenticate = require('../authentication');
 const UserPaymentRouter = require('express').Router();
 

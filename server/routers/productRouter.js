@@ -1,7 +1,6 @@
 const productsRouter = require('express').Router();
-const Products = require('../models/products');
+const { Products, CartItem } = require('../models');
 const authenticate = require('../authentication');
-const CartItem = require('../models/cart_items');
 const mongoose = require('mongoose');
 
 productsRouter.route('/')

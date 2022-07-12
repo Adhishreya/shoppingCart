@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');//create ,sign and verify tokens
 const config = require('./config');
 const vendor = require('./models/vendor');
 passport.serializeUser((user, done) => {
-    // console.log(user)
     done(null, user.id);
 });
 

@@ -1,11 +1,8 @@
 const express = require('express');
-const CartRouter = express.Router();
-const Products = require('../models/products');
-const mongoose = require('mongoose');
 const authenticate = require('../authentication');
-const CartItem = require('../models/cart_items');
+const CartRouter = express.Router();
+const {CartItem,Session} = require('../models');
 const { isNull } = require('lodash');
-const Session = require('../models/session');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
         Session.find({ userId: req.user.id }).then(

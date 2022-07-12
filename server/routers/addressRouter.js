@@ -1,8 +1,7 @@
 const AddressRouter = require('express').Router();
-const Address = require('../models/user_address');
-const Users = require('../models/user');
+const { Address, Users } = require('../models');
 const authenticate = require('../authentication');
-const mongoose  = require('mongoose');
+const mongoose = require('mongoose');
 
 AddressRouter.route('/')
     .get(authenticate.verifyUser, (req, res) => {
@@ -15,7 +14,6 @@ AddressRouter.route('/')
     .post(authenticate.verifyUser, (req, res, next) => {
         const u_id = req.user.id;
         const { addressLine1, addressLine2, city, post_code, country, country_code } = req.body.address;
-        // console.log(req.body);
         let telephone = '';
         let mobile = '';
         if (req.body.telephone)

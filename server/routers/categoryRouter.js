@@ -1,6 +1,5 @@
 const categoryRouter = require('express').Router();
-const Category = require('../models/categories');
-const passport = require('passport');
+const {Category} = require('../models');
 const authenticate = require('../authentication');
 categoryRouter.route('/')
     .get((req, res) => {

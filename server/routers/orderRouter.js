@@ -1,36 +1,31 @@
 var mongoose = require('mongoose');
-var currency = mongoose.Types.Currency;
 var Orders = require('../models/order');
 var orderRouter = require('express').Router();
 var authenticate = require('../authentication');
-var CartItem = require('../models/cart_items');
-var Products = require('../models/products');
-var { calculateTotal } = require('../methods/calculateTotal');
-const Order_items = require('../models/order_items');
-const Payment = require('../models/payment');
-const Sessions = require('../models/session');
-const User = require('../models/user');
-const { session } = require('passport');
-
+const { CartItem,
+    Order_items,
+    Payment,
+    Sessions,
+    User } = require('../models');
 
 
 orderRouter.route('/')
     .get(authenticate.verifyUser, (req, res) => {
-        Orders.find({userId:req.user.id}).then(result=>{
+        Orders.find({ userId: req.user.id }).then(result => {
             res.statusCode = 200;
-            res.setHeader('ContentType','appliation/json');
+            res.setHeader('ContentType', 'appliation/json');
             res.json(result)
         })
     })
 
 orderRouter.route('/items')
-.get(authenticate.verifyUser,(req,res,next)=>{
-    Order_items.get()
-})
+    .get(authenticate.verifyUser, (req, res, next) => {
+        Order_items.get()
+    })
 
 orderRouter.route('/checkout')
     .post(authenticate.verifyUser, (req, res, next) => {
-        let {paymentMode,provider} = req.body
+        let { paymentMode, provider } = req.body
         User.findById(req.user.id).then(user => {
             Sessions.findOne({ userId: user._id }, 'total').then(data => {
                 Orders.create({ userId: req.user._id, total: data.total }, (err, doc) => {
@@ -38,7 +33,7 @@ orderRouter.route('/checkout')
                         next(err);
                     }
                     else {
-                        Payment.create({ orderId: doc._id, amount: data.total,paymentMode:paymentMode,provider:provider}).then(payment => {
+                        Payment.create({ orderId: doc._id, amount: data.total, paymentMode: paymentMode, provider: provider }).then(payment => {
                             CartItem.find({ sessionId: data._id }).then(data => {
                                 Order_items.insertMany(data).then(() => {
                                     res.statusCode = 200;

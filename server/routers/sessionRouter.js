@@ -1,6 +1,5 @@
 const SessionRouter = require('express').Router();
-const Sessions = require('../models/session');
-const CartItem = require('../models/cart_items');
+const {Sessions,CartItem} = require('../models');
 const authenticate = require('../authentication');
 
 SessionRouter.route('/')

@@ -1,4 +1,4 @@
-let Tags = require('../models/tags');
+const {Tags} = require('../models');
 const TagRouter = require('express').Router();
 const authenticate = require('../authentication');
 

@@ -1,11 +1,9 @@
 const userRouter = require('express').Router();
 const Users = require('../models/user');
-const { Cart } = require('../models/cart_items');
 const passport = require('passport');
 const authenticate = require('../authentication');
 const cloudinary = require('cloudinary').v2;
-const { result } = require('lodash');
-const Sessions = require('../models/session');
+const {Sessions} = require('../models');
 
 const multer = require('multer');
 const { Session } = require('express-session');
