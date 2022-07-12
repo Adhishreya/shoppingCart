@@ -17,9 +17,7 @@ const config = {
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET
-}
-console.log(config);
-
+};
 cloudinary.config(config);
 
 userRouter.route('/profile')
@@ -71,7 +69,6 @@ userRouter.route('/signup')
     });
 // , { failureFlash: true }
 userRouter.post('/signin', passport.authenticate('local'), (req, res, next) => {
-
     var token = authenticate.getTokens({ _id: req.user._id });
     if (token) {
         res.statusCode = 200;

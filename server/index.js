@@ -90,9 +90,14 @@ app.use('/tags', TagRouter);
 app.use('/discount', DiscountRouter);
 app.use('/status', paymentRouter);
 app.get('/', (req, res) => {
-  res.setHeader('Content-Type',"application/json");
-   res.json({ data: 'Homepage' });  
-  })
+  res.setHeader('Content-Type', "application/json");
+  res.json({ data: 'Homepage' });
+});
+app.post('/trial', (req, res) => {
+  console.log(JSON.parse(req.body));
+  res.statusCode = 200;
+  res.json('Success')
+})
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);
