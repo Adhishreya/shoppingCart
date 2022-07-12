@@ -10,11 +10,11 @@ const app = require('../index');
 test('check the endpoint', async () => {
 
     await request(app)
-        .get('/')
+        .get('/products')
         .expect('Content-Type', /json/)
         .expect(200);
 
-})
+},100000)
 
 afterAll(() => {
     mongoose.connection.close()
