@@ -16,6 +16,7 @@
 
 Todo
 - handle the case when the user is not logged in and the cart is empty.
+- orders and rating
 
 
 Done

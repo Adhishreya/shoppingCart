@@ -165,6 +165,14 @@ export const localItems = () => {
     return itemC;
 }
 
+export const orders = (navigate) =>{
+    return new Promise((resolve,reject)=>{
+        axios.get(`${url}orders`,{headers:{Authorization:"bearer "+localStorage.getItem("token")}}).then(res=>{
+            resolve(res.data)
+        },err=>navigate('/error'))
+    })
+}
+
 export const orderCheckout = (paymentMode,provider) => {
     return new Promise((resolve, reject) => {
         axios.post('http://localhost:5000/orders/checkout', { paymentMode: paymentMode,provider:provider },

@@ -23,6 +23,11 @@ orderRouter.route('/')
         })
     })
 
+orderRouter.route('/items')
+.get(authenticate.verifyUser,(req,res,next)=>{
+    Order_items.get()
+})
+
 orderRouter.route('/checkout')
     .post(authenticate.verifyUser, (req, res, next) => {
         let {paymentMode,provider} = req.body

@@ -74,7 +74,7 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
     }
   })
 }
- 
+
 ));
 
 app.use('/users', userRouter);
@@ -82,13 +82,17 @@ app.use('/address', addressRouter);
 app.use('/vendor', vendorRouter);
 app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
-app.use('/categories',categoryRouter);
+app.use('/categories', categoryRouter);
 // app.use('/saveCard', CardRouter); 
 app.use('/payment/methods', UserPaymentRouter);
-app.use('/orders',orderRouter);
-app.use('/tags',TagRouter);
-app.use('/discount',DiscountRouter);
-app.use('/status',paymentRouter);
+app.use('/orders', orderRouter);
+app.use('/tags', TagRouter);
+app.use('/discount', DiscountRouter);
+app.use('/status', paymentRouter);
+app.get('/', (req, res) => {
+  res.setHeader('Content-Type',"application/json");
+   res.json({ data: 'Homepage' });  
+  })
 app.use(function (err, req, res, next) {
   if (err) {
     // res.sendCode(500);
@@ -103,3 +107,5 @@ app.use(function (err, req, res, next) {
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
+
+module.exports = app;
