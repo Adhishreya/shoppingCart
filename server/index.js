@@ -13,10 +13,8 @@ const Users = require('./models/user');
 const redis = require('redis');
 const flash = require('connect-flash');
 const session = require('express-session')
-// app.use(session({ secret: config['secret-key'] }));
+app.use(session({ secret: config.secretKey }));
 const passport = require('passport');
-const apicache = require('apicache');
-const cache = apicache.middleware;
 
 const
   {
@@ -54,7 +52,6 @@ mongoose.connect(
 
 const mongoSession = mongoose.startSession();
 
-// let cacheWithRedis = apicache.options({redisClient:redis.createClient()}).middleware;
 
 passport.use(new LocalStrategy(Users.authenticate()));
 passport.serializeUser((user, done) => {
@@ -87,9 +84,7 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
 }
 
 ));
-// app.get('/will-be-cached', cacheWithRedis('5 minutes'), (req, res) => {
-//   res.json({ success: true })
-// });
+
 app.use('/users', userRouter);
 app.use('/address', addressRouter);
 app.use('/vendor', vendorRouter);

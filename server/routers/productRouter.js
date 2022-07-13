@@ -2,13 +2,10 @@ const productsRouter = require('express').Router();
 const { Products, CartItem } = require('../models');
 const authenticate = require('../authentication');
 const mongoose = require('mongoose');
+const apicache = require('apicache');
 
 productsRouter.route('/')
     .get((req, res) => {
-        const pageNumber = req.query.pageNumber - 1;
-        const nPerPage = 1;
-        // .skip(pageNumber>0?((pageNumber-1)*nPerPage):0)
-        //.limit(nPerPage)
         Products.find({}, 'productName images price _id tags availability discount').skip(2).lean().populate('vendorDetails', 'companyName').populate('discount').populate('category').populate('tags').then((data) => {
             // .populate('vendorDetails').populate('discount').populate('reviews.userId').then((data)=>{
             res.statusCode = 200;
@@ -45,6 +42,7 @@ productsRouter.route('/update/inventory/:productId')
     );
 productsRouter.route('/filter')
     .get((req, res, next) => {
+        console.log(apicache.getPerformance()+"performance");
         let { category, tags, discount, lower, upper, pageNumber } = req.query;
         const nPerPage = 2;
         let page = pageNumber - 1;
