@@ -10,29 +10,33 @@ const LocalStrategy = require('passport-local').Strategy;
 const config = require('./config');
 const port = process.env.PORT || 5000;
 const Users = require('./models/user');
-app.use(bodyParser.urlencoded({ extended: false }));
-var flash = require('connect-flash');
-require('dotenv').config();
+const redis = require('redis');
+const flash = require('connect-flash');
 const session = require('express-session')
 // app.use(session({ secret: config['secret-key'] }));
 const passport = require('passport');
-
 const apicache = require('apicache');
 const cache = apicache.middleware;
 
-const { userRouter,
-  vendorRouter,
-  productsRouter,
-  CartRouter,
-  UserPaymentRouter,
-  paymentRouter,
-  orderRouter,
-  TagRouter,
-  DiscountRouter,
-  addressRouter,
-  categoryRouter } = require('./routers')
+const
+  {
+    userRouter,
+    vendorRouter,
+    productsRouter,
+    CartRouter,
+    UserPaymentRouter,
+    paymentRouter,
+    orderRouter,
+    TagRouter,
+    DiscountRouter,
+    addressRouter,
+    categoryRouter
+  } = require('./routers')
 
-app.use(cache('5 minutes'));
+require('dotenv').config();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(cache('5 minutes'));
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
@@ -50,6 +54,8 @@ mongoose.connect(
 
 const mongoSession = mongoose.startSession();
 
+// let cacheWithRedis = apicache.options({redisClient:redis.createClient()}).middleware;
+
 passport.use(new LocalStrategy(Users.authenticate()));
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -65,6 +71,7 @@ var opts = {}
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 //extracts the jwt from the authorization header with the scheme 'bearer'
 opts.secretOrKey = config.secretKey;
+//this function is called when passport.authenticate() is called
 passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
   Users.findOne({ _id: jwt_payload._id }, (err, user) => {
     if (err) {
@@ -80,14 +87,15 @@ passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
 }
 
 ));
-
+// app.get('/will-be-cached', cacheWithRedis('5 minutes'), (req, res) => {
+//   res.json({ success: true })
+// });
 app.use('/users', userRouter);
 app.use('/address', addressRouter);
 app.use('/vendor', vendorRouter);
 app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
 app.use('/categories', categoryRouter);
-// app.use('/saveCard', CardRouter); 
 app.use('/payment/methods', UserPaymentRouter);
 app.use('/orders', orderRouter);
 app.use('/tags', TagRouter);
@@ -95,9 +103,7 @@ app.use('/discount', DiscountRouter);
 app.use('/status', paymentRouter);
 app.use(function (err, req, res, next) {
   if (err) {
-    // res.sendCode(500);
     console.log(err);
-    // res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.send('unable to perform operation' + err)
   }
