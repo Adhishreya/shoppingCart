@@ -6,7 +6,7 @@ const cloudinary = require('cloudinary').v2;
 const {Sessions} = require('../models');
 
 const multer = require('multer');
-const { Session } = require('express-session');
+// const { Session } = require('express-session');
 const upload = multer();
 
 require('dotenv').config();

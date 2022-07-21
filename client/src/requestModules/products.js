@@ -104,7 +104,7 @@ export const cartDetails = (navigate) => {
     })
 }
 
-export const increment = (id, navigate) => {
+export const increment = (id, navigate,setShowDialog) => {
     return new Promise((resolve, reject) => {
         axios.post(`${url}cart/increment/${id}`, null, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
             resolve(res)
@@ -173,7 +173,8 @@ export const orders = (navigate) =>{
     })
 }
 
-export const orderCheckout = (paymentMode,provider) => {
+export const orderCheckout = (paymentMode,provider,setOpen) => {
+    console.log(paymentMode+"  ,  "+provider);
     return new Promise((resolve, reject) => {
         axios.post('http://localhost:5000/orders/checkout', { paymentMode: paymentMode,provider:provider },
             { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
@@ -182,7 +183,8 @@ export const orderCheckout = (paymentMode,provider) => {
                         order_id: res.data,
                         paymentMode: "COD"
                     }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
-                        resolve("Payment successful")
+                        resolve("Payment successful");
+                        setOpen(false);
                     })
                 }
             }

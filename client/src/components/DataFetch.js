@@ -1,17 +1,18 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Alert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions, Slider, TextField } from '@mui/material';
+import {
+    Button, CardActionArea, CardActions, Slider, TextField, Card,
+    CardContent,
+    CardMedia,
+    Typography,
+    Pagination,
+    Stack,
+    IconButton,
+    Alert
+} from '@mui/material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import IconButton from '@mui/material/IconButton';
 import { height } from '@mui/system';
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
-import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
+import { Link, useNavigate } from "react-router-dom";
 
 
 import {
@@ -21,9 +22,6 @@ import {
     filterProducts,
     getQuantity
 } from '../requestModules/products';
-
-import { useNavigate } from 'react-router-dom';
-
 
 const styleComponent = {
     display: "flex",
@@ -45,6 +43,7 @@ const Products = (props) => {
     const [value, setValue] = useState([100, 200000]);
     const [value1, setValue1] = useState(1000);
     const [value2, setValue2] = useState(9999);
+    const[showDialog,setShowDialog] = useState(false);
 
     const [pageNumber, setPageNumber] = useState(1);
 
@@ -219,7 +218,7 @@ const Products = (props) => {
                     {
                         products.map(product => {
                             // console.log(typeof product._id!=="undefined")
-                        //    typeof product!=="undefined" && getQuantity(product._id, navigate).then(data => {})
+                            //    typeof product!=="undefined" && getQuantity(product._id, navigate).then(data => {})
                             return (
                                 <li key={product._id}>
                                     <Card style={{ width: '100%', padding: "0.5rem", display: "flex", flexDirection: "column", opacity: `${product.availability > 0 ? 1 : 0.5}` }}>
@@ -251,7 +250,7 @@ const Products = (props) => {
                                                     product.availability > 0 ?
                                                         <Button onClick={() => {
                                                             if (localStorage.getItem("token") !== null) {
-                                                                increment(product._id, navigate).then(res => {
+                                                                increment(product._id, navigate,setShowDialog).then(res => {
                                                                     props.value.add()
                                                                 })
                                                             }
@@ -282,6 +281,7 @@ const Products = (props) => {
             <Stack spacing={2}>
                 <Pagination count={3} color="secondary" onChange={(event, value) => setPageNumber(value)} />
             </Stack>
+            {showDialog && <Alert style={{ width: "20%" }} severity="success">Item added to Cart</Alert>}
         </>
     );
 }

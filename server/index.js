@@ -7,14 +7,13 @@ const app = express();
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
-const config = require('./config');
 const port = process.env.PORT || 5000;
 const Users = require('./models/user');
 const redis = require('redis');
 const flash = require('connect-flash');
-const session = require('express-session')
-app.use(session({ secret: config.secretKey }));
+const session = require('express-session');
 const passport = require('passport');
+const mongoSession = mongoose.startSession();
 
 const
   {
@@ -29,9 +28,13 @@ const
     DiscountRouter,
     addressRouter,
     categoryRouter
-  } = require('./routers')
+  } = require('./routers');
+
+  var opts = {}
 
 require('dotenv').config();
+
+app.use(session({ secret: process.env.SECRET_KEY }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(cache('5 minutes'));
@@ -50,8 +53,6 @@ mongoose.connect(
   console.log('unable to connect' + err)
 });
 
-const mongoSession = mongoose.startSession();
-
 
 passport.use(new LocalStrategy(Users.authenticate()));
 passport.serializeUser((user, done) => {
@@ -64,10 +65,9 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-var opts = {}
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 //extracts the jwt from the authorization header with the scheme 'bearer'
-opts.secretOrKey = config.secretKey;
+opts.secretOrKey = process.env.SECRET_KEY.toString();
 //this function is called when passport.authenticate() is called
 passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
   Users.findOne({ _id: jwt_payload._id }, (err, user) => {

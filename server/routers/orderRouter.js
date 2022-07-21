@@ -20,7 +20,11 @@ orderRouter.route('/')
 
 orderRouter.route('/items')
     .get(authenticate.verifyUser, (req, res, next) => {
-        Order_items.get()
+        Order_items.find({}).then(result=>{
+            res.statusCode = 200;
+            res.setHeader('ContentType', 'appliation/json');
+            res.json(result);
+        })
     })
 
 orderRouter.route('/checkout')
@@ -35,7 +39,8 @@ orderRouter.route('/checkout')
                     else {
                         Payment.create({ orderId: doc._id, amount: data.total, paymentMode: paymentMode, provider: provider }).then(payment => {
                             CartItem.find({ sessionId: data._id }).then(data => {
-                                Order_items.insertMany(data).then(() => {
+                                Order_items.insertMany(data).then((result) => {
+                                    console.log(result);
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
                                     res.json(doc._id);

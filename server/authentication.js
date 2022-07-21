@@ -3,7 +3,6 @@ const passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
 const Users = require('./models/user');
 const jwt = require('jsonwebtoken');//create ,sign and verify tokens
-const config = require('./config');
 const vendor = require('./models/vendor');
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -16,7 +15,7 @@ passport.deserializeUser((id, done) => {
 });
 
 exports.getTokens = (user) => {
-    return jwt.sign(user, config.secretKey, { expiresIn: 30 * 24 * 3600 });
+    return jwt.sign(user, process.env.SECRET_KEY.toString(), { expiresIn: 30 * 24 * 3600 });
     //requesting the user to sign in after every 30 days ie here token expires after approx a month
 }
 exports.verifyUser = passport.authenticate('jwt', { session: false });

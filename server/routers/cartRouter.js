@@ -1,7 +1,7 @@
 const express = require('express');
 const authenticate = require('../authentication');
 const CartRouter = express.Router();
-const {CartItem,Session} = require('../models');
+const {CartItem,Session,Products} = require('../models');
 const { isNull } = require('lodash');
 CartRouter.route('/')
     .get(authenticate.verifyUser, (req, res, next) => {
@@ -54,6 +54,7 @@ CartRouter.route('/delete/:id')
         Session.find({ userId: req.user.id }, (error, session) => {
 
             CartItem.findByIdAndDelete({ _id: req.params.id }).then(data => {
+                console.log(data)
                 Products.findById(data.productId).then(
                     product => {
                         product.updateAvailability(product._id, data.quantity, next,session[0]._id, session[0].total).then(result => {
