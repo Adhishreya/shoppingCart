@@ -5,6 +5,58 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { Button } from '@mui/material';
 
+import { styled, alpha } from '@mui/material/styles';
+
+const Wrapper = styled('div')(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    width:"25rem",
+    justifyContent: "space-between",
+    padding:"0rem",
+    marginTop: "1rem",
+    marginLeft: "1rem",
+    gap:"0.5rem",
+    [theme.breakpoints.down('md')]:{
+        margin:"2rem 0.5rem",
+        width:"100%"
+    }
+}));
+
+const Loading = styled('h1')(({ theme }) => ({
+    width:"100%",
+    textAlign:"center"
+}));
+
+const FlexRow = styled('div')(({ theme }) => ({
+    display :"flex",
+    // justifyContent: "space-between",
+    gap:"2rem",
+    [theme.breakpoints.down('md')]:{
+        flexDirection:"column"
+    }
+}));
+
+const GridDisplay = styled('div')(({ theme }) => ({
+    listStyle: "none",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gridGap: "2.5rem",
+    margin: "1rem 1rem 1rem 1rem",
+    padding: 0,  
+    [theme.breakpoints.down('md')]:{
+        display:"flex"
+
+    }
+}));
+
+const CustomImageList = styled(ImageList)(({ theme }) => ({
+   width: "100%",
+    height: "12rem"
+}));
+
+const Container = styled('div')(({ theme }) => ({
+    margin:"2rem",
+}));
 
 const ProductDetails = (props) => {
     const [data, setData] = useState(null);
@@ -16,15 +68,15 @@ const ProductDetails = (props) => {
     }, []);
     let param = useParams();
     return (
-        <div>
+        <Container>
             {data ?
                 <div>
-                    <div className="grid" style={{ gridGap: "3.5rem" }}>
-                        <div className={`productImage ${data.images > 0 ? "multiImage" : ""}`} style={{ display: "flex", flexDirection: "column", width: "fit-content" }}>
+                    <FlexRow>
+                        <Wrapper className={`${data.images && data.images.length > 0 ? "multiImage" : ""}`}>
                             <img alt="main-image" src={img ? img : data.images[0]} className={`${data.images > 0 ? "productImages-img" : "fit-entireSpace"}`} />
-                            <div className={`${data.images.length > 0 ? "grid" : "hide-element"} `} >
+                            <GridDisplay className={`${data.images.length > 0 && "hide-element"} `} >
                                 {data.images.length > 0 ?
-                                    <ImageList sx={{ width: 300, height: 250 }} cols={3} rowHeight={164}>
+                                    <CustomImageList cols={3} rowHeight={164}>
                                         {data.images.map((item, index) => (
                                             <ImageListItem key={index}>
                                                 <img
@@ -37,13 +89,13 @@ const ProductDetails = (props) => {
                                                 />
                                             </ImageListItem>
                                         ))}
-                                    </ImageList>
+                                    </CustomImageList>
                                     : null}
-                            </div>
-                        </div>
+                            </GridDisplay>
+                        </Wrapper>
                         <div >
                             <h4>{data.productName}</h4>
-                            <h6>Cost <strike><span>&#8377;{`${data.price/100}  `}</span></strike><span>&#8377;{((data.price)/100)*(1-(data.discount[0].value/100))}</span></h6>
+                            <h6>Cost <strike><span>&#8377;{`${data.price/100}`}</span></strike>{' '}<span>&#8377;{((data.price)/100)*(1-(data.discount[0].value/100))}</span></h6>
                             <p>{data.averageRating > 0 ? data.averageRating : "Rating is not available for this product"}</p>
                         </div>
                         <div>
@@ -60,7 +112,7 @@ const ProductDetails = (props) => {
                                     </div> : null
                             }
                         </div>
-                    </div>
+                    </FlexRow>
                     <p style={{ display: "flex", margin: "auto 4%", width: "76%" }}>{data.description ? data.description : null}</p>
 
                     {/* {
@@ -76,9 +128,9 @@ const ProductDetails = (props) => {
                     } */}
 
                 </div>
-                : param.id}
+                : <Loading >Loading</Loading>}
             {/* <img alt="main-image" src={data.images[0]}/> */}
-        </div>
+        </Container>
     )
 }
 

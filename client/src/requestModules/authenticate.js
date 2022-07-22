@@ -13,7 +13,6 @@ export const loginRequest = ({ username, password }, navigate, setCount) => {
             localStorage.setItem("user", result.data[0].username);
             cartDetails(navigate).then(res => {
                 if (res.data !== null) {
-                    console.log(res.data)
                     res.data[0].products.forEach(element => {
                         quantity += element.quantity;
                         var temp1 = { "id": element._id, "quantity": element.quantity };
@@ -29,11 +28,8 @@ export const loginRequest = ({ username, password }, navigate, setCount) => {
 }
 
 export const signupRequest = ({ username, password, email, phone }, navigate) => {
-    // console.log(username, password, email, phone)
     axios.post("http://localhost:5000/users/signup", { username: username, password: password, email: email, phoneNumber: phone }).then(res => {
-        // console.log(res.status)
         if (res.status === 200) {
-            // console.log(res.data)
             localStorage.setItem("token", res.data.token);
             navigate("/")
             axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(result => { console.log(result.data[0].username); localStorage.setItem("user", result.data[0].username); })
@@ -47,22 +43,18 @@ export const signupRequest = ({ username, password, email, phone }, navigate) =>
 // }
 
 export const uploadImage = (image, navigate) => {
-    // console.log(image.data)
     const data = new FormData();
     data.append("image", image, "" + image.name + "")
     // const data = {"image":image};
-    // console.log(data)
     axios.post("http://localhost:5000/users/uploadProfilePicture", data, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
 }
 
 
 export const changeAddress = (id, address, navigate) => {
-    // console.log("http://localhost:5000/address/" + id)
     axios.post("http://localhost:5000/address/" + id, { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile"); window.location.reload(); } }, err => { console.log(err.response); navigate("/error") })
 }
 
 export const addAddress = (address, navigate) => {
-    console.log(address)
     axios.post("http://localhost:5000/address", { address: address }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile"); window.location.reload(); } }, err => { console.log(err.response); navigate("/error") })
 }
 
@@ -71,7 +63,6 @@ export const profileDetails = () => {
     return new Promise((resolve, reject) => {
         axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).
             then(res => {
-                console.log(res.data);
                 resolve(res.data);
                 //  console.log(res.data); if (res.data) { req(res.data) } }
                 // , err => {
@@ -85,12 +76,10 @@ export const deleteAddress = (id, navigate) => {
     axios.delete('http://localhost:5000/address/' + id, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } })
         .then(res => {
             if (res.data) {
-                // console.log(res.data)
                 navigate("/profile");
                 window.location.reload();
             }
         }).catch(err => {
-            // if(res)
             console.log(err.response)
             navigate("/error")
         })
@@ -99,7 +88,6 @@ export const deleteAddress = (id, navigate) => {
 export const userVendorProfile = () => {
     return new Promise((resolve, reject) => {
         axios.get("http://localhost:5000/vendor/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => {
-            console.log(res.data)
             resolve(res.data)
         }
         ).catch(err => {
@@ -109,17 +97,13 @@ export const userVendorProfile = () => {
 }
 
 export const vendorRegister = (vendorDetails,navigate) => {
-    console.log(vendorDetails);
     return new Promise((resolve, reject) => {
         axios.post("http://localhost:5000/vendor/profile", { vendorDetails }, { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => {
             if (res.data) {
-                // console.log(res.data)
                 navigate("/vendor");
                 window.location.reload();
             }
         }).catch(err => {
-            // if(res)
-            console.log(err.response)
             navigate("/error")
         })
     })

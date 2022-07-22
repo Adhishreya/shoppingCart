@@ -1,19 +1,21 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import {
-    Button, CardActionArea, CardActions, Slider, TextField, Card,
+    Button, CardActions, Slider, Card,
     CardContent,
     CardMedia,
     Typography,
     Pagination,
     Stack,
-    IconButton,
     Alert
 } from '@mui/material';
+
+import CloseIcon from '@mui/icons-material/Close';
+
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { height } from '@mui/system';
-import { connect } from 'react-redux';
+
 import { Link, useNavigate } from "react-router-dom";
 
+import { styled, alpha } from '@mui/material/styles';
 
 import {
     productDetails, increment, fetchAllProducts, tagsDetails, discountDetails, getCategories, getProductByCategory,
@@ -23,15 +25,93 @@ import {
     getQuantity
 } from '../requestModules/products';
 
-const styleComponent = {
+const CardFooter = styled('div')(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    width: '100%',
+    justifyContent: "space-between",
+    justifySelf: "flex-center"
+}))
+
+const Filter = styled('div')(({ theme }) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "20%",
+    cursor: "pointer",
+    backgroundColor: alpha(theme.palette.common.black, 0.25),
+    padding: "0.5rem 1rem",
+    margin: "0.2rem 0rem"
+}));
+
+const StackPagination = styled(Stack)(({ theme }) => ({
+    margin:"auto",
+    width:"fit-content",
+    paddingBottom:"2rem"
+}));
+
+const Wrapper = styled('div')(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
-    width: '80%!important',
-    justifyContent: "space-around",
-    justifySelf: "flex-center",
-}
+    justifyContent: "space-between",
+    margin: "2rem",
+    [theme.breakpoints.down('md')]:{
+        margin:"2rem 0.5rem"
+    }
+}));
 
+const UnorderedList = styled('div')(({ theme }) => ({
+    display:"flex",
+    flexDirection:"column",
+    justifyContent:"flex-start",
+    alignItems:"start",
+    listStyle:"none",
+    [theme.breakpoints.down('md')]: {
+        width: '10%',
+    }
+}));
+
+const ProductList  = styled('div')(({ theme }) => ({
+    width: "80%",
+    flex:2,
+    [theme.breakpoints.down('md')]: {
+        flex:0,
+        width:"100%",
+        margin:"2rem"
+    }
+}));
+
+const ProductCard = styled(Card)(({ theme }) => ({
+    width: '100%',
+    height:"18rem", 
+    padding: "0.5rem", 
+    display: "flex",
+     flexDirection: "column", 
+     [theme.breakpoints.down('md')]:{
+     }
+}));
+
+const ProductItem = styled('div')(({ theme }) => ({
+    // flex:2,
+    [theme.breakpoints.down('md')]: {
+        // flex:1
+    }
+}));
+
+const FilterOption = styled('div')(({ theme }) => ({
+    width:"fit-contents"
+}));
+
+const FilterHeader = styled('h6')(({ theme }) => ({
+}));
+
+const Loading = styled('h1')(({ theme }) => ({
+    width:"100%",
+    textAlign:"center"
+}));
+
+const List = styled('div')(({ theme }) => ({
+}));
 
 const Products = (props) => {
     let navigate = useNavigate();
@@ -43,7 +123,7 @@ const Products = (props) => {
     const [value, setValue] = useState([100, 200000]);
     const [value1, setValue1] = useState(1000);
     const [value2, setValue2] = useState(9999);
-    const[showDialog,setShowDialog] = useState(false);
+    const [showDialog, setShowDialog] = useState(false);
 
     const [pageNumber, setPageNumber] = useState(1);
 
@@ -51,8 +131,6 @@ const Products = (props) => {
 
     const lowerValueRef = useRef();
     const upperValueRef = useRef();
-
-
 
     useEffect(() => {
         fetchAllProducts(pageNumber)
@@ -111,7 +189,6 @@ const Products = (props) => {
         }
         url += `lower=${value[0]}&upper=${value[1]}&pageNumber=${pageNumber}`;
 
-        console.log(url);
         if (url !== '?') {
             filterProducts(url)
                 .then(res => {
@@ -130,13 +207,6 @@ const Products = (props) => {
             setProducts(res);
         })
     }
-
-    useEffect(() => {
-        // lowerValueRef.current.value = value[0];
-        // upperValueRef.current.value = value[1];
-        // console.log(lowerValueRef.current.value, upperValueRef.current.value);
-    }, [value])
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -159,20 +229,27 @@ const Products = (props) => {
     return (
         <>
             <div>
-                <ul>
-                    {filters && Object.keys(filters).map((item, index) => {
-                        return (<li key={`${item}-${filters.item}`} onClick={() => removeFilter(item)}>
-                            {filters[item] ? filters[item].value : ''}
-
-                        </li>)
-
-                    })}
-                </ul>
+                <UnorderedList>
+                    {filters && Object.keys(filters).map((item, index) =>
+                        <>
+                            {
+                                filters[item] &&
+                                <Filter onClick={() => removeFilter(item)}>
+                                    <List key={`${item}-${filters.item}`} >
+                                        {filters[item].value}
+                                    </List>
+                                    <CloseIcon />
+                                </Filter>
+                            }
+                        </>
+                    )
+                    }
+                </UnorderedList>
             </div>
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", margin: "2rem" }}>
-                <ul style={{ width: "20%" }}>
-                    <div>
-                        <h6>Price Range</h6>
+            <Wrapper>
+                <UnorderedList >
+                    <FilterOption>
+                        <FilterHeader>Price Range</FilterHeader>
                         <Slider
                             getAriaLabel={() => 'Minimum distance'}
                             value={value}
@@ -184,44 +261,42 @@ const Products = (props) => {
                             step={1500}
                             max={100000}
                         />
-                    </div>
-                    <div>
-                        <h6>Discount</h6>
-                        <ul>
+                    </FilterOption>
+                    <FilterOption>
+                        <FilterHeader>Discount</FilterHeader>
+                        <UnorderedList>
                             {
                                 discount.map(item => <li key={item.id}><label><input
                                     onChange={(e) => addFilter({ "discount": { value: `${e.target.value}%`, id: item._id } })} name="discount" type="radio" value={item.value} />{item.value}%,{item.name}</label></li>)
                             }
-                        </ul>
-                    </div>
+                        </UnorderedList>
+                    </FilterOption>
 
-                    <div>
-                        <h6>Tags</h6>
-                        <ul>
+                    <FilterOption>
+                        <FilterHeader>Tags</FilterHeader>
+                        <UnorderedList>
                             {
                                 tags && tags.map(item => <li key={item.id}><label><input
                                     onChange={(e) => addFilter({ "tags": { value: e.target.value, id: item._id } })} name="tag" type="radio" value={item.tagNAme} />{item.tagNAme}</label></li>)
                             }
-                        </ul>
-                    </div>
-                    <div>
+                        </UnorderedList>
+                    </FilterOption>
+                    <FilterOption>
                         <h6>Categories</h6>
-                        <ul>
+                        <UnorderedList>
                             {
                                 categories && categories.map(item => <li key={item.id}><label><input
                                     onChange={(e) => addFilter({ "category": { value: e.target.value, id: item._id } })} name="category" type="radio" value={item.categoryName} />{item.categoryName}</label></li>)
                             }
-                        </ul>
-                    </div>
-                </ul>
-                {products.length === 0 ? <h6>Could not fetch the products</h6> : <ul className="grid" style={{ width: "80%" }}>
+                        </UnorderedList>
+                    </FilterOption>
+                </UnorderedList>
+                {products.length === 0 ? <Loading >Loading</Loading> :
+                 <ProductList className="grid">
                     {
-                        products.map(product => {
-                            // console.log(typeof product._id!=="undefined")
-                            //    typeof product!=="undefined" && getQuantity(product._id, navigate).then(data => {})
-                            return (
-                                <li key={product._id}>
-                                    <Card style={{ width: '100%', padding: "0.5rem", display: "flex", flexDirection: "column", opacity: `${product.availability > 0 ? 1 : 0.5}` }}>
+                        products.map(product => {return (
+                                <ProductItem key={product._id}>
+                                    <ProductCard style={{opacity: `${product.availability > 0 ? 1 : 0.5}` }}>
                                         <Link to={`${product.availability > 0 ? `/products/${product._id}` : ''}  `}>
                                             <CardMedia
                                                 component="img"
@@ -230,19 +305,17 @@ const Products = (props) => {
                                                 image={product.images[0]}
                                                 alt={product.name}
                                                 onClick={() => productDetails(product._id)}
-                                            // allowAdd={(product.availability > 0) ? true : false}
                                             />
                                         </Link>
                                         <CardContent>
                                             <Typography gutterBottom variant="body" component="div">
-                                                {/* {product.productName.slice(0, 10)} */}
-                                                {product.productName}
+                                                {product.productName && product.productName.slice(0,10)}
                                             </Typography>
                                         </CardContent>
-                                        {/* </CardActionArea> */}
-                                        <div style={styleComponent}>
+                                        
+                                        <CardFooter>
                                             <Typography variant="subtitle1" color="text.primary">
-                                                <b>{'\u20B9'}</b><strike>{(product.price) / 100}</strike>
+                                                <b>{'\u20B9'}</b><strike>{(product.price) / 100}</strike>{ '  '}
                                                 <span>&#8377;{((product.price) / 100) * (1 - (product.discount[0].value / 100))}</span>
                                             </Typography>
                                             <CardActions>
@@ -250,7 +323,7 @@ const Products = (props) => {
                                                     product.availability > 0 ?
                                                         <Button onClick={() => {
                                                             if (localStorage.getItem("token") !== null) {
-                                                                increment(product._id, navigate,setShowDialog).then(res => {
+                                                                increment(product._id, navigate, setShowDialog).then(res => {
                                                                     props.value.add()
                                                                 })
                                                             }
@@ -260,27 +333,26 @@ const Products = (props) => {
                                                         </Button>
                                                         :
                                                         <Alert severity="info">Not Available</Alert>
-
                                                 }
                                             </CardActions>
                                             <div>
 
                                                 {
-                                                    // getQuantity(product._id,navigate).then(res=>console.log(res))
+                                                    // getQuantity(product._id,navigate).then(res=>{})
                                                 }
                                             </div>
-                                        </div>
-                                    </Card>
-                                </li>
+                                        </CardFooter>
+                                    </ProductCard>
+                                </ProductItem>
                             )
                         }
                         )
                     }
-                </ul>}
-            </div>
-            <Stack spacing={2}>
+                </ProductList>}
+            </Wrapper>
+            <StackPagination spacing={2}>
                 <Pagination count={3} color="secondary" onChange={(event, value) => setPageNumber(value)} />
-            </Stack>
+            </StackPagination>
             {showDialog && <Alert style={{ width: "20%" }} severity="success">Item added to Cart</Alert>}
         </>
     );

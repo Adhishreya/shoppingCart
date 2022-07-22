@@ -7,18 +7,44 @@ import Modal from '@mui/material/Modal';
 import { loginRequest, signupRequest } from '../requestModules/authenticate';
 import { FormControl, InputLabel, Input, FormGroup } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-const style = {
+
+import { styled, alpha } from '@mui/material/styles';
+
+const Form = styled('form')(({ theme }) => ({
+    display: "flex",
+    width: "100%",
+    margin: "1rem auto",
+    flexDirection: "column",
+    gap: "1.75rem",
+    height: "fit-content",
+    outline: "none",
+    background: "alpha(theme.palette.common.black, 0.5)",
+    border: "none",
+}));
+
+const CustomButton  = styled(Button)(({ theme }) => ({
+    height: "1rem", 
+    flex:1,
+    margin: "1rem 25%", 
+    width:"fit-content",
+    padding: '0.5rem 1.5rem'
+}));
+
+const BoxForm = styled(Box)(({ theme }) => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '50%',
-    height: '50%',
+    width: '30%',
+    padding: "2rem 3rem",
     background: '#d4d4d8',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-};
+    [theme.breakpoints.down('md')]: {
+        width: '70%',
+    }
+}));
 
 const componentStyle = {
     display: "flex",
@@ -27,12 +53,13 @@ const componentStyle = {
     flexDirection: "column"
 }
 
-const componentStyle2 = {
+const AlternateOption = styled(Button)(({ theme }) => ({
+}));
+
+const Buttons = styled('div')(({ theme }) => ({
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row"
-}
+}));
 
 export default function Login({ open, handleOpen, handleClose, setCount }) {
     let navigate = useNavigate();
@@ -42,11 +69,10 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
 
-    const nameRef  = useRef();
-    const passRef  = useRef();
+    const nameRef = useRef();
+    const passRef = useRef();
     const emailRef = useRef();
     const phoneRef = useRef();
-
 
     const [userErrorMessage, setUserErrorMessage] = useState('');
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
@@ -56,10 +82,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
     const handleChange = (e) => {
         if (e.target.name === 'name') {
             setUserName(e.target.value);
-            if (userName.length < 5 ) {
-                //&& document.activeElement ===nameRef.current
-                console.log(document.activeElement);
-                console.log(nameRef.current);
+            if (userName.length < 5) {
                 setUserErrorMessage("Cannot be less than 5 characters");
                 setUserError(true);
             } else {
@@ -78,8 +101,6 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
             setPassword(e.target.value);
         }
     }
-    // useEffect(() => {
-    // }, [userName, password]);
     const toggleLog = () => {
         setToggleLog(!userLog);
     }
@@ -100,89 +121,67 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
-                <Box
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': { m: 1, width: '50ch' },
-                    }}
+                <BoxForm
                     noValidate
                     autoComplete="off"
-                    style={style}
                 >                    {
                         !userLog ?
                             <div style={componentStyle}>
-                                <form action='POST' onSubmit="return false;">
-                                    <FormGroup role="form">
-                                        <FormControl style={{ width: "fit-content", margin: "2% auto" }} onSubmit={() => alert('submit')}>
-                                            <TextField id="standard-basic" name="name" label="Username" ref={nameRef} error={userError} required
-                                                helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
-                                            <TextField
-                                                id="standard-password-input"
-                                                required={true}
-                                                label="Password"
-                                                error={passwordError}
-                                                helperText={passwordErrorMessage}
-                                                type="password"
-                                                variant="standard"
-                                                name="password"
-                                                ref={passRef}
-                                                onChange={(e) => handleChange(e)}
-                                                onFocus={(e) => handleChange(e)}
-                                            />
-                                            <Button id="outlined-required" onClick={() => loginRequest({ username: userName, password: password }, navigate,setCount)} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
-                                                Login
-                                            </Button>
-                                        </FormControl>
-                                    </FormGroup>
-                                </form>
-                                {/* <Button style={{ height: "1rem", margin: "1rem 25%", padding: '1rem' }} variant="contained" color="primary" onClick={() => toggleLog()}>
-                                    Register</Button> */}
+                                <Form action='POST' onSubmit="return false;">
+                                    <TextField id="standard-basic" name="name" label="Username" ref={nameRef} error={userError} required
+                                        helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} />
+                                    <TextField
+                                        id="standard-password-input"
+                                        required={true}
+                                        label="Password"
+                                        error={passwordError}
+                                        helperText={passwordErrorMessage}
+                                        type="password"
+                                        variant="standard"
+                                        name="password"
+                                        ref={passRef}
+                                        onChange={(e) => handleChange(e)}
+                                        onFocus={(e) => handleChange(e)}
+                                    />
+                                    <CustomButton id="outlined-required" onClick={() => loginRequest({ username: userName, password: password }, navigate, setCount)} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                        Login
+                                    </CustomButton>
+                                </Form>
                             </div>
                             :
                             <div>
-                                {/* <div style={{ width: "50%", margin: "2% auto" }}> */}
-                                <form action='POST' onSubmit="return false;">
-                                    <FormGroup role="form">
-                                        <FormControl style={{ width: "50%", margin: "2% auto" }} onSubmit={() => alert('submit')}>
-                                            <TextField id="standard-basic" name="name" label="Username" error={userError} required
-                                                helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)}  ref={nameRef}/>
-                                            <TextField id="standard-basic" label="Email" ref={emailRef} type="email" variant="standard" required onChange={(e) => setEmail(e.target.value)} />
-                                            <TextField id="standard-basic" label="Phone No" ref={phoneRef} variant="standard" type="tel" required onChange={(e) => setPhone(e.target.value)} />
-                                            <TextField
-                                                id="standard-password-input"
-                                                required={true}
-                                                label="Password"
-                                                error={passwordError}
-                                                helperText={passwordErrorMessage}
-                                                ref={passRef}
-                                                type="password"
-                                                variant="standard"
-                                                name="password"
-                                                onChange={(e) => handleChange(e)}
-                                                onFocus={(e) => handleChange(e)}
-                                            />
-                                            {/* <Button id="outlined-required" variant="contained" color="primary" type="submit" style={{ margin: "1rem auto " }} onClick={() =>signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate)}>
-                                                Register
-                                            </Button> */}
-                                            <Button id="outlined-required" onClick={() => {signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate) }} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
-                                                Register
-                                            </Button>
-                                        </FormControl>
-                                    </FormGroup>
-                                </form>
+                                <Form action='POST' onSubmit="return false;">
+                                    <TextField id="standard-basic" name="name" label="Username" error={userError} required
+                                        helperText={userErrorMessage} variant="standard" onChange={(e) => handleChange(e)} ref={nameRef} />
+                                    <TextField id="standard-basic" label="Email" ref={emailRef} type="email" variant="standard" required onChange={(e) => setEmail(e.target.value)} />
+                                    <TextField id="standard-basic" label="Phone No" ref={phoneRef} variant="standard" type="tel" required onChange={(e) => setPhone(e.target.value)} />
+                                    <TextField
+                                        id="standard-password-input"
+                                        required={true}
+                                        label="Password"
+                                        error={passwordError}
+                                        helperText={passwordErrorMessage}
+                                        ref={passRef}
+                                        type="password"
+                                        variant="standard"
+                                        name="password"
+                                        onChange={(e) => handleChange(e)}
+                                        onFocus={(e) => handleChange(e)}
+                                    />
+                                    <CustomButton id="outlined-required" onClick={() => { signupRequest({ username: userName, password: password, email: email, phone: phone }, navigate) }} variant="contained" color="primary" style={{ margin: "1rem auto " }}>
+                                        Register
+                                    </CustomButton>
+                                </Form>
                             </div>
-
-                        // </div>
                     }
 
-                    <div style={componentStyle2}>
-                        <Button onClick={() => handleClose()} style={{ height: "1rem", margin: "1rem 25%", padding: '1rem' }} variant="contained" color="secondary">Cancel</Button>
-                        <Button onClick={() => toggleLog()} style={{ height: "1rem", margin: "1rem 25%", padding: '1rem', width: '1rem' }} variant="contained" color="primary">
-                            {!userLog ? 'Register' : 'Login'}</Button>
-                    </div>
+                    <Buttons>
+                        <AlternateOption onClick={() => handleClose()} variant="contained" color="error">Cancel</AlternateOption>
+                        <AlternateOption onClick={() => toggleLog()} variant="contained" color="primary">
+                            {!userLog ? 'Register' : 'Login'}</AlternateOption>
+                    </Buttons>
 
-
-                </Box >
+                </BoxForm >
             </Modal >
         </div >
     );

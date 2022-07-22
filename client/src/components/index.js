@@ -7,7 +7,7 @@ import Cart from "./Cart";
 import Vendor from "./Vendor";
 import Admin from "./Admin";
 import Order from "./Order";
-
+import Login from "./Login";
 
 export {
     Products,
@@ -18,5 +18,6 @@ export {
     Cart ,
     Vendor,
     Admin,
-    Order
+    Order,
+    Login
 }

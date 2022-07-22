@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
-import { cartDetails, increment, decrement, deleteCartItem, orderCheckout ,getCardDetails} from '../requestModules/products'
+import { Link, useNavigate } from 'react-router-dom'
+import { cartDetails, increment, decrement, deleteCartItem, orderCheckout, getCardDetails } from '../requestModules/products'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Modal, Typography } from '@mui/material';
+
+import styled from 'styled-components'
+
+const FlexContainer = styled.div`
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:5rem;
+    `;
+
+
 const Cart = (props) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -14,13 +25,16 @@ const Cart = (props) => {
     let navigate = useNavigate();
     var quantity = 0;
 
+    const signedIn = localStorage.getItem("token");
+    console.log(signedIn);
+
     useEffect(() => {
         if (selectDebit) {
             getCardDetails(navigate).then(res => {
                 setCardDetails(res.data)
-            console.log(res)
+                console.log(res)
             }
-                )
+            )
         }
         else
             setCardDetails([])
@@ -39,7 +53,7 @@ const Cart = (props) => {
     };
 
     useEffect(() => {
-        cartDetails(navigate).then(res => {
+        signedIn && cartDetails(navigate).then(res => {
             if (res.data !== null && typeof res.data !== 'undefined' && res.data.length > 0) {
                 setCartData(res.data)
                 res.data.forEach(element => {
@@ -48,53 +62,67 @@ const Cart = (props) => {
                 props.value.setQuantity(quantity);
             }
         })
-    }, []);
+    }, [signedIn]);
     return (<div>
         {cartData === null || cartData.length === 0 || typeof cartData === "undefined" ?
             <>
-                <img src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png" alt="empty cart" />
-                <h3>Cart Empty</h3>
+                <FlexContainer>
+                    <img src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png" alt="empty cart" />
+                    <h3>Cart Empty</h3>
+                    {!signedIn ?"Login to view Cart" : ""}
+                </FlexContainer>
             </>
-            : <div>{
-                cartData.map((cartItem, key) => {
-                    return (<div key={cartItem._id} className="grid">
-                        <img style={{ height: "200px", width: "200px" }} src={cartItem.productId.images[0]} />
-                        <div>
-                            <h5>{cartItem.productId.productName}</h5>
-                            <div style={{ display: "iflex" }}><button onClick={() => {
+            :
+            <div>
+                {
+                    cartData.map((cartItem, key) => {
+                        return (
+                            <div key={cartItem._id} className="grid">
+                                <img style={{ height: "200px", width: "200px" }} src={cartItem.productId.images[0]} />
+                                <div>
+                                    <h5>{cartItem.productId.productName}</h5>
+                                    <div style={{ display: "iflex" }}><button onClick={() => {
 
-                                decrement(cartItem.productId._id, navigate).then(res => {
-                                    props.value.remove();
-                                    window.location.reload();
-                                })
-                            }}>-</button> <span>{
-                                cartItem.quantity
-                            }</span><button onClick={() => {
-                                increment(cartItem.productId._id, navigate).then(res => {
-                                    props.value.add();
-                                    window.location.reload();
-                                })
-                            }}>+</button>
-                                <DeleteIcon onClick={() => {
-                                    deleteCartItem(cartItem._id, navigate).then(res => {
-                                        props.value.remove();
-                                        window.location.reload();
-                                    })
-                                }} />
+                                        decrement(cartItem.productId._id, navigate).then(res => {
+                                            props.value.remove();
+                                            window.location.reload();
+                                        })
+                                    }}>-</button> <span>{
+                                        cartItem.quantity
+                                    }</span><button onClick={() => {
+                                        increment(cartItem.productId._id, navigate).then(res => {
+                                            props.value.add();
+                                            window.location.reload();
+                                        })
+                                    }}>+</button>
+                                        <DeleteIcon onClick={() => {
+                                            deleteCartItem(cartItem._id, navigate).then(res => {
+                                                props.value.remove();
+                                                window.location.reload();
+                                            })
+                                        }} />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>)
-                }
-                )
-            }</div>}
+                        )
+                    }
+                    )
+                }</div>}
         {
-            (cartData !== null || typeof cartData !== "undefined") ? (<div className=''>
-                <Button variant="contained"
-                    //  onClick={()=>orderCheckout().then(res=>{
-                    // })}
-                    onClick={handleOpen}
-                >Checkout</Button>
-            </div>) : null
+            (
+                cartData !== null && typeof cartData !== "undefined"
+            ) ?
+                (
+                    <div className=''>
+                        <Button variant="contained"
+                            onClick={handleOpen}
+                        >
+                            Checkout
+                        </Button>
+                    </div>
+                )
+                :
+                null
 
         }
 
@@ -110,7 +138,7 @@ const Cart = (props) => {
                         <Typography id="modal-modal-title" variant="h6" component="h2">
                             Payment methods
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('COD','',setOpen) }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('COD', '', setOpen) }}>
                             Cash On Delivery
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => setSelectDebit(true)}>
@@ -119,7 +147,7 @@ const Cart = (props) => {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             UPI
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('Wallet','ShopPay',setOpen) }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('Wallet', 'ShopPay', setOpen) }}>
                             Wallet
                         </Typography>
                     </> :
@@ -129,8 +157,8 @@ const Cart = (props) => {
                         </Typography>
                         {
                             cardDetails && cardDetails.map(card =>
-                                <Typography key={card._id} id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('Card',card.cardName) }}>
-                                  {card.cardName}  {`${card.cardNumber.substr(0,4)}...${card.cardNumber.substr(-4)}`}
+                                <Typography key={card._id} id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('Card', card.cardName) }}>
+                                    {card.cardName}  {`${card.cardNumber.substr(0, 4)}...${card.cardNumber.substr(-4)}`}
                                 </Typography>
                             )
                         }

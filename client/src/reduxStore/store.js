@@ -12,12 +12,14 @@ const SEARCH_SET = "SEARCH_SET";
 const QUANTITY_SET = "QUANTITY_SET";
 const IS_LOGGED = "IS_LOGGED";
 const SEARCH_STRING = "SEARCH_STRING";
+const SAVE_USER = "SAVE_USER";
 // const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
 const initialState = {
   itemCount: localItems(),
   searchString: null,
   isLogged: false,
-  openHandle: null
+  openHandle: null,
+  user:null
   // ,items:[]
 }
 const cartReducer = (state = initialState, action) => {
@@ -65,6 +67,10 @@ export const setQuantity = (quant) => {
   return { type: QUANTITY_SET, payload: quant };
 }
 
+export const saveUser = (user) =>{
+  return {type :SAVE_USER , payload : user};
+}
+
 export const store = createStore(cartReducer);
 
 export const mapDispatchToProps = dispatch => {
@@ -72,7 +78,8 @@ export const mapDispatchToProps = dispatch => {
     add: () => dispatch(add()),
     remove: () => dispatch(remove()),
     setSearchState: (searchParam) => dispatch(setSearchState(searchParam)),
-    setQuantity: (quant) => dispatch(setQuantity(quant))
+    setQuantity: (quant) => dispatch(setQuantity(quant)),
+    saveUser : (user) => dispatch(saveUser(user))
   }
 }
 
