@@ -138,7 +138,7 @@ const Cart = (props) => {
                         <Typography id="modal-modal-title" variant="h6" component="h2">
                             Payment methods
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('COD', '', setOpen) }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{cursor:"pointer"}} onClick={() => { orderCheckout('COD', '', setOpen) }}>
                             Cash On Delivery
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => setSelectDebit(true)}>

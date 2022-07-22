@@ -28,46 +28,25 @@ const getOrderItems = async (req, res, next) => {
 
 const checkout = async (req, res, next) => {
     try {
-
-
-
         let { paymentMode, provider } = req.body;
-
         const user = await User.findById(req.user.id);
         const session = await Sessions.findOne({ userId: user._id }, 'total');
-        // const orders =
-        // await
-        const doc = new Orders({ userId: req.user._id, total: session.total });
-        // , async (err, doc) => {
-        // if (err) {
-        //     next(err);
-        // }
-        // else {
-        // console.log(newOrder);
+        const doc = new Orders({ userId: req.user._id, total: session.total })
 
-        const payment = await Payment.create({ orderId: mongoose.Types.ObjectId(doc._id), amount: session.total, paymentMode: paymentMode, provider: provider });
+        // const payment = await Payment.create({ orderId: mongoose.Types.ObjectId(doc._id), amount: session.total, paymentMode: paymentMode, provider: provider });
 
         const cartItems = await CartItem.find({ sessionId: session._id });
-
         const insertedItems = await Order_items.insertMany(cartItems);
         const orderSummary = insertedItems.map(items => items._id);
-        // console.log(orderSummary);
+     
+        doc.orderSummary = [...orderSummary];
 
-        doc.orderSummary.push([...orderSummary]);
+        console.log(doc);
 
-        const createdOrder =  await doc.save();
-
-        //     }
-        // })
-
-
-
+        const createdOrder = await doc.save();
         res.statusCode = 200;
         res.setHeader('ContentType', 'appliation/json');
-        res.json(createdOrder);
-
-
-
+        res.json("createdOrder");
     } catch (error) {
         next(error);
     }

@@ -174,19 +174,19 @@ export const orders = (navigate) =>{
 }
 
 export const orderCheckout = (paymentMode,provider,setOpen) => {
-    console.log(paymentMode+"  ,  "+provider);
     return new Promise((resolve, reject) => {
         axios.post('http://localhost:5000/orders/checkout', { paymentMode: paymentMode,provider:provider },
             { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
-                if (res.status === 200) {
-                    axios.post('http://localhost:5000/status/success', {
-                        order_id: res.data,
-                        paymentMode: "COD"
-                    }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
-                        resolve("Payment successful");
-                        setOpen(false);
-                    })
-                }
+                console.log(res)
+                // if (res.status === 200) {
+                //     axios.post('http://localhost:5000/status/success', {
+                //         order_id: res.data,
+                //         paymentMode: "COD"
+                //     }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
+                //         resolve("Payment successful");
+                //         setOpen(false);
+                //     })
+                // }
             }
             )
     })
