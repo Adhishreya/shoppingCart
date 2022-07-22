@@ -1,58 +1,17 @@
-var mongoose = require('mongoose');
-var Orders = require('../models/order');
 var orderRouter = require('express').Router();
 var authenticate = require('../authentication');
-const { CartItem,
-    Order_items,
-    Payment,
-    Sessions,
-    User } = require('../models');
+const { CartItem,Order_items,Payment,Sessions,User } = require('../models');
 
+const {getOrder,getOrderItems ,checkout} = require('../controller/orderController')
 
 orderRouter.route('/')
-    .get(authenticate.verifyUser, (req, res) => {
-        Orders.find({ userId: req.user.id }).then(result => {
-            res.statusCode = 200;
-            res.setHeader('ContentType', 'appliation/json');
-            res.json(result)
-        })
-    })
+    .get(authenticate.verifyUser,getOrder);
 
 orderRouter.route('/items')
-    .get(authenticate.verifyUser, (req, res, next) => {
-        Order_items.find({}).then(result=>{
-            res.statusCode = 200;
-            res.setHeader('ContentType', 'appliation/json');
-            res.json(result);
-        })
-    })
+    .get(authenticate.verifyUser,getOrderItems)
 
 orderRouter.route('/checkout')
-    .post(authenticate.verifyUser, (req, res, next) => {
-        let { paymentMode, provider } = req.body
-        User.findById(req.user.id).then(user => {
-            Sessions.findOne({ userId: user._id }, 'total').then(data => {
-                Orders.create({ userId: req.user._id, total: data.total }, (err, doc) => {
-                    if (err) {
-                        next(err);
-                    }
-                    else {
-                        Payment.create({ orderId: doc._id, amount: data.total, paymentMode: paymentMode, provider: provider }).then(payment => {
-                            CartItem.find({ sessionId: data._id }).then(data => {
-                                Order_items.insertMany(data).then((result) => {
-                                    console.log(result);
-                                    res.statusCode = 200;
-                                    res.setHeader('Content-Type', 'application/json');
-                                    res.json(doc._id);
-                                }).catch(err => next(err));
-                            }).catch(err => next(err))
-                        }).catch(err => next(err));
-                    }
-                })
-
-            });
-        })
-    });
+    .post(authenticate.verifyUser, checkout);
 
 orderRouter.route('/cancel')
     .post(authenticate.verifyUser, (req, res) => {

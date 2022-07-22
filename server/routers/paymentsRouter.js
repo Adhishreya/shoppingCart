@@ -2,11 +2,12 @@ var paymentRouter = require('express').Router();
 var Payments = require('../models/payment');
 var authenticate = require('../authentication');
 const { Sessions, CartItem, Orders } = require('../models');
+const mongoose = require('mongoose');
 
 paymentRouter.route('/success')
     .post(authenticate.verifyUser, (req, res, next) => {
         let { order_id, paymentMode } = req.body;
-        Orders.findById(order_id).then(order => {
+        Orders.findById(mongoose.Types.ObjectId(order_id)).then(order => {
             Payments.findOneAndUpdate({ orderId: order_id }, { $set: { paymentStatus: 'Success', amount: order.total, paymentMode: paymentMode } }).then(result => {
                 Sessions.findOneAndUpdate({ userId: req.user._id }, { $set: { total: 0 } }).then(result => {
                     CartItem.deleteMany({ userId: req.user._id }).then(result => {

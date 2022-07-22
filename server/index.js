@@ -96,12 +96,11 @@ app.use('/orders', orderRouter);
 app.use('/tags', TagRouter);
 app.use('/discount', DiscountRouter);
 app.use('/status', paymentRouter);
-app.use(function (err, req, res, next) {
-  if (err) {
-    console.log(err);
-    res.setHeader('Content-Type', 'application/json');
-    res.send('unable to perform operation' + err)
-  }
+
+app.use((err, req, res, next) => {
+    const message = err.message || "Something went wrong!";
+    const status = err.status || 500;
+    res.json({message,status});
 })
 
 app.listen(port, () => {
