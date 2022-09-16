@@ -146,7 +146,7 @@ const Profile = () => {
                         </InputContainer>
                         <BasicDetails>
                             <Info>Username : {profile.username}</Info>
-                            <Info>Phone : {profile.address[0].mobile}</Info>
+                            <Info>Phone : {profile.address[0] && profile.address[0].mobile}</Info>
                         </BasicDetails>
                         <div>Address :
                             {

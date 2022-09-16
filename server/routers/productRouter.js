@@ -8,7 +8,7 @@ productsRouter
   .route("/")
   .get((req, res) => {
     Products.find({}, "productName images price _id tags availability discount")
-      .skip(2)
+      .skip(10)
       .lean()
       .populate("vendorDetails", "companyName")
       .populate("discount")
@@ -82,7 +82,7 @@ productsRouter.route("/update/inventory/:productId").put(
 productsRouter.route("/filter").get((req, res, next) => {
   console.log(apicache.getPerformance() + "performance");
   let { category, tags, discount, lower, upper, pageNumber } = req.query;
-  const nPerPage = 2;
+  const nPerPage = 10;
   let page = pageNumber - 1;
   // .skip(pageNumber>0?((pageNumber-1)*nPerPage):0)
   //.limit(nPerPage)
