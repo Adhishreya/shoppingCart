@@ -4,15 +4,56 @@ import { cartDetails, increment, decrement, deleteCartItem, orderCheckout, getCa
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Modal, Typography } from '@mui/material';
 
-import styled from 'styled-components'
+import { styled, alpha } from '@mui/material/styles';
 
-const FlexContainer = styled.div`
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:5rem;
-    `;
+const FlexContainer = styled('div')(({ theme }) => ({
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "5rem",
+}));
 
+const CartItem = styled('div')(({ theme }) => ({
+    display:"flex",
+    // background:"red",
+    gap:"4rem",
+    width:"100%",
+    margin:"1rem 0rem",
+    [theme.breakpoints.down('md')]:{
+        gap:"1rem"
+    }
+    // justifyContent:"space-between"
+}));
+
+const Container = styled('div')(({ theme }) => ({
+    width:"90%",
+    margin:"2rem auto",
+    
+}));
+
+const Controls = styled('div')(({ theme }) => ({
+    display:"flex",
+    justifyContent:"space-between",
+    gap:"2rem",
+    alignItems:"center",
+    [theme.breakpoints.down('md')]:{
+       gap:"0rem"
+   }
+}));
+
+
+const Wrapper = styled('div')(({ theme }) => ({
+}));
+
+
+const Image = styled('img')(({ theme }) => ({
+    height: "10rem",
+     width: "10rem",
+     [theme.breakpoints.down('md')]:{
+        height: "5rem",
+     width: "5rem",
+    }
+}));
 
 const Cart = (props) => {
     const [open, setOpen] = React.useState(false);
@@ -26,13 +67,10 @@ const Cart = (props) => {
     var quantity = 0;
 
     const signedIn = localStorage.getItem("token");
-    console.log(signedIn);
-
     useEffect(() => {
         if (selectDebit) {
             getCardDetails(navigate).then(res => {
                 setCardDetails(res.data)
-                console.log(res)
             }
             )
         }
@@ -52,6 +90,7 @@ const Cart = (props) => {
         p: 4,
     };
 
+
     useEffect(() => {
         signedIn && cartDetails(navigate).then(res => {
             if (res.data !== null && typeof res.data !== 'undefined' && res.data.length > 0) {
@@ -63,51 +102,54 @@ const Cart = (props) => {
             }
         })
     }, [signedIn]);
-    return (<div>
+    return (
+    <Container>
         {cartData === null || cartData.length === 0 || typeof cartData === "undefined" ?
             <>
                 <FlexContainer>
                     <img src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png" alt="empty cart" />
                     <h3>Cart Empty</h3>
-                    {!signedIn ?"Login to view Cart" : ""}
+                    {!signedIn ? "Login to view Cart" : ""}
                 </FlexContainer>
             </>
             :
-            <div>
+            <Wrapper>
                 {
                     cartData.map((cartItem, key) => {
                         return (
-                            <div key={cartItem._id} className="grid">
-                                <img style={{ height: "200px", width: "200px" }} src={cartItem.productId.images[0]} />
+                            <CartItem key={cartItem._id}>
+                                <Image src={cartItem.productId.images[0]} />
                                 <div>
                                     <h5>{cartItem.productId.productName}</h5>
-                                    <div style={{ display: "iflex" }}><button onClick={() => {
+                                    <Controls>
+                                        <Button variant="contained" onClick={() => {
 
-                                        decrement(cartItem.productId._id, navigate).then(res => {
-                                            props.value.remove();
-                                            window.location.reload();
-                                        })
-                                    }}>-</button> <span>{
-                                        cartItem.quantity
-                                    }</span><button onClick={() => {
-                                        increment(cartItem.productId._id, navigate).then(res => {
-                                            props.value.add();
-                                            window.location.reload();
-                                        })
-                                    }}>+</button>
+                                            decrement(cartItem.productId._id, navigate).then(res => {
+                                                props.value.remove();
+                                                window.location.reload();
+                                            })
+                                        }}>-</Button> <span>{
+                                            cartItem.quantity
+                                        }</span><Button variant="contained" onClick={() => {
+                                            increment(cartItem.productId._id, navigate).then(res => {
+                                                props.value.add();
+                                                window.location.reload();
+                                            })
+                                        }}>+</Button>
                                         <DeleteIcon onClick={() => {
                                             deleteCartItem(cartItem._id, navigate).then(res => {
                                                 props.value.remove();
                                                 window.location.reload();
                                             })
                                         }} />
-                                    </div>
+                                    </Controls>
                                 </div>
-                            </div>
+                            </CartItem>
                         )
                     }
                     )
-                }</div>}
+                }
+                </Wrapper>}
         {
             (
                 cartData !== null && typeof cartData !== "undefined"
@@ -138,7 +180,7 @@ const Cart = (props) => {
                         <Typography id="modal-modal-title" variant="h6" component="h2">
                             Payment methods
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{cursor:"pointer"}} onClick={() => { orderCheckout('COD', '', setOpen) }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{ cursor: "pointer" }} onClick={() => { orderCheckout('COD', '', setOpen) }}>
                             Cash On Delivery
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => setSelectDebit(true)}>
@@ -167,6 +209,6 @@ const Cart = (props) => {
                 }
             </Box>
         </Modal>
-    </div>)
+    </Container>)
 }
 export default Cart;

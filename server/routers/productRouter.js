@@ -129,5 +129,18 @@ productsRouter.route('/price/range/')
         }, err => next(err))
     })
 
+productsRouter.route('/rating/:id')
+    .put(async (req,res,next)=>{
+        let {rating} = req.body;
+        let id= req.params.id; 
+        const ratingModified = await Products.findByIdAndUpdate(id,{
+            $set:{averageRating:rating}
+        },{new:true});
+
+        console.log(ratingModified.averageRating);
+
+        res.statusCode = 200;
+        res.json(ratingModified.averageRating);
+    })
 
 module.exports = productsRouter;

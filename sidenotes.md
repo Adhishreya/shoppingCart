@@ -22,3 +22,16 @@ Todo
 Done
 - handle on logged in the cart should autopopulate and not just by navigating to the cart endpoint
 - the add buttons in the landing page also must be modified
+
+
+
+
+
+ToDo
+
+signed in user stored in the redux store 
+search shoud fetch from server not local storage
+upload image facility for all places including product images
+rating 
+
+

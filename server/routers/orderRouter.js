@@ -1,13 +1,12 @@
 var orderRouter = require('express').Router();
 var authenticate = require('../authentication');
-const { CartItem,Order_items,Payment,Sessions,User } = require('../models');
 
 const {getOrder,getOrderItems ,checkout} = require('../controller/orderController')
 
 orderRouter.route('/')
     .get(authenticate.verifyUser,getOrder);
 
-orderRouter.route('/items')
+orderRouter.route('/items/:id')
     .get(authenticate.verifyUser,getOrderItems)
 
 orderRouter.route('/checkout')

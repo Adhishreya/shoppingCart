@@ -177,16 +177,15 @@ export const orderCheckout = (paymentMode,provider,setOpen) => {
     return new Promise((resolve, reject) => {
         axios.post('http://localhost:5000/orders/checkout', { paymentMode: paymentMode,provider:provider },
             { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
-                console.log(res)
-                // if (res.status === 200) {
-                //     axios.post('http://localhost:5000/status/success', {
-                //         order_id: res.data,
-                //         paymentMode: "COD"
-                //     }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
-                //         resolve("Payment successful");
-                //         setOpen(false);
-                //     })
-                // }
+                if (res.status === 200) {
+                    axios.post('http://localhost:5000/status/success', {
+                        order_id: res.data,
+                        paymentMode: "COD"
+                    }, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(result => {
+                        resolve("Payment successful");
+                        setOpen(false);
+                    })
+                }
             }
             )
     })
@@ -198,6 +197,15 @@ export const getCardDetails = (navigate) => {
             resolve(res)
         }, err => navigate('/error'))
     })
+}
+
+export const modifyRating = (navigate,id,rating) =>{
+    return new Promise((resolve, reject) => {
+        axios.put(`${url}products/rating/${id}`,rating ,{ headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
+            // resolve(res);
+            navigate('/order')
+        }, err => navigate('/error'))
+    }) 
 }
 
 // export const deleteCartItem = (id, navigate) => {

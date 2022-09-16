@@ -43,5 +43,5 @@ const order = new mongoose.Schema({
         type: currency
     },
 
-}, { timestamp: true });
+}, { timestamps: true });
 module.exports = mongoose.model("Orders", order);

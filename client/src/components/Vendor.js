@@ -192,6 +192,7 @@ const AddProducts = ({ approved, id }) => {
             {
                 approved ?
                     <>
+                    <h2>Sell Product</h2>
                         <Form style={{ margin: "0rem" }} onSubmit={e => submitForm(e)} >
                             <TextField required label="Product Name" onChange={e => setProductName(e.target.value)} />
                             <TextField required type="number" label="Product Price" onChange={e => setPrice(e.target.value)} />
