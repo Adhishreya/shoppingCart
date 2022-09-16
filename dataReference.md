@@ -62,7 +62,19 @@
 -[database]
 - https://stackoverflow.com/questions/32811510/mongoose-findoneandupdate-doesnt-return-updated-document
 - https://www.mongodb.com/docs/v5.0/reference/method/cursor.skip/?_ga=2.260584840.449262860.1655927920-1491105511.1643833363
+- https://data.world/promptcloud/product-details-on-flipkart-com
+- https://data.world/datafiniti/electronic-products-and-pricing-data
+- https://fabric.inc/blog/shopping-cart-database-design/
+- https://fabric.inc/blog/ecommerce-database-design-example/
 
 ## [rest]
 - https://stackoverflow.com/questions/48976539/express-redirect-post-to-put-with-same-url
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+
+## [system design]
+- https://medium.com/double-pointer/system-design-interview-amazon-flipkart-ebay-or-similar-e-commerce-applications-35a0bc764421
+- https://www.codekarle.com/system-design/Amazon-system-design.html
+
+## []
+- https://www.bigcommerce.com/blog/7-product-filtering-implementations-that-make-macys-best-in-class/#improving-the-users-product-filtering-experience
+- https://imerit.net/blog/25-best-retail-sales-and-ecommerce-datasets-for-machine-learning-all-pbm/
