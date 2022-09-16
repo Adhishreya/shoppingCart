@@ -63,7 +63,7 @@ const Buttons = styled('div')(({ theme }) => ({
 
 export default function Login({ open, handleOpen, handleClose, setCount }) {
     let navigate = useNavigate();
-    const [userLog, setToggleLog] = useState(false);
+    const [userToggleLog, setToggleLog] = useState(false);
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
@@ -102,7 +102,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
         }
     }
     const toggleLog = () => {
-        setToggleLog(!userLog);
+        setToggleLog(!userToggleLog);
     }
 
 
@@ -125,7 +125,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                     noValidate
                     autoComplete="off"
                 >                    {
-                        !userLog ?
+                        !userToggleLog ?
                             <div style={componentStyle}>
                                 <Form action='POST' onSubmit="return false;">
                                     <TextField id="standard-basic" name="name" label="Username" ref={nameRef} error={userError} required
@@ -178,7 +178,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                     <Buttons>
                         <AlternateOption onClick={() => handleClose()} variant="contained" color="error">Cancel</AlternateOption>
                         <AlternateOption onClick={() => toggleLog()} variant="contained" color="primary">
-                            {!userLog ? 'Register' : 'Login'}</AlternateOption>
+                            {!userToggleLog ? 'Register' : 'Login'}</AlternateOption>
                     </Buttons>
 
                 </BoxForm >

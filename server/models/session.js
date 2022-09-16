@@ -1,38 +1,57 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const sessionData = new mongoose.Schema({
-    userId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    
-    },
-    total:{
-        type: Number,
-        required: true,
-        default: 0,
-    },
-    createdAt:{
-        type:Date,        
-    },
-    modifiedAt:{
-        type:Date
-    }
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  total: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  createdAt: {
+    type: Date,
+  },
+  modifiedAt: {
+    type: Date,
+  },
+  expireAt: {
+    type : Date,
+    default : Date.now,
+    index : {expires : '5s'}
+  },
 });
 
-
-sessionData.methods.calculteTotal = function(id,price,discount,number,next,total){
-    let discountedPrice = -(price/100)*(1-(discount/100))*number+total;
-    return this.model(this.constructor.modelName, this.schema).findByIdAndUpdate({_id:id},{$set:{
-        total:discountedPrice
-    }}
-    ,{new:true,runValudators:true},(err,doc)=>{
+sessionData.methods.calculteTotal = function (
+  id,
+  price,
+  discount,
+  number,
+  next,
+  total
+) {
+  let discountedPrice = -(price / 100) * (1 - discount / 100) * number + total;
+  return this.model(this.constructor.modelName, this.schema)
+    .findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          total: discountedPrice,
+        },
+      },
+      { new: true, runValudators: true },
+      (err, doc) => {
         if (err) {
-            console.log(err);
-            next(err);
+          console.log(err);
+          next(err);
+        } else {
         }
-        else{
-            
-        }
-    }).clone()
-}
-module.exports = mongoose.model("Sessions",sessionData);
+      }
+    )
+    .clone();
+};
+
+// sessionData.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+
+module.exports = mongoose.model("Sessions", sessionData);
