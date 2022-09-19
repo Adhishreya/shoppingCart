@@ -39,7 +39,7 @@ app.use(session({ secret: process.env.SECRET_KEY }));
 app.disable('x-powered-by');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(cache('5 minutes'));
+
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());

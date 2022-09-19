@@ -80,6 +80,8 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
   // const [error,setError] = useState(false);
 
   const [invalidAuth, setInvalidAuth] = useState(false);
+  const [unsuccessfulSignup, setUnsuccessfulSignup] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     if (e.target.name === "name") {
@@ -223,6 +225,7 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                   onChange={(e) => handleChange(e)}
                   onFocus={(e) => handleChange(e)}
                 />
+                <p style={{ color: "red" }}>{unsuccessfulSignup && message}</p>
                 <CustomButton
                   id="outlined-required"
                   onClick={() => {
@@ -234,7 +237,10 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                         phone: phone,
                       },
                       navigate
-                    );
+                    ).then((result) => {
+                      setUnsuccessfulSignup(true);
+                      setMessage(result.message);
+                    });
                   }}
                   variant="contained"
                   color="primary"

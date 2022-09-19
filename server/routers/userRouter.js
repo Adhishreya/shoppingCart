@@ -20,9 +20,7 @@ cloudinary.config(config);
 
 userRouter.route('/profile')
     .get(authenticate.verifyUser, (req, res) => {
-        // console.log(req.user)
         Users.find({ _id: req.user.id }).populate('address').then((users) => {
-            // res.sendStatus(200);
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json  ');
             res.send(users);
@@ -35,12 +33,12 @@ userRouter.route('/signup')
         let { username, password, email, phoneNumber } = req.body;
         Users.register(new Users({ username: username }), password, (err, user) => {
             if (err) {
+                err.status = 409;
                 next(err);
             }
             else {
                 user.email = email;
                 user.phoneNumber = phoneNumber;
-                // user.address = null;/
                 // user.cart = new Cart({ userId: user._id });
 
                 user.save((err, user) => {
@@ -54,7 +52,7 @@ userRouter.route('/signup')
                     Sessions.create({ userId: user._id }).then(session => {
                         passport.authenticate('local')(req, res, () => {
                             var token = authenticate.getTokens({ _id: req.user._id });
-                            res.statusCode = 200;
+                            res.statusCode = 201;
                             res.setHeader('Content-Type', 'application/json');
                             res.json({ success: true, status: 'Registration Successful!', token: token });
                         });

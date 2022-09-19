@@ -42,7 +42,7 @@ export const signupRequest = (
   { username, password, email, phone },
   navigate
 ) => {
-  axios
+ return axios
     .post("http://localhost:5000/users/signup", {
       username: username,
       password: password,
@@ -50,7 +50,7 @@ export const signupRequest = (
       phoneNumber: phone,
     })
     .then((res) => {
-      if (res.status === 200) {
+      if (res.status === 201) {
         localStorage.setItem("token", res.data.token);
         navigate("/");
         axios
@@ -60,9 +60,10 @@ export const signupRequest = (
             },
           })
           .then((result) => {
-            console.log(result.data[0].username);
             localStorage.setItem("user", result.data[0].username);
           });
+      }else{
+        return res.data
       }
     })
     .catch((err) => {
