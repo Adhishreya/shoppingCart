@@ -238,8 +238,8 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                       },
                       navigate
                     ).then((result) => {
-                      setUnsuccessfulSignup(true);
-                      setMessage(result.message);
+                    if(result){  setUnsuccessfulSignup(true);
+                      setMessage(result.message);}
                     });
                   }}
                   variant="contained"

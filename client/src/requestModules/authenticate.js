@@ -62,6 +62,7 @@ export const signupRequest = (
           .then((result) => {
             localStorage.setItem("user", result.data[0].username);
           });
+          return null;
       }else{
         return res.data
       }

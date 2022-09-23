@@ -31,7 +31,6 @@ const users = new mongoose.Schema({
         type: String,
         // require:true,
         unique: true,
-        lowercase: true,
         // validate:(value)=>{
         //     return /^w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
         // }

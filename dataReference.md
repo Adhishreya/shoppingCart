@@ -55,11 +55,11 @@
 - https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication
 
 
-- [database-design]
+## [database-design]
 - https://fabric.inc/blog/ecommerce-database-design-example/
 - https://fabric.inc/blog/shopping-cart-database-design/
 
--[database]
+## [database]
 - https://stackoverflow.com/questions/32811510/mongoose-findoneandupdate-doesnt-return-updated-document
 - https://www.mongodb.com/docs/v5.0/reference/method/cursor.skip/?_ga=2.260584840.449262860.1655927920-1491105511.1643833363
 
