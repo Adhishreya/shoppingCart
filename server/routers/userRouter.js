@@ -52,20 +52,18 @@ userRouter.route("/signup").post((req, res, next) => {
           user.email = email;
           user.phoneNumber = phoneNumber;
           user.save((err, entity) => {
-            // Sessions.create({ userId: entity._id }).then((session) => {
-            //   passport.authenticate("local")(req, res, () => {
-            //     var token = authenticate.getTokens({ _id: req.user._id });
-            //     res.statusCode = 201;
-            //     res.setHeader("Content-Type", "application/json");
-
-            res.json({
-              success: true,
-              status: "Registration Successful!",
-              // token: token,
+            Sessions.create({ userId: entity._id }).then((session) => {
+              passport.authenticate("local")(req, res, () => {
+                var token = authenticate.getTokens({ _id: req.user._id });
+                res.statusCode = 201;
+                res.setHeader("Content-Type", "application/json");
+                res.json({
+                  success: true,
+                  status: "Registration Successful!",
+                  token: token,
+                });
+              });
             });
-
-            //   });
-            // });
           });
         }
       });
