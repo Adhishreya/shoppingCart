@@ -39,9 +39,9 @@ userRouter.route("/signup").post((req, res, next) => {
       err.status = 409;
       next(err);
     } else {
-      // let checkUser =
+      console.log(email);
       Users.find({ email: email }).then((result) => {
-        if (result) {
+        if (result.length !== 0) {
           Users.findByIdAndDelete({ _id: user._id }).then(() => {
             res.json({
               status: 409,
@@ -51,36 +51,24 @@ userRouter.route("/signup").post((req, res, next) => {
         } else {
           user.email = email;
           user.phoneNumber = phoneNumber;
-          user.save((err, user) => {
-            // if (err) {
-            // Users.findByIdAndDelete({ _id: user._id }).then(() => {
-            //   next(err);
-            // });
-            // res.statusCode = 500;
-            // res.setHeader("Content-Type", "application/json");
-            // res.json({ err: err });
-            // return;
-            // next(err);
-            // }
-            Sessions.create({ userId: user._id }).then((session) => {
-              passport.authenticate("local")(req, res, () => {
-                var token = authenticate.getTokens({ _id: req.user._id });
-                res.statusCode = 201;
-                res.setHeader("Content-Type", "application/json");
-                res.json({
-                  success: true,
-                  status: "Registration Successful!",
-                  token: token,
-                });
-              });
+          user.save((err, entity) => {
+            // Sessions.create({ userId: entity._id }).then((session) => {
+            //   passport.authenticate("local")(req, res, () => {
+            //     var token = authenticate.getTokens({ _id: req.user._id });
+            //     res.statusCode = 201;
+            //     res.setHeader("Content-Type", "application/json");
+
+            res.json({
+              success: true,
+              status: "Registration Successful!",
+              // token: token,
             });
+
+            //   });
+            // });
           });
         }
       });
-
-      console.log(user._id);
-
-      // user.cart = new Cart({ userId: user._id });
     }
   });
 });
