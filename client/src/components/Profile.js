@@ -25,7 +25,8 @@ const Wrapper = styled('div')(({ theme }) => ({
 const OptionsContainer = styled('div')(({ theme }) => ({
     display: "flex",
     alignItems: "center",
-    gap: "4rem"
+    gap: "4rem",
+    margin:"1rem 0rem"
 }))
 
 const InputContainer = styled('div')(({ theme }) => ({
@@ -72,8 +73,10 @@ const Cancel = styled(Button)(({ theme }) => ({
 
 const BasicDetails = styled('div')(({ theme }) => ({
     fontSize: "16px",
-    width: "30%",
-    backgroundColor: alpha(theme.palette.common.black, 0.15),
+    width: "fit-content",
+    border:"0.2rem solid",
+    cursor:"pointer",
+    borderColor: alpha(theme.palette.common.black, 0.15),
     padding: "2rem",
     gap: "2rem",
     display: "flex",
@@ -119,12 +122,14 @@ const Profile = () => {
                 profile ?
                     <Wrapper>
                         <OptionsContainer>
-                            <Link to="/order"><ButtonDefault variant="contained">Orders</ButtonDefault></Link>
-                            <Link to="/cart"><ButtonDefault variant="contained">Cart</ButtonDefault></Link>
-                            <Link to="/profile/vendor"><ButtonDefault variant="contained">Register as Vendor</ButtonDefault></Link>
+                            <Link to="/order"><BasicDetails variant="contained">Orders</BasicDetails></Link>
+                            <Link to="/cart"><BasicDetails variant="contained">Cart</BasicDetails></Link>
+                            <Link to="/profile/vendor"><BasicDetails variant="contained">Register as Vendor</BasicDetails></Link>
+                            <BasicDetails variant="contained">Add/Edit payment options</BasicDetails>
+                            <BasicDetails>Contact support</BasicDetails>
                         </OptionsContainer>
 
-                        <Link style={{ color: "#f1f5f9" }} to="/admin">Admin</Link>
+                        {/* <Link style={{ color: "#f1f5f9" }} to="/admin">Admin</Link> */}
                         <InputContainer>
                             <label htmlFor="contained-button-file">Edit Profile Pic </label>
                             <Input encType="multipart/form-data" accept="image/*" name="image" id="contained-button-file" multiple type="file" onChange={(e) => {

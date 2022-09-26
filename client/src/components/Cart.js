@@ -15,14 +15,12 @@ const FlexContainer = styled('div')(({ theme }) => ({
 
 const CartItem = styled('div')(({ theme }) => ({
     display:"flex",
-    // background:"red",
     gap:"4rem",
     width:"100%",
     margin:"1rem 0rem",
     [theme.breakpoints.down('md')]:{
         gap:"1rem"
     }
-    // justifyContent:"space-between"
 }));
 
 const Container = styled('div')(({ theme }) => ({
@@ -183,13 +181,13 @@ const Cart = (props) => {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{ cursor: "pointer" }} onClick={() => { orderCheckout('COD', '', setOpen) }}>
                             Cash On Delivery
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => setSelectDebit(true)}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{ cursor: "pointer" }} onClick={() => setSelectDebit(true)}>
                             Debit/Credit
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{ cursor: "pointer" }}>
                             UPI
                         </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }} onClick={() => { orderCheckout('Wallet', 'ShopPay', setOpen) }}>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{ cursor: "pointer" }} onClick={() => { orderCheckout('Wallet', 'ShopPay', setOpen) }}>
                             Wallet
                         </Typography>
                     </> :

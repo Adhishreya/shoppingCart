@@ -80,7 +80,6 @@ productsRouter.route("/update/inventory/:productId").put(
   })
 );
 productsRouter.route("/filter").get((req, res, next) => {
-  console.log(apicache.getPerformance() + "performance");
   let { category, tags, discount, lower, upper, pageNumber } = req.query;
   const nPerPage = 10;
   let page = pageNumber - 1;

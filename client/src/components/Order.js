@@ -68,11 +68,7 @@ const Order = () => {
   };
 
   useEffect(() => {
-    console.log(rating);
     if (items.length > 0) ratingRef.current.value = rating;
-    // return () =>{
-
-    // }
   }, [rating]);
 
   // let navigate = useNavigate();

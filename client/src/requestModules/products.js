@@ -98,6 +98,7 @@ export const cartDetails = (navigate) => {
         axios.get(`${url}cart`, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {
             resolve(res)
         }).catch(err => {
+            console.log(err)
             console.log(err.response);
             navigate("/error")
         });
@@ -173,7 +174,7 @@ export const orders = (navigate) =>{
     })
 }
 
-export const orderCheckout = (paymentMode,provider,setOpen) => {
+export const orderCheckout = (paymentMode,provider) => {
     return new Promise((resolve, reject) => {
         axios.post('http://localhost:5000/orders/checkout', { paymentMode: paymentMode,provider:provider },
             { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => {

@@ -12,15 +12,12 @@ const sessionData = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
+    // default : Date.now,
+    // expires: '1440m'
   },
   modifiedAt: {
     type: Date,
-  },
-  expireAt: {
-    type : Date,
-    default : Date.now,
-    index : {expires : '5s'}
-  },
+  }
 });
 
 sessionData.methods.calculteTotal = function (

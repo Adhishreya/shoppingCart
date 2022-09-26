@@ -39,7 +39,6 @@ userRouter.route("/signup").post((req, res, next) => {
       err.status = 409;
       next(err);
     } else {
-      console.log(email);
       Users.find({ email: email }).then((result) => {
         if (result.length !== 0) {
           Users.findByIdAndDelete({ _id: user._id }).then(() => {
@@ -70,7 +69,7 @@ userRouter.route("/signup").post((req, res, next) => {
     }
   });
 });
-// , { failureFlash: true }
+
 userRouter.post("/signin", passport.authenticate("local"), (req, res, next) => {
   var token = authenticate.getTokens({ _id: req.user._id });
   if (token) {
