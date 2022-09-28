@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { productDetails } from "../requestModules/products";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import { Button } from "@mui/material";
+import { Button, CircularProgress, Rating } from "@mui/material";
 
 import { styled, alpha } from "@mui/material/styles";
 
@@ -14,7 +14,7 @@ const Wrapper = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   padding: "0rem",
   marginTop: "1rem",
-  border:"2px solid",
+  border: "2px solid",
   marginLeft: "1rem",
   gap: "0.5rem",
   [theme.breakpoints.down("md")]: {
@@ -132,14 +132,15 @@ const ProductDetails = (props) => {
                 </span>
               </h4>
               <p>
-                {data.averageRating > 0
-                  ? `Rating : ${ data.averageRating}`
-                  : "Rating is not available for this product"}
+                {data.averageRating > 0 ? (
+                  // `Rating : ${ data.averageRating}`
+                  <Rating value={data.averageRating} readOnly />
+                ) : (
+                  "Rating is not available for this product"
+                )}
               </p>
-              <Button
-                onClick={() => setDetails((showDetails) => !showDetails)}
-              >
-                {showDetails ? "Hide Details " : "Get Vendor details"}
+              <Button onClick={() => setDetails((showDetails) => !showDetails)}>
+                {showDetails ? "Hide Details " : "View Vendor details"}
               </Button>
               {showDetails && data.vendorDetails ? (
                 <div>
@@ -177,7 +178,7 @@ const ProductDetails = (props) => {
                     } */}
         </div>
       ) : (
-        <Loading>Loading</Loading>
+        <Loading><CircularProgress /></Loading>
       )}
     </Container>
   );

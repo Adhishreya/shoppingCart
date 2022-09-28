@@ -10,6 +10,7 @@ import {
   Pagination,
   Stack,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -348,7 +349,7 @@ const Products = (props) => {
           </FilterOption>
         </OuterUnorderedList>
         {products.length === 0 ? (
-          <Loading>Loading</Loading>
+          <Loading><CircularProgress/></Loading>
         ) : (
           <ProductList className="grid">
             {products.map((product) => {

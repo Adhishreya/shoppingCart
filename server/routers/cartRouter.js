@@ -3,6 +3,7 @@ const authenticate = require("../authentication");
 const CartRouter = express.Router();
 const { CartItem, Session, Products } = require("../models");
 const { isNull } = require("lodash");
+const mongoose = require("mongoose");
 CartRouter.route("/").get(authenticate.verifyUser, (req, res, next) => {
   Session.findOne({ userId: req.user.id }).then(
     (session) => {
@@ -39,13 +40,7 @@ CartRouter.route("/:id").post(authenticate.verifyUser, (req, res, next) => {
           }
           if (product.availability - quantity >= 0) {
             product
-              .updateAvailability(
-                id,
-                -quantity,
-                next,
-                data._id,
-                data.total
-              )
+              .updateAvailability(id, -quantity, next, data._id, data.total)
               .then(() => {
                 CartItem.create(
                   { sessionId: sessionId, productId: id, quantity: quantity },
@@ -108,53 +103,56 @@ CartRouter.route("/increment/:id").post(
   authenticate.verifyUser,
   (req, res, next) => {
     let id = req.params.id;
-    Session.find({ userId: req.user.id }, (error, session) => {
-      CartItem.find({ productId: id, sessionId: session._id }, (err, doc) => {
-        if (doc === null || doc.length === 0) {
-          res.redirect(307, "/cart/" + id);
-        } else if (err) {
-          next(err);
-        } else {
-          Products.findById(doc[0].productId, (err, product) => {
-            if (err) {
-              next(err);
-            } else {
-              if (product.availability - 1 >= 0) {
-                product
-                  .updateAvailability(
-                    product._id,
-                    -1,
-                    next,
-                    session[0]._id,
-                    session[0].total
-                  )
-                  .then(
-                    (data) => {
-                      if (err) {
-                        next(err);
-                      }
-                      doc[0].increment(doc[0]._id, next).then(
-                        (result) => {
-                          res.statusCode = 200;
-                          res.setHeader("Content-Type", "application/json");
-                          res.json(result);
-                          // session.total+=
-                          // session.calculteTotal(session._id,product.price,)
-                        },
-                        (err) => next(err)
-                      );
-                    },
-                    (err) => next(err)
-                  );
+    Session.findOne({ userId: req.user.id }, (error, session) => {
+      CartItem.find(
+        { productId: mongoose.Types.ObjectId(id), sessionId: session._id },
+        (err, doc) => {
+          if (doc === null || doc.length === 0) {
+            res.redirect(307, "/cart/" + id);
+          } else if (err) {
+            next(err);
+          } else {
+            Products.findById(doc[0].productId, (err, product) => {
+              if (err) {
+                next(err);
               } else {
-                res.statusCode = 200;
-                res.setHeader("ContentType", "application/json");
-                res.json("Item not available");
+                if (product.availability - 1 >= 0) {
+                  product
+                    .updateAvailability(
+                      product._id,
+                      -1,
+                      next,
+                      session._id,
+                      session.total
+                    )
+                    .then(
+                      (data) => {
+                        if (err) {
+                          next(err);
+                        }
+                        doc[0].increment(doc[0]._id, next).then(
+                          (result) => {
+                            res.statusCode = 200;
+                            res.setHeader("Content-Type", "application/json");
+                            res.json(result);
+                            // session.total+=
+                            // session.calculteTotal(session._id,product.price,)
+                          },
+                          (err) => next(err)
+                        );
+                      },
+                      (err) => next(err)
+                    );
+                } else {
+                  res.statusCode = 200;
+                  res.setHeader("ContentType", "application/json");
+                  res.json("Item not available");
+                }
               }
-            }
-          }).clone();
+            }).clone();
+          }
         }
-      });
+      );
     });
   }
 );
