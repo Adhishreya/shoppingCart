@@ -85,7 +85,7 @@ const Order = () => {
                 key={item._id}
                 onClick={() => handleOrderFetch(item._id)}
               >
-                <Image />
+                {/* <Image /> */}
                 <p>Payment {item.status}</p>
                 <p>&#8377;{item.total}</p>
               </OrderTile>
