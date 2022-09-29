@@ -30,9 +30,9 @@ CartRouter.route("/").get(authenticate.verifyUser, (req, res, next) => {
 CartRouter.route("/:id").post(authenticate.verifyUser, (req, res, next) => {
   let id = req.params.id;
   let { quantity } = req.body;
-  Session.findOne({ userId: req.user.id }).then(
+  Session.find({ userId: req.user.id }).then(
     (data) => {
-      let sessionId = data._id;
+      let sessionId = data[0]._id;
       Products.findById(id)
         .then((product) => {
           if (quantity == undefined) {
@@ -40,8 +40,15 @@ CartRouter.route("/:id").post(authenticate.verifyUser, (req, res, next) => {
           }
           if (product.availability - quantity >= 0) {
             product
-              .updateAvailability(id, -quantity, next, data._id, data.total)
-              .then(() => {
+              .updateAvailability(
+                id,
+                -quantity,
+                next,
+                data[0]._id,
+                data[0].total
+              )
+              .then((data1) => {
+                console.log("data" + data1);
                 CartItem.create(
                   { sessionId: sessionId, productId: id, quantity: quantity },
                   (err, doc) => {
@@ -73,6 +80,7 @@ CartRouter.route("/delete/:id").delete(
     Session.find({ userId: req.user.id }, (error, session) => {
       CartItem.findByIdAndDelete({ _id: req.params.id }).then(
         (data) => {
+          console.log(data);
           Products.findById(data.productId).then(
             (product) => {
               product

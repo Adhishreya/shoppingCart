@@ -20,15 +20,7 @@ const sessionData = new mongoose.Schema({
   }
 });
 
-sessionData.methods.calculteTotal = function (
-  id,
-  price,
-  discount,
-  number,
-  next,
-  total
-) {
-  let discountedPrice = -(price / 100) * (1 - discount / 100) * number + total;
+sessionData.methods.calculteTotal = function (id, discountedPrice, next) {
   return this.model(this.constructor.modelName, this.schema)
     .findByIdAndUpdate(
       { _id: id },
