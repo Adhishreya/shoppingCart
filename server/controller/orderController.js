@@ -79,13 +79,13 @@ const checkout = async (req, res, next) => {
 
     const cartItems = await CartItem.find({ sessionId: session._id });
     const insertedItems = await Order_items.insertMany(cartItems);
-    const orderSummary = insertedItems.map(items => items._id);
+    const orderSummary = insertedItems.map((items) => items._id);
 
     doc.orderSummary = [...orderSummary];
 
     await doc.save();
 
-    await CartItem.deleteMany({sessionId: session._id})
+    await CartItem.deleteMany({ sessionId: session._id });
 
     res.statusCode = 200;
     res.setHeader("ContentType", "appliation/json");
@@ -95,4 +95,14 @@ const checkout = async (req, res, next) => {
   }
 };
 
-module.exports = { getOrder, getOrderItems, checkout };
+const returenedOrders = async (req, res, next) => {};
+
+const cancelledOrders = async (req, res, next) => {};
+
+module.exports = {
+  getOrder,
+  getOrderItems,
+  checkout,
+  cancelledOrders,
+  returenedOrders,
+};

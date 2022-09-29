@@ -8,6 +8,7 @@ import Vendor from "./Vendor";
 import Admin from "./Admin";
 import Order from "./Order";
 import Login from "./Login";
+import ManagePayments from "./ManagePayments";
 
 export {
     Products,
@@ -19,5 +20,6 @@ export {
     Vendor,
     Admin,
     Order,
-    Login
+    Login,
+    ManagePayments
 }

@@ -1,6 +1,6 @@
-import { Rating } from "@mui/material";
+import { Button, Rating, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { orders, modifyRating } from "../requestModules/products";
 import { getOrderItems } from "../requestModules/orders";
 
@@ -13,6 +13,13 @@ const Container = styled("div")(({ theme }) => ({
   },
 }));
 const Wrapper = styled("div")(({ theme }) => ({}));
+
+const tabHeaders = [
+  "Buy Again",
+  "Not Yet Shipped",
+  "Cancelled Orders",
+  "Returned",
+];
 
 const OrderList = styled("div")(({ theme }) => ({
   display: "flex",
@@ -57,6 +64,7 @@ const Order = () => {
   const ratingRef = useRef();
 
   let navigate = useNavigate();
+
   useEffect(() => {
     orders(navigate).then((data) => setValue(data));
   }, []);
@@ -75,8 +83,32 @@ const Order = () => {
   // useEffect(() => {
   //   orders(navigate).then((data) => console.log(data));
   // }, []);
+
+  const [selectedTab, setSelectedTab] = useState(0);
+
   return (
     <Container>
+      <Tabs
+        value={selectedTab}
+        onChange={(e, h) => {
+          setSelectedTab(h);
+          let selectedTabOption = tabHeaders[h].toLowerCase();
+          selectedTabOption = selectedTabOption.split(" ").join("")
+          navigate(`/order/${selectedTabOption}`)
+        }}
+      >
+        <Tab label={`${tabHeaders[0]}`} />
+        <Tab label={`${tabHeaders[1]}`} />
+        <Tab label={`${tabHeaders[2]}`} />
+        <Tab label={`${tabHeaders[3]}`} />
+      </Tabs>
+      <Routes>
+        <Route path="buyagain" element={<BuyAgain/>}/>
+        <Route path="notyetshipped" element={<NotYetShiped/>}/>
+        <Route path="cancelledorders" element={<Cancelled/>}/>
+        <Route path="returned" element={<Returned/>}/>
+      </Routes>
+      <Outlet></Outlet>
       <OrderTiles>
         {value &&
           value.map((item) => (
@@ -85,7 +117,6 @@ const Order = () => {
                 key={item._id}
                 onClick={() => handleOrderFetch(item._id)}
               >
-                {/* <Image /> */}
                 <p>Payment {item.status}</p>
                 <p>&#8377;{item.total}</p>
               </OrderTile>
@@ -106,6 +137,7 @@ const Order = () => {
                           modifyRating(navigate, item._id, rating);
                         }}
                       />
+                      <Button>Add a review</Button>
                     </OrderItem>
                   </OrderList>
                 ))}
@@ -114,6 +146,22 @@ const Order = () => {
       </OrderTiles>
     </Container>
   );
+};
+
+const BuyAgain = () => {
+  return <>BuyAgain</>;
+};
+
+const NotYetShiped = () => {
+  return <>NotYetShiped</>;
+};
+
+const Cancelled = () => {
+  return <>Cancelled</>;
+};
+
+const Returned = () => {
+  return <>Returned</>;
 };
 
 export default Order;

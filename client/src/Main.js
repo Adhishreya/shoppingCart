@@ -33,7 +33,7 @@ class Main extends Component {
           <Route path="/profile/*" element={<Profile />} />
           <Route path="/cart" element={<Cart value={this.props} />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/order" element={<Order />} />
+          <Route path="/order/*" element={<Order />} />
           <Route
             path="/"
             element={
