@@ -27,8 +27,6 @@ const getOrder = async (req, res, next) => {
 const getOrderItems = async (req, res, next) => {
   try {
     let id = req.params.id;
-    // const orderDetails  = await Orders.findById(id).populate('orderSummary');
-    // orderDetails.orderSummary.populate('productId');
     const orderDetails = await Orders.findById(id).populate({
       path: "orderSummary",
       populate: { path: "productId" },
@@ -37,12 +35,17 @@ const getOrderItems = async (req, res, next) => {
     const { status, total } = orderDetails;
 
     let order_item = orderDetails.orderSummary.map((item) => {
-      let quantity = item.quantity;
+      let { quantity, cost } = item;
       let { images, productName, averageRating, _id } = item.productId;
-      return { image: images[0], productName, quantity, averageRating, _id };
+      return {
+        image: images[0],
+        productName,
+        quantity,
+        averageRating,
+        cost,
+        _id,
+      };
     });
-
-    // const order_item
 
     // let orderItems = [];
 
@@ -83,7 +86,14 @@ const checkout = async (req, res, next) => {
 
     doc.orderSummary = [...orderSummary];
 
+    await new Order_items().save();
+
     await doc.save();
+
+    await Sessions.findByIdAndUpdate(
+      { _id: session._id },
+      { $set: { total: 0 } }
+    );
 
     await CartItem.deleteMany({ sessionId: session._id });
 

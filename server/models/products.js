@@ -75,50 +75,35 @@ const products = new mongoose.Schema({
     },
   ],
 });
-products.methods.updateAvailability =  function (
+products.methods.updateAvailability = async function (
   id,
   number,
   next,
   sessionId,
   total
 ) {
-  // product._id, -1, next,session[0]._id,session[0].tota
-  return this.model(this.constructor.modelName, this.schema)
-    .findByIdAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          availability: this.availability + number,
-        },
+  let doc = await this.model(
+    this.constructor.modelName,
+    this.schema
+  ).findByIdAndUpdate(
+    { _id: id },
+    {
+      $set: {
+        availability: this.availability + number,
       },
-      { new: true, runValidators: true },
-      (err, doc) => {
-        if (err) {
-          console.log(err);
-          next(err);
-        } else {
+    },
+    { new: true, runValidators: true }
+  );
 
+  let disocunt = await Discount.find({ _id: doc.discount[0] });
 
+  let discountedPrice =
+    -(doc.price / 100) * (1 - disocunt[0].value / 100) * number + total;
 
-          return Discount.find({ _id: doc.discount[0] }).then((disocunt) => {
-            let discountedPrice =
-              -(doc.price / 100) * (1 - disocunt[0].value / 100) * number +
-              total;
-            Session.findById(sessionId)
-              .then((session) =>
-                session.calculteTotal(sessionId, discountedPrice, next)
-              )
-              .then(() => {
-                return discountedPrice;
-              });
-          });
-
-
-
-        }
-      }
-    )
-    .clone();
+  return await Session.findById(sessionId).then((session) => {
+    session.calculteTotal(sessionId, discountedPrice, next);
+    return discountedPrice - total;
+  });
 };
 
 // products.methods.calculateTotal = function (id,next){

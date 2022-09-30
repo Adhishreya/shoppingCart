@@ -4,7 +4,6 @@ const categories = new mongoose.Schema({
     type: String,
     enum: { values: ['Food', 'Apparel', 'Electronics', 'Home', 'Other'] },
     required: true,
-    unique: true,
   }
 });
 module.exports = mongoose.model("Category", categories);

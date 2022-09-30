@@ -47,10 +47,14 @@ CartRouter.route("/:id").post(authenticate.verifyUser, (req, res, next) => {
                 data[0]._id,
                 data[0].total
               )
-              .then((data1) => {
-                console.log("data" + data1);
+              .then((amount) => {
                 CartItem.create(
-                  { sessionId: sessionId, productId: id, quantity: quantity },
+                  {
+                    sessionId: sessionId,
+                    productId: id,
+                    quantity: quantity,
+                    cost: amount,
+                  },
                   (err, doc) => {
                     if (err) {
                       next(err);

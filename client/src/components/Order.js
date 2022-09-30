@@ -23,7 +23,11 @@ const tabHeaders = [
 
 const OrderList = styled("div")(({ theme }) => ({
   display: "flex",
-  flexDirection: "column",
+  // flexDirection: "column",
+  alignItems:"center",
+  marginTop:"1rem",
+  // border:'1px solid grey',
+  gap: "1rem",
   [theme.breakpoints.down("md")]: {
     width: "90%",
     margin: "0rem auto",
@@ -31,11 +35,12 @@ const OrderList = styled("div")(({ theme }) => ({
 }));
 const OrderItem = styled("div")(({ theme }) => ({
   display: "flex",
-  alignItems: "center",
-  gap: "2rem",
-  margin: "1.5rem 0rem",
+  flexDirection: "column",
+  // alignItems: "center",
+  // gap: "2rem",
+  margin: "0rem 0rem",
   [theme.breakpoints.down("md")]: {
-    gap: "1rem",
+    gap: "0rem",
   },
 }));
 
@@ -53,7 +58,14 @@ const OrderTile = styled("div")(({ theme }) => ({
 const Image = styled("img")(({ theme }) => ({
   width: "8rem",
   height: "8rem",
+  marginLeft:"0.3rem",
   backgroundColor: alpha(theme.palette.common.black, 0.5),
+}));
+
+const Row = styled("div")(({ theme }) => ({
+  display:"flex",
+  alignItems:"center",
+  gap:"1rem"
 }));
 
 const Order = () => {
@@ -93,8 +105,8 @@ const Order = () => {
         onChange={(e, h) => {
           setSelectedTab(h);
           let selectedTabOption = tabHeaders[h].toLowerCase();
-          selectedTabOption = selectedTabOption.split(" ").join("")
-          navigate(`/order/${selectedTabOption}`)
+          selectedTabOption = selectedTabOption.split(" ").join("");
+          navigate(`/order/${selectedTabOption}`);
         }}
       >
         <Tab label={`${tabHeaders[0]}`} />
@@ -103,10 +115,10 @@ const Order = () => {
         <Tab label={`${tabHeaders[3]}`} />
       </Tabs>
       <Routes>
-        <Route path="buyagain" element={<BuyAgain/>}/>
-        <Route path="notyetshipped" element={<NotYetShiped/>}/>
-        <Route path="cancelledorders" element={<Cancelled/>}/>
-        <Route path="returned" element={<Returned/>}/>
+        <Route path="buyagain" element={<BuyAgain />} />
+        <Route path="notyetshipped" element={<NotYetShiped />} />
+        <Route path="cancelledorders" element={<Cancelled />} />
+        <Route path="returned" element={<Returned />} />
       </Routes>
       <Outlet></Outlet>
       <OrderTiles>
@@ -123,21 +135,24 @@ const Order = () => {
               {items &&
                 items.map((item) => (
                   <OrderList key={item._id}>
+                    <Image src={item.image} />
                     <OrderItem>
-                      <Image src={item.image} />
-                      <p>{item.productName}</p>
+                      <h2>{item.productName}</h2>
+                      <h3>{item.cost}</h3>
                       <p>{item.quantity}</p>
-                      <Rating
-                        name="simple-controlled"
-                        value={item.averageRating}
-                        id={item._id}
-                        ref={ratingRef}
-                        onChange={(event, newValue) => {
-                          setRating(newValue);
-                          modifyRating(navigate, item._id, rating);
-                        }}
-                      />
-                      <Button>Add a review</Button>
+                      <Row>
+                        <Rating
+                          name="simple-controlled"
+                          value={item.averageRating}
+                          id={item._id}
+                          ref={ratingRef}
+                          onChange={(event, newValue) => {
+                            setRating(newValue);
+                            modifyRating(navigate, item._id, rating);
+                          }}
+                        />
+                        <Button>Add a review</Button>
+                      </Row>
                     </OrderItem>
                   </OrderList>
                 ))}

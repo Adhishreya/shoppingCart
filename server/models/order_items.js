@@ -12,9 +12,14 @@ const order_items = new mongoose.Schema({
     type: Number,
   },
   status: {
-    defeault: "Pending",
+    default: "Pending",
     type: String,
     enum: { values: ["Delivered", "Pending", "Cancelled", "Returned"] },
+  },
+  cost: {
+    type: Number,
+    required: true,
+    default: 0,
   },
 });
 module.exports = mongoose.model("Order_items", order_items);
