@@ -2,7 +2,10 @@ import { Button, Rating, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { orders, modifyRating } from "../requestModules/products";
-import { getOrderItems } from "../requestModules/orders";
+import {
+  getInTransitOrderItems,
+  getOrderItems,
+} from "../requestModules/orders";
 
 import { styled, alpha } from "@mui/material/styles";
 const Container = styled("div")(({ theme }) => ({
@@ -23,10 +26,8 @@ const tabHeaders = [
 
 const OrderList = styled("div")(({ theme }) => ({
   display: "flex",
-  // flexDirection: "column",
-  alignItems:"center",
-  marginTop:"1rem",
-  // border:'1px solid grey',
+  alignItems: "center",
+  marginTop: "1rem",
   gap: "1rem",
   [theme.breakpoints.down("md")]: {
     width: "90%",
@@ -36,8 +37,6 @@ const OrderList = styled("div")(({ theme }) => ({
 const OrderItem = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  // alignItems: "center",
-  // gap: "2rem",
   margin: "0rem 0rem",
   [theme.breakpoints.down("md")]: {
     gap: "0rem",
@@ -58,43 +57,30 @@ const OrderTile = styled("div")(({ theme }) => ({
 const Image = styled("img")(({ theme }) => ({
   width: "8rem",
   height: "8rem",
-  marginLeft:"0.3rem",
+  marginLeft: "0.3rem",
   backgroundColor: alpha(theme.palette.common.black, 0.5),
 }));
 
 const Row = styled("div")(({ theme }) => ({
-  display:"flex",
-  alignItems:"center",
-  gap:"1rem"
+  display: "flex",
+  alignItems: "center",
+  gap: "1rem",
 }));
 
 const Order = () => {
   const [value, setValue] = useState([]);
-  const [items, setItems] = useState([]);
-  const [rating, setRating] = useState(2);
 
-  const ratingRef = useRef();
+  // const ratingRef = useRef();
 
   let navigate = useNavigate();
 
-  useEffect(() => {
-    orders(navigate).then((data) => setValue(data));
-  }, []);
-
-  const handleOrderFetch = async (id) => {
-    await getOrderItems(id).then((data) => {
-      setItems(data);
-    });
-  };
-
-  useEffect(() => {
-    if (items.length > 0) ratingRef.current.value = rating;
-  }, [rating]);
-
-  // let navigate = useNavigate();
   // useEffect(() => {
-  //   orders(navigate).then((data) => console.log(data));
+  //   orders(navigate).then((data) => setValue(data));
   // }, []);
+
+  // useEffect(() => {
+  //   if (items.length > 0) ratingRef.current.value = rating;
+  // }, [rating]);
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -121,44 +107,6 @@ const Order = () => {
         <Route path="returned" element={<Returned />} />
       </Routes>
       <Outlet></Outlet>
-      <OrderTiles>
-        {value &&
-          value.map((item) => (
-            <>
-              <OrderTile
-                key={item._id}
-                onClick={() => handleOrderFetch(item._id)}
-              >
-                <p>Payment {item.status}</p>
-                <p>&#8377;{item.total}</p>
-              </OrderTile>
-              {items &&
-                items.map((item) => (
-                  <OrderList key={item._id}>
-                    <Image src={item.image} />
-                    <OrderItem>
-                      <h2>{item.productName}</h2>
-                      <h3>{item.cost}</h3>
-                      <p>{item.quantity}</p>
-                      <Row>
-                        <Rating
-                          name="simple-controlled"
-                          value={item.averageRating}
-                          id={item._id}
-                          ref={ratingRef}
-                          onChange={(event, newValue) => {
-                            setRating(newValue);
-                            modifyRating(navigate, item._id, rating);
-                          }}
-                        />
-                        <Button>Add a review</Button>
-                      </Row>
-                    </OrderItem>
-                  </OrderList>
-                ))}
-            </>
-          ))}
-      </OrderTiles>
     </Container>
   );
 };
@@ -168,7 +116,17 @@ const BuyAgain = () => {
 };
 
 const NotYetShiped = () => {
-  return <>NotYetShiped</>;
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const handleOrderFetch = async () => {
+      await getInTransitOrderItems().then((data) => {
+        setItems(data);
+      });
+    };
+    handleOrderFetch();
+  }, []);
+  return <OrderWrapper items={items} />;
 };
 
 const Cancelled = () => {
@@ -177,6 +135,45 @@ const Cancelled = () => {
 
 const Returned = () => {
   return <>Returned</>;
+};
+
+const OrderWrapper = ({ items }) => {
+  const ratingRef = useRef();
+
+  const [rating, setRating] = useState(2);
+  
+  useEffect(() => {
+    if (items.length > 0) ratingRef.current.value = rating;
+  }, [rating]);
+
+  return (
+    <OrderTiles>
+      {items &&
+        items.map((item) => (
+          <OrderList key={item._id}>
+            <Image src={item.image} />
+            <OrderItem>
+              <h2>{item.productName}</h2>
+              <h3>{item.cost}</h3>
+              <p>{item.quantity}</p>
+              <Row>
+                <Rating
+                  name="simple-controlled"
+                  value={item.averageRating}
+                  id={item._id}
+                  ref={ratingRef}
+                  onChange={(event, newValue) => {
+                    setRating(newValue);
+                    modifyRating(navigate, item._id, rating);
+                  }}
+                />
+                <Button>Add a review</Button>
+              </Row>
+            </OrderItem>
+          </OrderList>
+        ))}
+    </OrderTiles>
+  );
 };
 
 export default Order;

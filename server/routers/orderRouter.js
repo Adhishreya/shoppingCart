@@ -11,7 +11,7 @@ const {
 
 orderRouter.route("/").get(authenticate.verifyUser, getOrder);
 
-orderRouter.route("/items/:id").get(authenticate.verifyUser, getOrderItems);
+orderRouter.route("/items").get(authenticate.verifyUser, getOrderItems);
 
 orderRouter.route("/checkout").post(authenticate.verifyUser, checkout);
 

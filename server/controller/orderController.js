@@ -26,15 +26,10 @@ const getOrder = async (req, res, next) => {
 
 const getOrderItems = async (req, res, next) => {
   try {
-    let id = req.params.id;
-    const orderDetails = await Orders.findById(id).populate({
-      path: "orderSummary",
-      populate: { path: "productId" },
-    });
-
-    const { status, total } = orderDetails;
-
-    let order_item = orderDetails.orderSummary.map((item) => {
+    const orderDetails = await Order_items.find({
+      status: "Pending",
+    }).populate("productId", "productName _id averageRating images");
+    let order_item = orderDetails.map((item) => {
       let { quantity, cost } = item;
       let { images, productName, averageRating, _id } = item.productId;
       return {
@@ -43,21 +38,9 @@ const getOrderItems = async (req, res, next) => {
         quantity,
         averageRating,
         cost,
-        _id,
+        _id: item._id,
       };
     });
-
-    // let orderItems = [];
-
-    // orderSummary.map(async (items)=>{
-    //     const orderItem = await Order_items.findById(items).populate('productId');
-
-    // const {productName,images} =  orderItem.productId;
-
-    // const order_item = {productName,images:images[0],quantity : orderItem.quantity};
-
-    // orderItems.push(order_item);
-    // });
 
     res.statusCode = 200;
     res.setHeader("ContentType", "appliation/json");

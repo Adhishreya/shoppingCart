@@ -15,7 +15,6 @@ productsRouter
       .populate("category")
       .populate("tags")
       .then((data) => {
-        // .populate('vendorDetails').populate('discount').populate('reviews.userId').then((data)=>{
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json(data);
