@@ -12,8 +12,6 @@ const sessionData = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    // default : Date.now,
-    // expires: '1440m'
   },
   modifiedAt: {
     type: Date,

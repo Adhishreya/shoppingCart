@@ -17,7 +17,7 @@ const getOrder = async (req, res, next) => {
       "orderSummary"
     );
     res.statusCode = 200;
-    res.setHeader("ContentType", "appliation/json");
+    res.setHeader("ContentType", "application/json");
     res.json(orders);
   } catch (error) {
     next(error);
@@ -43,7 +43,7 @@ const getOrderItems = async (req, res, next) => {
     });
 
     res.statusCode = 200;
-    res.setHeader("ContentType", "appliation/json");
+    res.setHeader("ContentType", "application/json");
     res.json(order_item);
   } catch (error) {
     next(error);
@@ -69,8 +69,6 @@ const checkout = async (req, res, next) => {
 
     doc.orderSummary = [...orderSummary];
 
-    await new Order_items().save();
-
     await doc.save();
 
     await Sessions.findByIdAndUpdate(
@@ -81,21 +79,148 @@ const checkout = async (req, res, next) => {
     await CartItem.deleteMany({ sessionId: session._id });
 
     res.statusCode = 200;
-    res.setHeader("ContentType", "appliation/json");
-    res.json("createdOrder");
+    res.setHeader("ContentType", "application/json");
+    res.json({ data: "createdOrder" });
   } catch (error) {
     next(error);
   }
 };
 
-const returenedOrders = async (req, res, next) => {};
+const getDeliveredItems = async (req, res, next) => {
+  try {
+    const orderDetails = await Order_items.find({
+      status: "Delivered",
+    }).populate("productId", "productName _id averageRating images");
+    let order_item = orderDetails.map((item) => {
+      let { quantity, cost } = item;
+      let { images, productName, averageRating, _id } = item.productId;
+      return {
+        image: images[0],
+        productName,
+        quantity,
+        averageRating,
+        cost,
+        _id: item._id,
+      };
+    });
 
-const cancelledOrders = async (req, res, next) => {};
+    res.statusCode = 200;
+    res.setHeader("ContentType", "application/json");
+    res.json(order_item);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const returnedOrders = async (req, res, next) => {
+  try {
+    const orderDetails = await Order_items.find({
+      status: "Returned",
+    }).populate("productId", "productName _id averageRating images");
+    let order_item = orderDetails.map((item) => {
+      let { quantity, cost } = item;
+      let { images, productName, averageRating, _id } = item.productId;
+      return {
+        image: images[0],
+        productName,
+        quantity,
+        averageRating,
+        cost,
+        _id: item._id,
+      };
+    });
+
+    res.statusCode = 200;
+    res.setHeader("ContentType", "application/json");
+    res.json(order_item);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const cancelledOrders = async (req, res, next) => {
+  try {
+    const orderDetails = await Order_items.find({
+      status: "Cancelled",
+    }).populate("productId", "productName _id averageRating images");
+    let order_item = orderDetails.map((item) => {
+      let { quantity, cost } = item;
+      let { images, productName, averageRating, _id } = item.productId;
+      return {
+        image: images[0],
+        productName,
+        quantity,
+        averageRating,
+        cost,
+        _id: item._id,
+      };
+    });
+
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json(order_item);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const cancelOrders = async (req, res, next) => {
+  let id = req.params.id;
+
+  try {
+    await Order_items.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          status: "Cancelled",
+        },
+      },
+      (err, doc) => {
+        if (err) next(err);
+        else {
+          res.statusCode = 200;
+          // res.setHeader("Content-Type", "application/json");
+          res.json({ data: "Order returned" });
+        }
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+const returnOrder = async (req, res, next) => {
+  let id = req.params.id;
+
+  try {
+    await Order_items.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          status: "Returned",
+        },
+      },
+      (err, _) => {
+        if (err) next(err);
+        else {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json({ data: "Order returned" });
+        }
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getOrder,
   getOrderItems,
   checkout,
+  cancelOrders,
+  getDeliveredItems,
+  returnOrder,
+  returnedOrders,
   cancelledOrders,
-  returenedOrders,
 };

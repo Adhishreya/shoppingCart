@@ -1,11 +1,18 @@
-import { Button, Rating, Tab, Tabs } from "@mui/material";
+import { Button, CircularProgress, Rating, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { orders, modifyRating } from "../requestModules/products";
 import {
   getInTransitOrderItems,
   getOrderItems,
+  cancelOrder,
+  getDeliveredItems,
+  returnOrder,
+  getReturnedItems,
+  getCancelledItems,
 } from "../requestModules/orders";
+
+import { Loading } from "./DataFetch";
 
 import { styled, alpha } from "@mui/material/styles";
 const Container = styled("div")(({ theme }) => ({
@@ -112,7 +119,17 @@ const Order = () => {
 };
 
 const BuyAgain = () => {
-  return <>BuyAgain</>;
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const handleOrderFetch = async () => {
+      await getDeliveredItems().then((data) => {
+        setItems(data);
+      });
+    };
+    handleOrderFetch();
+  }, []);
+  return <OrderWrapper items={items} route={"delivered"} />;
 };
 
 const NotYetShiped = () => {
@@ -126,53 +143,100 @@ const NotYetShiped = () => {
     };
     handleOrderFetch();
   }, []);
-  return <OrderWrapper items={items} />;
+  return <OrderWrapper items={items} route={"transit"} />;
 };
 
 const Cancelled = () => {
-  return <>Cancelled</>;
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const handleOrderFetch = async () => {
+      await getCancelledItems().then((data) => {
+        setItems(data);
+      });
+    };
+    handleOrderFetch();
+  }, []);
+  return <OrderWrapper items={items} route={"cancelled"} />;
 };
 
 const Returned = () => {
-  return <>Returned</>;
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const handleOrderFetch = async () => {
+      await getReturnedItems().then((data) => {
+        setItems(data);
+      });
+    };
+    handleOrderFetch();
+  }, []);
+  return <OrderWrapper items={items} route={"returned"} />;
 };
 
-const OrderWrapper = ({ items }) => {
+const OrderWrapper = ({ items, route }) => {
   const ratingRef = useRef();
 
+  const navigate = useNavigate();
+
   const [rating, setRating] = useState(2);
-  
+
   useEffect(() => {
     if (items.length > 0) ratingRef.current.value = rating;
   }, [rating]);
 
+  const handleCancel = async (id) => {
+    route == "transit" &&
+      (await cancelOrder(id).then(() => {
+        navigate("/");
+      }));
+
+    route == "delivered" &&
+      (await returnOrder(id).then(() => {
+        navigate("/");
+      }));
+  };
+
   return (
-    <OrderTiles>
-      {items &&
-        items.map((item) => (
-          <OrderList key={item._id}>
-            <Image src={item.image} />
-            <OrderItem>
-              <h2>{item.productName}</h2>
-              <h3>{item.cost}</h3>
-              <p>{item.quantity}</p>
-              <Row>
-                <Rating
-                  name="simple-controlled"
-                  value={item.averageRating}
-                  id={item._id}
-                  ref={ratingRef}
-                  onChange={(event, newValue) => {
-                    setRating(newValue);
-                    modifyRating(navigate, item._id, rating);
-                  }}
-                />
-                <Button>Add a review</Button>
-              </Row>
-            </OrderItem>
-          </OrderList>
+    <>
+      <OrderTiles>
+        {items &&
+          items.length > 0 &&
+          items.map((item) => (
+            <OrderList key={item._id}>
+              <Image src={item.image} />
+              <OrderItem>
+                <h2>{item.productName}</h2>
+                <h3>&#8377;{item.cost}</h3>
+                <p>{item.quantity}</p>
+                <Row>
+                  <Rating
+                    name="simple-controlled"
+                    value={item.averageRating}
+                    id={item._id}
+                    ref={ratingRef}
+                    onChange={(event, newValue) => {
+                      setRating(newValue);
+                      modifyRating(navigate, item._id, rating);
+                    }}
+                  />
+                  <Button>Add a review</Button>
+                  <Button onClick={() => handleCancel(item._id)}>
+                    {route === "transit" && "Cancel Order"}
+                    {route === "delivered" && "Return"}
+                  </Button>
+                </Row>
+              </OrderItem>
+            </OrderList>
+          ))}
+      </OrderTiles>
+      {items === null ||
+        (items.length === 0 && (
+          <Loading>
+            <CircularProgress />
+          </Loading>
         ))}
-    </OrderTiles>
+    </>
   );
 };
 

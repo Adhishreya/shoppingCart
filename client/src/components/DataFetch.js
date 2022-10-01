@@ -110,7 +110,7 @@ const FilterOption = styled("div")(({ theme }) => ({
 
 const FilterHeader = styled("h6")(({ theme }) => ({}));
 
-const Loading = styled("h1")(({ theme }) => ({
+export const Loading = styled("h1")(({ theme }) => ({
   width: "100%",
   textAlign: "center",
 }));
@@ -349,7 +349,9 @@ const Products = (props) => {
           </FilterOption>
         </OuterUnorderedList>
         {products.length === 0 ? (
-          <Loading><CircularProgress/></Loading>
+          <Loading>
+            <CircularProgress />
+          </Loading>
         ) : (
           <ProductList className="grid">
             {products.map((product) => {

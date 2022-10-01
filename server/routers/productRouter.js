@@ -265,12 +265,9 @@ productsRouter.route('/rating/:id')
             $set:{averageRating:rating}
         },{new:true});
 
-        console.log(ratingModified.averageRating);
-
         res.statusCode = 200;
         res.json(ratingModified.averageRating);
     })
-  //   console.log(req.params.id);
 });
 
 module.exports = productsRouter;
