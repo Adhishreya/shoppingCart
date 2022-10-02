@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Rating, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
-import { orders, modifyRating } from "../requestModules/products";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { modifyRating } from "../requestModules/products";
 import {
   getInTransitOrderItems,
-  getOrderItems,
   cancelOrder,
   getDeliveredItems,
   returnOrder,
@@ -75,19 +74,7 @@ const Row = styled("div")(({ theme }) => ({
 }));
 
 const Order = () => {
-  const [value, setValue] = useState([]);
-
-  // const ratingRef = useRef();
-
   let navigate = useNavigate();
-
-  // useEffect(() => {
-  //   orders(navigate).then((data) => setValue(data));
-  // }, []);
-
-  // useEffect(() => {
-  //   if (items.length > 0) ratingRef.current.value = rating;
-  // }, [rating]);
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -108,12 +95,11 @@ const Order = () => {
         <Tab label={`${tabHeaders[3]}`} />
       </Tabs>
       <Routes>
-        <Route path="buyagain" element={<BuyAgain />} />
+        <Route path="buyagain" element={<BuyAgain />} index />
         <Route path="notyetshipped" element={<NotYetShiped />} />
         <Route path="cancelledorders" element={<Cancelled />} />
         <Route path="returned" element={<Returned />} />
       </Routes>
-      <Outlet></Outlet>
     </Container>
   );
 };
@@ -179,7 +165,7 @@ const OrderWrapper = ({ items, route }) => {
 
   const navigate = useNavigate();
 
-  const [rating, setRating] = useState(2);
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     if (items.length > 0) ratingRef.current.value = rating;
@@ -188,12 +174,12 @@ const OrderWrapper = ({ items, route }) => {
   const handleCancel = async (id) => {
     route == "transit" &&
       (await cancelOrder(id).then(() => {
-        navigate("/");
+        navigate("/order/notyetshipped");
       }));
 
     route == "delivered" &&
       (await returnOrder(id).then(() => {
-        navigate("/");
+        navigate("/order/buyagain");
       }));
   };
 

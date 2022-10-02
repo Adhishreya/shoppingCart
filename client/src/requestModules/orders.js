@@ -6,7 +6,6 @@ export const getOrderItems = async (id) => {
   const orderItems = await axios.get(`${url}orders/items/${id}`, {
     headers: { Authorization: "bearer " + localStorage.getItem("token") },
   });
-  console.log(orderItems.data);
   return orderItems.data;
 };
 

@@ -5,8 +5,6 @@ const {
   Orders,
   Payment,
   Sessions,
-  User,
-  Products,
 } = require("../models");
 
 const { createError } = require("../error");
@@ -39,6 +37,7 @@ const getOrderItems = async (req, res, next) => {
         averageRating,
         cost,
         _id: item._id,
+        product_id: _id,
       };
     });
 
@@ -101,6 +100,7 @@ const getDeliveredItems = async (req, res, next) => {
         averageRating,
         cost,
         _id: item._id,
+        product_id: _id,
       };
     });
 
@@ -127,6 +127,7 @@ const returnedOrders = async (req, res, next) => {
         averageRating,
         cost,
         _id: item._id,
+        product_id: _id,
       };
     });
 
@@ -153,6 +154,7 @@ const cancelledOrders = async (req, res, next) => {
         averageRating,
         cost,
         _id: item._id,
+        product_id: _id,
       };
     });
 
@@ -174,16 +176,11 @@ const cancelOrders = async (req, res, next) => {
         $set: {
           status: "Cancelled",
         },
-      },
-      (err, doc) => {
-        if (err) next(err);
-        else {
-          res.statusCode = 200;
-          // res.setHeader("Content-Type", "application/json");
-          res.json({ data: "Order returned" });
-        }
       }
     );
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({ data: "Order Cancelled" });
   } catch (error) {
     next(error);
   }
@@ -194,21 +191,17 @@ const returnOrder = async (req, res, next) => {
 
   try {
     await Order_items.findByIdAndUpdate(
-      id,
+      { _id: id },
       {
         $set: {
           status: "Returned",
         },
-      },
-      (err, _) => {
-        if (err) next(err);
-        else {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json({ data: "Order returned" });
-        }
       }
     );
+
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({ data: "Order returned" });
   } catch (error) {
     next(error);
   }
