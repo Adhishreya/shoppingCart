@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect, context } from "react-redux";
+import { connect } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import {
   Products,
@@ -8,10 +8,10 @@ import {
   ProductDetails,
   Profile,
   Cart,
-  Vendor,
   Admin,
   Order,
   ManagePayments,
+  Review,
 } from "./components";
 
 import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
@@ -34,6 +34,7 @@ class Main extends Component {
           <Route path="/cart" element={<Cart value={this.props} />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/order/*" element={<Order />} />
+          <Route path="/review/*" element={<Review/>}/>
           <Route
             path="/"
             element={

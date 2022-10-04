@@ -33,6 +33,7 @@
 - [mongo]
 - https://stackoverflow.com/questions/3305561/how-to-query-mongodb-with-like
 - https://stackoverflow.com/questions/60227421/how-can-i-convert-image-buffer-to-photo-to-upload-to-cloudinary
+- https://tarunbatra.com/blog/data/Restore-deleted-MongoDB-documents-using-Oplog/
 
 - [errors]
 - https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares

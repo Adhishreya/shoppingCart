@@ -5,6 +5,7 @@ const Reviews = require("../models/reviews");
 const Tags = require("../models/tags");
 const Discount = require("../models/discount");
 const Session = require("../models/session");
+const { result } = require("lodash");
 
 const products = new mongoose.Schema({
   productName: {
@@ -38,12 +39,12 @@ const products = new mongoose.Schema({
       }
     },
   },
-  // reviews: [
-  //     {
-  //         type: mongoose.Schema.Types.ObjectId,
-  //         ref: Reviews
-  //     }
-  // ],
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: Reviews,
+    },
+  ],
   colours: [
     {
       type: String,
@@ -118,4 +119,39 @@ products.methods.updateAvailability = async function (
 // }
 
 // products.createIndex({name:"text",description:"text"})
+
+products.methods.updateRating = async function (id, rating, rating_id) {
+  // let product_item = await this.model(
+  //   this.constructor.modelName,
+  //   this.schema
+  // ).findById(id);
+  // product_item.averageRating = avgRating;
+  // product_item.reviews.push(rating_id);
+  // return product_item.save();
+  // return this.model(this.constructor.modelName, this.schema).findById(
+  //   id,
+  //   (err, doc) => {
+  //     // console.log(doc);
+  //     if (doc) {
+  //       let avgRating = (doc.averageRating + rating) / 2;
+  //       doc.averageRating = avgRating;
+  //       doc.reviews.push(rating_id);
+  //       doc.save().then((res) => {
+  //         return res;
+  //       });
+  //     }
+  //   },
+  // );
+
+  await this.model(this.constructor.modelName, this.schema).findByIdAndUpdate(
+    { _id: id },
+    {
+      $set: {
+        averageRating: (rating + this.averageRating) / 2,
+      },
+      $push: { reviews: rating_id },
+    }
+  );
+};
+
 module.exports = mongoose.model("Products", products);

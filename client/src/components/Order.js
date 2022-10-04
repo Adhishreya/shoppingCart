@@ -1,7 +1,6 @@
-import { Button, CircularProgress, Rating, Tab, Tabs } from "@mui/material";
-import React, { useEffect, useState, useRef } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { modifyRating } from "../requestModules/products";
+import { Button, CircularProgress, Tab, Tabs } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import {
   getInTransitOrderItems,
   cancelOrder,
@@ -21,7 +20,6 @@ const Container = styled("div")(({ theme }) => ({
     width: "100%",
   },
 }));
-const Wrapper = styled("div")(({ theme }) => ({}));
 
 const tabHeaders = [
   "Buy Again",
@@ -67,7 +65,7 @@ const Image = styled("img")(({ theme }) => ({
   backgroundColor: alpha(theme.palette.common.black, 0.5),
 }));
 
-const Row = styled("div")(({ theme }) => ({
+export const Row = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: "1rem",
@@ -161,15 +159,11 @@ const Returned = () => {
 };
 
 const OrderWrapper = ({ items, route }) => {
-  const ratingRef = useRef();
-
   const navigate = useNavigate();
 
-  const [rating, setRating] = useState(0);
-
-  useEffect(() => {
-    if (items.length > 0) ratingRef.current.value = rating;
-  }, [rating]);
+  // useEffect(() => {
+  //   if (items.length > 0) ratingRef.current.value = rating;
+  // }, [rating]);
 
   const handleCancel = async (id) => {
     route == "transit" &&
@@ -196,17 +190,9 @@ const OrderWrapper = ({ items, route }) => {
                 <h3>&#8377;{item.cost}</h3>
                 <p>{item.quantity}</p>
                 <Row>
-                  <Rating
-                    name="simple-controlled"
-                    value={item.averageRating}
-                    id={item._id}
-                    ref={ratingRef}
-                    onChange={(event, newValue) => {
-                      setRating(newValue);
-                      modifyRating(navigate, item._id, rating);
-                    }}
-                  />
-                  <Button>Add a review</Button>
+                  <Link to={`/review?review-purchase=${item.product_id}`}>
+                    <Button>Add a review</Button>
+                  </Link>
                   <Button onClick={() => handleCancel(item._id)}>
                     {route === "transit" && "Cancel Order"}
                     {route === "delivered" && "Return"}

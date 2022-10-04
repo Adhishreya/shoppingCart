@@ -2,7 +2,6 @@ const productsRouter = require("express").Router();
 const { Products, CartItem } = require("../models");
 const authenticate = require("../authentication");
 const mongoose = require("mongoose");
-const apicache = require("apicache");
 
 productsRouter
   .route("/")
@@ -125,6 +124,7 @@ productsRouter
       .populate("discount")
       .populate("category")
       .populate("tags")
+      .populate({ path: "reviews" ,populate:"userId"})
       .then((data) => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
@@ -221,53 +221,81 @@ productsRouter.route("/trial/:id").get((req, res) => {
       res.json(data);
     });
 
-productsRouter.route('/categories/:id')
-    .get((req, res) => {
-        Products.find({ category: { $in: [mongoose.Types.ObjectId(req.params.id)] } }).then(data => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(data);
-        }, err => next(err))
-    })
-
-productsRouter.route('/tags/:id')
-    .get((req, res) => {
-        Products.find({ tags: { $in: [mongoose.Types.ObjectId(req.params.id)] } }).then(data => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(data);
-        }, err => next(err))
-    })
-
-productsRouter.route('/discount/:id')
-    .get((req, res) => {
-        Products.find({ discount: { $in: [mongoose.Types.ObjectId(req.params.id)] } }).then(data => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(data);
-        }, err => next(err))
-    })
-
-productsRouter.route('/price/range/')
-    .get((req, res, next) => {
-        Products.find({ price: { $gt: parseInt(req.query.lower), $lt: parseInt(req.query.upper) } }).then(data => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(data);
-        }, err => next(err))
-    })
-
-productsRouter.route('/rating/:id')
-    .put(async (req,res,next)=>{
-        let {rating} = req.body;
-        let id= req.params.id; 
-        const ratingModified = await Products.findByIdAndUpdate(id,{
-            $set:{averageRating:rating}
-        },{new:true});
-
+  productsRouter.route("/categories/:id").get((req, res) => {
+    Products.find({
+      category: { $in: [mongoose.Types.ObjectId(req.params.id)] },
+    }).then(
+      (data) => {
         res.statusCode = 200;
-        res.json(ratingModified.averageRating);
-    })
+        res.setHeader("Content-Type", "application/json");
+        res.json(data);
+      },
+      (err) => next(err)
+    );
+  });
+
+  productsRouter.route("/tags/:id").get((req, res) => {
+    Products.find({
+      tags: { $in: [mongoose.Types.ObjectId(req.params.id)] },
+    }).then(
+      (data) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(data);
+      },
+      (err) => next(err)
+    );
+  });
+
+  productsRouter.route("/discount/:id").get((req, res) => {
+    Products.find({
+      discount: { $in: [mongoose.Types.ObjectId(req.params.id)] },
+    }).then(
+      (data) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(data);
+      },
+      (err) => next(err)
+    );
+  });
+
+  productsRouter.route("/price/range/").get((req, res, next) => {
+    Products.find({
+      price: { $gt: parseInt(req.query.lower), $lt: parseInt(req.query.upper) },
+    }).then(
+      (data) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(data);
+      },
+      (err) => next(err)
+    );
+  });
+
+  productsRouter.route("/rating/:id").put(async (req, res, next) => {
+    let { rating } = req.body;
+    let id = req.params.id;
+    const ratingModified = await Products.findByIdAndUpdate(
+      id,
+      {
+        $set: { averageRating: rating },
+      },
+      { new: true }
+    );
+
+    res.statusCode = 200;
+    res.json(ratingModified.averageRating);
+  });
 });
 
+productsRouter.route("/basic/:id").get((req, res, next) => {
+  let id = req.params.id;
+  Products.findById(id, "images productName")
+    .then((result) => {
+      res.statusCode = 200;
+      res.json(result);
+    })
+    .catch((err) => next(err));
+});
 module.exports = productsRouter;

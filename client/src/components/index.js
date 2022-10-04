@@ -9,6 +9,7 @@ import Admin from "./Admin";
 import Order from "./Order";
 import Login from "./Login";
 import ManagePayments from "./ManagePayments";
+import Review from "./Review";
 
 export {
     Products,
@@ -21,5 +22,6 @@ export {
     Admin,
     Order,
     Login,
+    Review,
     ManagePayments
 }

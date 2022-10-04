@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   cartDetails,
   increment,
@@ -11,7 +11,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, Modal, Typography } from "@mui/material";
 
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 const FlexContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -204,7 +204,7 @@ const Cart = (props) => {
                 sx={{ mt: 2 }}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  orderCheckout("COD", "", setOpen,navigate);
+                  orderCheckout("COD", "", setOpen, navigate);
                 }}
               >
                 Cash On Delivery

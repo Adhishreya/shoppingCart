@@ -27,7 +27,8 @@ const
     TagRouter,
     DiscountRouter,
     addressRouter,
-    categoryRouter
+    categoryRouter,
+    ReviewRouter
   } = require('./routers');
 
   var opts = {}
@@ -92,6 +93,7 @@ app.use('/address', addressRouter);
 app.use('/vendor', vendorRouter);
 app.use('/products', productsRouter);
 app.use('/cart', CartRouter);
+app.use('/review',ReviewRouter);
 app.use('/categories', categoryRouter);
 app.use('/payment/methods', UserPaymentRouter);
 app.use('/orders', orderRouter);

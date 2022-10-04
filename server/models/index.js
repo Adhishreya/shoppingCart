@@ -13,6 +13,7 @@ var Orders = require('./order');
 const Tags = require('./tags');
 const PayDetails = require('./userPayment');
 const Vendor = require('./vendor');
+const Reviews = require('./reviews');
 
 module.exports = {
     Address,
@@ -29,5 +30,6 @@ module.exports = {
     Orders,
     Tags,
     PayDetails,
-    Vendor
+    Vendor,
+    Reviews
 }

@@ -49,6 +49,12 @@ const GridDisplay = styled("div")(({ theme }) => ({
   },
 }));
 
+const Avatar = styled("img")(({ theme }) => ({
+  width: "5rem",
+  height: "5rem",
+  borderRadius: "50%",
+}));
+
 const Detail = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -72,6 +78,7 @@ const ProductDetails = (props) => {
   useEffect(() => {
     productDetails(param.id)
       .then((res) => {
+        console.log(res);
         setData(res);
       })
       .catch((err) => console.log(err));
@@ -134,7 +141,7 @@ const ProductDetails = (props) => {
               <p>
                 {data.averageRating > 0 ? (
                   // `Rating : ${ data.averageRating}`
-                  <Rating value={data.averageRating} readOnly />
+                  <Rating value={data.averageRating} readOnly precision={0.5} />
                 ) : (
                   "Rating is not available for this product"
                 )}
@@ -165,20 +172,34 @@ const ProductDetails = (props) => {
             </Detail>
           </FlexRow>
 
-          {/* {
-                        data.reviews.lenght > 0 ? <div className="flex-row">
-                            {
-                                data.reviews.map((item, index) => <div>
-                                    <h6>{item.username}</h6>
-                                    <p>{item.title}</p>
-                                    <p>{item.body}</p>
-                                </div>)
-                            }
-                        </div> : <p style={{margin: "6% 4%"}}>Reviews on this product is not yet available</p>
-                    } */}
+          {data.reviews.length > 0 ? (
+            <div className="flex-row">
+              <h1>Reviews</h1>
+              {data.reviews.map((item, index) => (
+                <div key={item._id}>
+                  <h5>{item.userId.username}</h5>
+                  {item.userId.displayPicture && (
+                    <Avatar src={item.userId.displayPicture} />
+                  )}
+                  {/* <h6>{item.username}</h6> */}
+                  <p>{item.title}</p>
+                  <Rating value={item.rating} readOnly precision={0.5} />
+                  <p>{item.body}</p>
+                  <hr/>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ margin: "6% 4%" }}>
+              Reviews on this product is not yet available
+            </p>
+          )}
+          {/* {<h1>Reviews</h1>} */}
         </div>
       ) : (
-        <Loading><CircularProgress /></Loading>
+        <Loading>
+          <CircularProgress />
+        </Loading>
       )}
     </Container>
   );
