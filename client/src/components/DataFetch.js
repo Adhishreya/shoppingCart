@@ -28,11 +28,7 @@ import {
   tagsDetails,
   discountDetails,
   getCategories,
-  getProductByCategory,
-  getProductByTag,
-  getProductByDiscount,
   filterProducts,
-  getQuantity,
 } from "../requestModules/products";
 
 const CardFooter = styled("div")(({ theme }) => ({

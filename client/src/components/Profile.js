@@ -131,6 +131,9 @@ const Profile = () => {
             <Link to="/cart">
               <BasicDetails variant="contained">Cart</BasicDetails>
             </Link>
+            <Link to="/wish-list">
+              <BasicDetails variant="contained">Wish List</BasicDetails>
+            </Link>
             <Link to="/profile/vendor">
               <BasicDetails variant="contained">
                 Register as Vendor

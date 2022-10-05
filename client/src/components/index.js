@@ -10,6 +10,7 @@ import Order from "./Order";
 import Login from "./Login";
 import ManagePayments from "./ManagePayments";
 import Review from "./Review";
+import WishList from "./WishList";
 
 export {
     Products,
@@ -23,5 +24,6 @@ export {
     Order,
     Login,
     Review,
-    ManagePayments
+    ManagePayments,
+    WishList,
 }

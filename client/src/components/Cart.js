@@ -137,7 +137,6 @@ const Cart = (props) => {
                   </h2>
                   <Controls>
                     <Button
-                      color="secondary"
                       variant="contained"
                       onClick={() => {
                         decrement(cartItem.productId._id, navigate).then(

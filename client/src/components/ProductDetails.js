@@ -1,11 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { productDetails } from "../requestModules/products";
+import {
+  addToWishList,
+  checkWishList,
+  productDetails,
+  removeFromWishList,
+} from "../requestModules/products";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import { Button, CircularProgress, Rating } from "@mui/material";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import {
+  Button,
+  CircularProgress,
+  MenuItem,
+  Rating,
+  Select,
+  TextField,
+} from "@mui/material";
+
+import { Link, useNavigate } from "react-router-dom";
 
 import { styled, alpha } from "@mui/material/styles";
+import { Row } from "./Order";
 
 const Wrapper = styled("div")(({ theme }) => ({
   display: "flex",
@@ -75,14 +92,26 @@ const ProductDetails = (props) => {
   const [showDetails, setDetails] = useState(false);
   const [img, setImg] = useState(null);
 
+  const [isWishListPresent, setIsWishListPresent] = useState(false);
+
+  let navigate = useNavigate();
+
   useEffect(() => {
     productDetails(param.id)
       .then((res) => {
-        console.log(res);
         setData(res);
       })
       .catch((err) => console.log(err));
+
+    checkWishList(param.id).then((res) => {
+      if (res.data) setIsWishListPresent(true);
+    });
   }, []);
+
+  const handleChange = (e) => {
+    console.log(e.target.value);
+  };
+
   let param = useParams();
   return (
     <Container>
@@ -169,10 +198,57 @@ const ProductDetails = (props) => {
               <p style={{ display: "flex", width: "76%" }}>
                 {data.description ? data.description : null}
               </p>
+              <Row style={{ margin: "2rem 0rem" }}>
+                {/* <TextField
+                  style={{ width: "4rem" }}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                /> */}
+
+                {/* <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  style={{ width: "4rem" }}
+                  value=""
+                  label="Age"
+                  onChange={handleChange}
+                >
+                  {Array.from({ length: data.availability }, (v, i) => i).map(
+                    (i, v) => (
+                      <MenuItem key={v} value={i}>
+                        {i}
+                      </MenuItem>
+                    )
+                  )}
+                </Select>
+                {/* </FormControl> */}
+
+                <Button>Add to cart</Button>
+              </Row>
+              {!isWishListPresent ? (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    addToWishList(data._id, navigate);
+                  }}
+                >
+                  Add to wishlist
+                  <BookmarkBorderIcon />
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  onClick={() => removeFromWishList(data._id, navigate)}
+                >
+                  Remove from Wishlist
+                  <BookmarkIcon />
+                </Button>
+              )}
             </Detail>
           </FlexRow>
 
-          {data.reviews.length > 0 ? (
+          {data.reviews && data.reviews.length > 0 ? (
             <div className="flex-row">
               <h1>Reviews</h1>
               {data.reviews.map((item, index) => (
@@ -185,7 +261,7 @@ const ProductDetails = (props) => {
                   <p>{item.title}</p>
                   <Rating value={item.rating} readOnly precision={0.5} />
                   <p>{item.body}</p>
-                  <hr/>
+                  <hr />
                 </div>
               ))}
             </div>
