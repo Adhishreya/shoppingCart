@@ -9,9 +9,20 @@ import {
   getCardDetails,
 } from "../requestModules/products";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Button, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  Modal,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import { styled } from "@mui/material/styles";
+import { addAddress, getAddress } from "../requestModules/authenticate";
+import Checkout from "./Checkout";
 
 const FlexContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -56,25 +67,25 @@ const Image = styled("img")(({ theme }) => ({
   },
 }));
 
+const Column = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: "2rem",
+}));
+
 const Cart = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [cartData, setCartData] = useState(null);
-  const [selectDebit, setSelectDebit] = useState(false);
-  const [cardDetails, setCardDetails] = useState([]);
+
+  let selectAddress = props.value.selectAddress;
+  let address = props.value.address;
 
   let navigate = useNavigate();
   var quantity = 0;
 
   const signedIn = localStorage.getItem("token");
-  useEffect(() => {
-    if (selectDebit) {
-      getCardDetails(navigate).then((res) => {
-        setCardDetails(res.data);
-      });
-    } else setCardDetails([]);
-  }, [selectDebit]);
 
   const style = {
     position: "absolute",
@@ -104,6 +115,7 @@ const Cart = (props) => {
         }
       });
   }, [signedIn]);
+
   return (
     <Container>
       {cartData === null ||
@@ -193,74 +205,168 @@ const Cart = (props) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {!selectDebit ? (
-            <>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Payment methods
-              </Typography>
-              <Typography
-                id="modal-modal-description"
-                sx={{ mt: 2 }}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  orderCheckout("COD", "", setOpen, navigate);
-                }}
-              >
-                Cash On Delivery
-              </Typography>
-              <Typography
-                id="modal-modal-description"
-                sx={{ mt: 2 }}
-                style={{ cursor: "pointer" }}
-                onClick={() => setSelectDebit(true)}
-              >
-                Debit/Credit
-              </Typography>
-              <Typography
-                id="modal-modal-description"
-                sx={{ mt: 2 }}
-                style={{ cursor: "pointer" }}
-              >
-                UPI
-              </Typography>
-              <Typography
-                id="modal-modal-description"
-                sx={{ mt: 2 }}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  orderCheckout("Wallet", "ShopPay", setOpen);
-                }}
-              >
-                Wallet
-              </Typography>
-            </>
-          ) : (
-            <>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Select Card
-              </Typography>
-              {cardDetails &&
-                cardDetails.map((card) => (
-                  <Typography
-                    key={card._id}
-                    id="modal-modal-description"
-                    sx={{ mt: 2 }}
-                    onClick={() => {
-                      orderCheckout("Card", card.cardName);
-                    }}
-                  >
-                    {card.cardName}{" "}
-                    {`${card.cardNumber.substr(
-                      0,
-                      4
-                    )}...${card.cardNumber.substr(-4)}`}
-                  </Typography>
-                ))}
-            </>
-          )}
+          <Checkout
+            setOpen={setOpen}
+            navigate={navigate}
+            style={style}
+            selectAddress={selectAddress}
+            address={address}
+          />
         </Box>
       </Modal>
     </Container>
   );
 };
+
+export const SelectAddress = ({ navigate, selectAddress, address }) => {
+  const [addresses, setAddresses] = useState(null);
+
+  const [newAddress, setNewAddress] = useState();
+
+  const [selectedAddress, setSelectedAddress] = useState();
+
+  useEffect(() => {
+    getAddress(navigate).then((res) => {
+      setAddresses(res);
+    });
+  }, []);
+
+  const handleEvent = () => {
+    addAddress({ addressLine1: newAddress }, navigate).then((res) => {
+      setSelectedAddress(res);
+      selectAddress(res);
+    });
+  };
+
+  const handleChange = (e) => {
+    setNewAddress(e.target.value);
+  };
+
+  const handleSelect = (e) => {
+    setSelectedAddress(e.target.value);
+    selectAddress(e.target.value);
+  };
+
+  return (
+    <div>
+      <h2>Select Shipping Address</h2>
+      {addresses && addresses.length > 0 && (
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue={addresses[0]._id}
+          name="address"
+          onChange={handleSelect}
+        >
+          {addresses.map((address, index) => (
+            <FormControlLabel
+              key={address._id}
+              value={address._id}
+              control={<Radio />}
+              label={address.addressLine1}
+            />
+          ))}
+        </RadioGroup>
+      )}
+      <Column>
+        <TextField
+          id="outlined-multiline-flexible"
+          multiline
+          maxRows={8}
+          value={newAddress}
+          onChange={handleChange}
+        />
+        <Button variant="contained" onClick={handleEvent}>
+          Add new Address
+        </Button>
+      </Column>
+    </div>
+  );
+};
+
+export const Payment = ({
+  setOpen,
+  navigate,
+  style,
+  selectAddress,
+  address,
+}) => {
+  const [selectDebit, setSelectDebit] = useState(false);
+  const [cardDetails, setCardDetails] = useState([]);
+
+  useEffect(() => {
+    if (selectDebit) {
+      getCardDetails(navigate).then((res) => {
+        setCardDetails(res.data);
+      });
+    } else setCardDetails([]);
+  }, [selectDebit]);
+
+  return (
+    <Box>
+      <h2>Select Payment Method</h2>
+      {!selectDebit ? (
+        <>
+          <Typography
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              orderCheckout("COD", "", address, navigate);
+            }}
+          >
+            Cash On Delivery
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+            style={{ cursor: "pointer" }}
+            onClick={() => setSelectDebit(true)}
+          >
+            Debit/Credit
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+            style={{ cursor: "pointer" }}
+          >
+            UPI
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            sx={{ mt: 2 }}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              orderCheckout("Wallet", "ShopPay", address, navigate);
+            }}
+          >
+            Wallet
+          </Typography>
+        </>
+      ) : (
+        <>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Select Card
+          </Typography>
+          {cardDetails &&
+            cardDetails.map((card) => (
+              <Typography
+                key={card._id}
+                id="modal-modal-description"
+                sx={{ mt: 2 }}
+                onClick={() => {
+                  orderCheckout("Card", card.cardName);
+                }}
+              >
+                {card.cardName}{" "}
+                {`${card.cardNumber.substr(0, 4)}...${card.cardNumber.substr(
+                  -4
+                )}`}
+              </Typography>
+            ))}
+        </>
+      )}
+    </Box>
+  );
+};
+
 export default Cart;

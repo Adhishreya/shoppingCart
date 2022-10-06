@@ -51,9 +51,13 @@ const getOrderItems = async (req, res, next) => {
 
 const checkout = async (req, res, next) => {
   try {
-    let { paymentMode, provider } = req.body;
+    let { paymentMode, provider, address } = req.body;
     const session = await Sessions.findOne({ userId: req.user._id }, "total");
-    const doc = new Orders({ userId: req.user._id, total: session.total });
+    const doc = new Orders({
+      userId: req.user._id,
+      total: session.total,
+      shippingAddress: address,
+    });
 
     await Payment.create({
       orderId: mongoose.Types.ObjectId(doc._id),

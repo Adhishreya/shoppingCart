@@ -25,6 +25,8 @@ class Main extends Component {
           value={this.props.itemCount}
           setCount={this.props.setQuantity}
           searchString={this.props.setSearchState}
+          // selectedAddress={this.props.selectedAddress}
+          // selectAddress= {this.props.selectAddress}
         />
         <Routes>
           {["*", "/error"].map((path) => (

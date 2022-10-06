@@ -1,11 +1,14 @@
 import axios from "axios";
 import { cartDetails } from "../requestModules/products";
+
+let url = "http://localhost:5000";
+
 export const loginRequest = ({ username, password }, navigate, setCount) => {
   var quantity = 0;
   var cartItems = [];
 
   return axios
-    .post("http://localhost:5000/users/signin", {
+    .post(`${url}/signin`, {
       username: username,
       password: password,
     })
@@ -13,7 +16,7 @@ export const loginRequest = ({ username, password }, navigate, setCount) => {
       localStorage.setItem("token", res.data.token);
       navigate("/");
       axios
-        .get("http://localhost:5000/users/profile", {
+        .get(`${url}/users/profile`, {
           headers: { Authorization: "Bearer " + localStorage.getItem("token") },
         })
         .then((result) => {
@@ -32,7 +35,6 @@ export const loginRequest = ({ username, password }, navigate, setCount) => {
         });
     })
     .catch((err) => {
-      //   console.log(err.response);
       if (err.response.status === 401) return 401;
       else navigate("/error");
     });
@@ -42,8 +44,8 @@ export const signupRequest = (
   { username, password, email, phone },
   navigate
 ) => {
- return axios
-    .post("http://localhost:5000/users/signup", {
+  return axios
+    .post(`${url}/users/signup`, {
       username: username,
       password: password,
       email: email,
@@ -54,7 +56,7 @@ export const signupRequest = (
         localStorage.setItem("token", res.data.token);
         navigate("/");
         axios
-          .get("http://localhost:5000/users/profile", {
+          .get(`${url}/users/profile`, {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
             },
@@ -62,19 +64,18 @@ export const signupRequest = (
           .then((result) => {
             localStorage.setItem("user", result.data[0].username);
           });
-          return null;
-      }else{
-        return res.data
+        return null;
+      } else {
+        return res.data;
       }
     })
     .catch((err) => {
-      console.log(err.response);
       navigate("/error");
     });
 };
 
 // export const profileDetails = ()=>{
-//     axios.get("http://localhost:5000/users/profile",{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(result=>{console.log(result.data[0].username);localStorage.setItem("user",result.data[0].username);})
+//     axios.get("http://localhost:5000/users/profile",{headers:{Authorization:'Bearer '+localStorage.getItem("token")}}).then(result=>{localStorage.setItem("user",result.data[0].username);})
 // }
 
 export const uploadImage = (image, navigate) => {
@@ -82,18 +83,16 @@ export const uploadImage = (image, navigate) => {
   data.append("image", image, "" + image.name + "");
   // const data = {"image":image};
   axios
-    .post("http://localhost:5000/users/uploadProfilePicture", data, {
+    .post(`${url}/users/uploadProfilePicture`, data, {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     })
     .then(
       (res) => {
-        console.log(res.data);
         if (res.data) {
           navigate("/profile");
         }
       },
       (err) => {
-        console.log(err.response);
         navigate("/error");
       }
     );
@@ -102,67 +101,66 @@ export const uploadImage = (image, navigate) => {
 export const changeAddress = (id, address, navigate) => {
   axios
     .post(
-      "http://localhost:5000/address/" + id,
+      `${url}/address/${id}`,
       { address: address },
       { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
     )
     .then(
       (res) => {
-        console.log(res.data);
         if (res.data) {
           navigate("/profile");
           window.location.reload();
         }
       },
       (err) => {
-        console.log(err.response);
         navigate("/error");
       }
     );
 };
 
-export const addAddress = (address, navigate) => {
-  axios
+export const addAddress = (address, navigate, retain = false) => {
+  return axios
     .post(
-      "http://localhost:5000/address",
+      `${url}/address`,
       { address: address },
       { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }
     )
     .then(
       (res) => {
-        console.log(res.data);
         if (res.data) {
-          navigate("/profile");
-          window.location.reload();
+          if (retain) {
+            navigate("/profile");
+            window.location.reload();
+          } else {
+            return res.data.address[0];
+          }
         }
       },
       (err) => {
-        console.log(err.response);
         navigate("/error");
       }
     );
 };
 
 export const profileDetails = () => {
-  // axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { console.log(res.data); if (res.data) { navigate("/profile") } }, err => { console.log(err.response); navigate("/error") })
+  // axios.get("http://localhost:5000/users/profile", { headers: { Authorization: 'Bearer ' + localStorage.getItem("token") } }).then(res => { if (res.data) { navigate("/profile") } }, err => {  navigate("/error") })
   return new Promise((resolve, reject) => {
     axios
-      .get("http://localhost:5000/users/profile", {
+      .get(`${url}/users/profile`, {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
         resolve(res.data);
-        //  console.log(res.data); if (res.data) { req(res.data) } }
+        //   if (res.data) { req(res.data) } }
         // , err => {
-        //     console.log(err.response);
         //     navigate("/error")
       });
   });
 };
+
 export const deleteAddress = (id, navigate) => {
-  console.log("http://localhost:5000/address/" + id);
   axios
-    .delete("http://localhost:5000/address/" + id, {
+    .delete(`${url}/address/${id}`, {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     })
     .then((res) => {
@@ -172,7 +170,6 @@ export const deleteAddress = (id, navigate) => {
       }
     })
     .catch((err) => {
-      console.log(err.response);
       navigate("/error");
     });
 };
@@ -180,7 +177,7 @@ export const deleteAddress = (id, navigate) => {
 export const userVendorProfile = () => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://localhost:5000/vendor/profile", {
+      .get(`${url}/vendor/profile`, {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
@@ -196,7 +193,7 @@ export const vendorRegister = (vendorDetails, navigate) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        "http://localhost:5000/vendor/profile",
+        `${url}/vendor/profile`,
         { vendorDetails },
         {
           headers: { Authorization: "Bearer " + localStorage.getItem("token") },
@@ -209,6 +206,22 @@ export const vendorRegister = (vendorDetails, navigate) => {
         }
       })
       .catch((err) => {
+        navigate("/error");
+      });
+  });
+};
+
+export const getAddress = (navigate) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${url}/address`, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
         navigate("/error");
       });
   });

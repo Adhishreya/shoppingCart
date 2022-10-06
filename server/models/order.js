@@ -30,7 +30,8 @@ const order = new mongoose.Schema({
     //     type: Number
     // },  // no of items in the cart
     shippingAddress: {
-        type: String
+        type: mongoose.Types.ObjectId,
+        ref:"Address"
     },
     paymentId: {
         type: mongoose.Schema.Types.ObjectId,

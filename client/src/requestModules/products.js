@@ -208,12 +208,12 @@ export const orders = (navigate) => {
   });
 };
 
-export const orderCheckout = (paymentMode, provider, setOpen, navigate) => {
+export const orderCheckout = (paymentMode, provider, address, navigate) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
         "http://localhost:5000/orders/checkout",
-        { paymentMode: paymentMode, provider: provider },
+        { paymentMode: paymentMode, provider: provider, address: address },
         {
           headers: { Authorization: "bearer " + localStorage.getItem("token") },
         }
@@ -358,7 +358,7 @@ export const checkWishList = (id, navigate) => {
 };
 
 export const removeFromWishList = (id, navigate) => {
-  console.log(id)
+  console.log(id);
   return new Promise((resolve, reject) => {
     axios
       .delete(`${url}wish-list/${id}`, {
