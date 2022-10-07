@@ -115,10 +115,10 @@ export const cartDetails = (navigate) => {
   });
 };
 
-export const increment = (id, navigate, setShowDialog) => {
+export const increment = (id, navigate, quantity) => {
   return new Promise((resolve, reject) => {
     axios
-      .post(`${url}cart/increment/${id}`, null, {
+      .post(`${url}cart/increment/${id}`, {quantity:quantity}, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => {

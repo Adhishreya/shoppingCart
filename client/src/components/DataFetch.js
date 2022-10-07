@@ -395,13 +395,11 @@ const Products = (props) => {
                           <Button
                             onClick={() => {
                               if (localStorage.getItem("token") !== null) {
-                                increment(
-                                  product._id,
-                                  navigate,
-                                  setShowDialog
-                                ).then((res) => {
-                                  props.value.add();
-                                });
+                                increment(product._id, navigate, 1).then(
+                                  (res) => {
+                                    props.value.add();
+                                  }
+                                );
                               }
                             }}
                             variant="contained"

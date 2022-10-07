@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import {
   addToWishList,
   checkWishList,
+  increment,
   productDetails,
   removeFromWishList,
 } from "../requestModules/products";
@@ -92,6 +93,8 @@ const ProductDetails = (props) => {
   const [showDetails, setDetails] = useState(false);
   const [img, setImg] = useState(null);
 
+  const [quantity, setQuantity] = useState(1);
+
   const [isWishListPresent, setIsWishListPresent] = useState(false);
 
   let navigate = useNavigate();
@@ -109,7 +112,7 @@ const ProductDetails = (props) => {
   }, []);
 
   const handleChange = (e) => {
-    console.log(e.target.value);
+    setQuantity(e.target.value)
   };
 
   let param = useParams();
@@ -206,25 +209,44 @@ const ProductDetails = (props) => {
 
                 {/* <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  style={{ width: "4rem" }}
-                  value=""
-                  label="Age"
-                  onChange={handleChange}
-                >
-                  {Array.from({ length: data.availability }, (v, i) => i).map(
-                    (i, v) => (
-                      <MenuItem key={v} value={i}>
-                        {i}
+                {data.availability && (
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    style={{
+                      width: "4rem",
+                      // opacity: `${data.availability > 0 ? 1 : 0.5}`,
+                    }}
+                    value={quantity}
+                    label="Age"
+                    onChange={handleChange}
+                  >
+                    {Array.from(
+                      { length: data.availability + 1 },
+                      (v, i) => i
+                    ).map((i, v) => (
+                      <MenuItem key={v} value={i + 1}>
+                        {i + 1}
                       </MenuItem>
-                    )
-                  )}
-                </Select>
+                    ))}
+                  </Select>
+                )}
                 {/* </FormControl> */}
-
-                <Button>Add to cart</Button>
+                {data.availability > 0 && (
+                  <Button
+                    variant="contained"
+                    // disabled={data.availability > 0 ? true : false}
+                    style={{
+                      opacity: `${data.availability > 0 ? 1 : 0.5}`,
+                      cursor: `${
+                        data.availability > 0 ? "pointer" : "not-allowed"
+                      }`,
+                    }}
+                    onClick={()=>increment(data._id,navigate,quantity)}
+                  >
+                    Add to cart
+                  </Button>
+                )}
               </Row>
               {!isWishListPresent ? (
                 <Button

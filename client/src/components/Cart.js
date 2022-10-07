@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   cartDetails,
   increment,
@@ -138,7 +138,7 @@ const Cart = (props) => {
               <CartItem key={cartItem._id}>
                 <Image src={cartItem.productId.images[0]} />
                 <div>
-                  <h4>{cartItem.productId.productName}</h4>
+                  <Link to={`/products/${cartItem.productId._id}`}><h4>{cartItem.productId.productName}</h4></Link>
                   <h2>
                     <strike>{cartItem.productId.price / 100}</strike>
                     {"  "}
@@ -257,14 +257,34 @@ export const SelectAddress = ({ navigate, selectAddress, address }) => {
           name="address"
           onChange={handleSelect}
         >
-          {addresses.map((address, index) => (
-            <FormControlLabel
-              key={address._id}
-              value={address._id}
-              control={<Radio />}
-              label={address.addressLine1}
-            />
-          ))}
+          {addresses.map((address, index) => {
+            let label_address =
+              address &&
+              address.addressLine1 +
+                (address.addressLine2 && address.addressLine2 !== "undefined"
+                  ? ` ${address.addressLine2}`
+                  : "") +
+                (address.city && address.city !== "undefined"
+                  ? ` ${address.city}`
+                  : "") +
+                (address.country && address.country !== "undefined"
+                  ? ` ${address.country}`
+                  : "") +
+                (address.country_code && address.country_code !== "undefined"
+                  ? ` ${address.country_code}`
+                  : "") +
+                (address.post_code && address.post_code !== "undefined"
+                  ? ` ${address.post_code}`
+                  : "");
+            return (
+              <FormControlLabel
+                key={address._id}
+                value={address._id}
+                control={<Radio />}
+                label={label_address}
+              />
+            );
+          })}
         </RadioGroup>
       )}
       <Column>
