@@ -9,7 +9,10 @@ import {
   getCardDetails,
 } from "../requestModules/products";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AccordionSummary from "@mui/material/AccordionSummary";
+
 import {
+  AccordionDetails,
   Box,
   Button,
   FormControlLabel,
@@ -23,6 +26,8 @@ import {
 import { styled } from "@mui/material/styles";
 import { addAddress, getAddress } from "../requestModules/authenticate";
 import Checkout from "./Checkout";
+import Trial from "./Trial";
+import { Row } from "./Order";
 
 const FlexContainer = styled("div")(({ theme }) => ({
   display: "flex",
@@ -138,7 +143,9 @@ const Cart = (props) => {
               <CartItem key={cartItem._id}>
                 <Image src={cartItem.productId.images[0]} />
                 <div>
-                  <Link to={`/products/${cartItem.productId._id}`}><h4>{cartItem.productId.productName}</h4></Link>
+                  <Link to={`/products/${cartItem.productId._id}`}>
+                    <h4>{cartItem.productId.productName}</h4>
+                  </Link>
                   <h2>
                     <strike>{cartItem.productId.price / 100}</strike>
                     {"  "}
@@ -321,12 +328,36 @@ export const Payment = ({
     } else setCardDetails([]);
   }, [selectDebit]);
 
+  const handleSelect = () => {};
+
   return (
     <Box>
       <h2>Select Payment Method</h2>
       {!selectDebit ? (
         <>
-          <Typography
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="Cash on Delivery"
+            name="payment"
+            onChange={handleSelect}
+          >
+            <FormControlLabel
+              value="Cash on Delivery"
+              control={<Radio />}
+              label="Cash on Delivery"
+            />
+            <FormControlLabel
+              value="Debit/Credit"
+              control={<Radio />}
+              label="Debit/Credit"
+            />
+            <FormControlLabel
+              value="Wallet"
+              control={<Radio />}
+              label="Wallet"
+            />
+          </RadioGroup>
+          {/* <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
             style={{ cursor: "pointer" }}
@@ -335,23 +366,23 @@ export const Payment = ({
             }}
           >
             Cash On Delivery
-          </Typography>
-          <Typography
+          </Typography> */}
+          {/* <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
             style={{ cursor: "pointer" }}
             onClick={() => setSelectDebit(true)}
           >
             Debit/Credit
-          </Typography>
-          <Typography
+          </Typography> */}
+          {/* <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
             style={{ cursor: "pointer" }}
           >
             UPI
-          </Typography>
-          <Typography
+          </Typography> */}
+          {/* <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
             style={{ cursor: "pointer" }}
@@ -360,7 +391,22 @@ export const Payment = ({
             }}
           >
             Wallet
-          </Typography>
+          </Typography> */}
+          <Trial>
+            <AccordionSummary
+              //   expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography>UPI Method</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Row>
+                <TextField />
+                <Button variant="contained">Verify</Button>
+              </Row>
+            </AccordionDetails>
+          </Trial>
         </>
       ) : (
         <>
