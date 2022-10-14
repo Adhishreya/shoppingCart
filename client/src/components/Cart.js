@@ -356,8 +356,27 @@ export const Payment = ({
               control={<Radio />}
               label="Wallet"
             />
+            <FormControlLabel   value="Wallet"
+              control={<Radio />}
+              label="Wallet">
+              <Trial>
+                <AccordionSummary
+                  //   expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>UPI Method</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Row>
+                    <TextField />
+                    <Button variant="contained">Verify</Button>
+                  </Row>
+                </AccordionDetails>
+              </Trial>
+            </FormControlLabel>
           </RadioGroup>
-          {/* <Typography
+          <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
             style={{ cursor: "pointer" }}
@@ -366,7 +385,7 @@ export const Payment = ({
             }}
           >
             Cash On Delivery
-          </Typography> */}
+          </Typography>
           {/* <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
@@ -392,21 +411,6 @@ export const Payment = ({
           >
             Wallet
           </Typography> */}
-          <Trial>
-            <AccordionSummary
-              //   expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>UPI Method</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Row>
-                <TextField />
-                <Button variant="contained">Verify</Button>
-              </Row>
-            </AccordionDetails>
-          </Trial>
         </>
       ) : (
         <>

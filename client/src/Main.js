@@ -13,6 +13,7 @@ import {
   ManagePayments,
   Review,
   WishList,
+  Invoice,
 } from "./components";
 
 import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
@@ -46,6 +47,7 @@ class Main extends Component {
           />
           <Route path="/wish-list/*" element={<WishList />} />
           <Route path="/managepayments" element={<ManagePayments />} />
+          <Route path="/invoice/*" element={<Invoice />} />
         </Routes>
       </div>
     );

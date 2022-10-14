@@ -11,19 +11,21 @@ import Login from "./Login";
 import ManagePayments from "./ManagePayments";
 import Review from "./Review";
 import WishList from "./WishList";
+import Invoice from "./Invoice";
 
 export {
-    Products,
-    Menu,
-    ErrorPage,
-    ProductDetails,
-    Profile,
-    Cart ,
-    Vendor,
-    Admin,
-    Order,
-    Login,
-    Review,
-    ManagePayments,
-    WishList,
-}
+  Products,
+  Menu,
+  ErrorPage,
+  ProductDetails,
+  Profile,
+  Cart,
+  Vendor,
+  Admin,
+  Order,
+  Login,
+  Review,
+  ManagePayments,
+  WishList,
+  Invoice,
+};
