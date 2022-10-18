@@ -1,11 +1,12 @@
-import { Button, Rating, styled } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Button, CircularProgress, Rating, styled } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   getWishList,
   moveToCart,
   removeFromWishList,
 } from "../requestModules/products";
+import { Loading } from "./DataFetch";
 
 const Wrapper = styled("div")(({ theme }) => ({
   margin: "1rem auto",
@@ -31,10 +32,37 @@ const Row = styled("div")(({ theme }) => ({
 
 const WishList = () => {
   const [data, setData] = useState();
+  const [err, setErr] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const mounted = useRef(false);
 
   useEffect(() => {
-    getWishList().then((res) => setData(res));
+    mounted.current = true;
+    getWishList()
+      .then((res) => {
+        if (mounted.current === true && res) setData(res);
+      })
+      .catch((e) => {
+        if (mounted) setErr(e);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted.current = false;
+    };
   }, []);
+
+  if (loading)
+    return (
+      <Loading>
+        <CircularProgress />
+      </Loading>
+    );
+
+  
+
   return (
     <Wrapper>
       {data &&

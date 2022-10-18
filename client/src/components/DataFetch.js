@@ -150,7 +150,7 @@ const Products = (props) => {
       .then((res) => {
         setProducts(res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
   }, []);
 
   useEffect(() => {

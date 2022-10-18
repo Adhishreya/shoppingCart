@@ -30,21 +30,6 @@ const order_items = new mongoose.Schema({
 });
 
 order_items.pre("insertMany", async function (next, docs) {
-  // let orders = docs.map(async (order) => {
-  //   let shipping_order = await Shipping.create({
-  //     shipmentDate: new Date(),
-  //     estimatedArrival: new Date(),
-  //     shipmentMethod: "",
-  //   });
-  //   // await shipping_order.save();
-  //   order.shipping_details = 'shipping_order._id';
-  //   return order;
-  // });
-  // docs = await Promise.all(orders);
-  // await shippping_order.save();
-  // this.shipping_details = shippping_order._id;
-  // next();
-
   const orders = docs.map(async (order) => {
     return await new Promise((resolve, reject) => {
       Shipping.create({
@@ -52,9 +37,7 @@ order_items.pre("insertMany", async function (next, docs) {
         estimatedArrival: new Date(),
         shipmentMethod: "",
       }).then((result) => {
-        // order.shipping_details = result._id;
         order._doc.shipping_details = result._id;
-        // console.log(order._doc.shipping_details)
         resolve(order);
       });
     });
