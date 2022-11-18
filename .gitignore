@@ -3,3 +3,4 @@ client/node_modules
 server/.env
 sidenotes.md
 sidenotes.md
+node_modules/
