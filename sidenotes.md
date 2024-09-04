@@ -5,7 +5,7 @@
 - the other option is to cache the data in the frontend and update the cache when the database is updated.
 
 # Option 2
-- To mitigate the lack of session management when thuser is not logged in, we can allow the user to add to the cart only if they are logged in.
+- To mitigate the lack of session management when the user is not logged in, we can allow the user to add to the cart only if they are logged in.
 
 # Option 3
 - redux can be used to manage the state of the application.
@@ -24,9 +24,6 @@ Done
 - the add buttons in the landing page also must be modified
 
 
-
-
-
 ToDo
 
 signed in user stored in the redux store 
@@ -35,3 +32,11 @@ upload image facility for all places including product images
 rating 
 
 
+
+Extra design : 
+- Users should get notifications whenever there is a change in the order or shipping status.
+- Users should be able to pay through credit cards or electronic bank transfer.
+- Users should be able to track their shipment to see the current state of their order.
+- Add a new product category.
+- Send notifications to members with shipment updates.
+- Users should be able to search for products by their name or category.

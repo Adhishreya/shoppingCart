@@ -34,6 +34,8 @@
 - https://stackoverflow.com/questions/3305561/how-to-query-mongodb-with-like
 - https://stackoverflow.com/questions/60227421/how-can-i-convert-image-buffer-to-photo-to-upload-to-cloudinary
 - https://tarunbatra.com/blog/data/Restore-deleted-MongoDB-documents-using-Oplog/
+- https://stackoverflow.com/questions/50940953/mongoosejs-can-i-modify-docs-in-post-query-middleware-of-find
+- https://stackoverflow.com/questions/16726330/mongoose-mongodb-batch-insert
 
 - [errors]
 - https://webpack.js.org/configuration/dev-server/#devserversetupmiddlewares
@@ -64,6 +66,9 @@
 ## [database]
 - https://stackoverflow.com/questions/32811510/mongoose-findoneandupdate-doesnt-return-updated-document
 - https://www.mongodb.com/docs/v5.0/reference/method/cursor.skip/?_ga=2.260584840.449262860.1655927920-1491105511.1643833363
+- https://www.linkedin.com/pulse/mongoose-pre-hooks-insertmany-model-functions-palash-chanda/
+- https://javascripttricks.com/mongoose-middleware-the-javascript-7d23a96bfcbf
+- https://stackoverflow.com/questions/64029437/mongoose-schema-pre-insertmany-middleware
 
 ## [rest]
 - https://stackoverflow.com/questions/48976539/express-redirect-post-to-put-with-same-url
