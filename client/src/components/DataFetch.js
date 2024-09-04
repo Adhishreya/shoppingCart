@@ -1,198 +1,440 @@
-import axios from 'axios';
-import { useEffect, useState, useMemo } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Alert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import IconButton from '@mui/material/IconButton';
-import { height } from '@mui/system';
-import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
+import { useEffect, useState, useMemo, useRef } from "react";
+import {
+  Button,
+  CardActions,
+  Slider,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Pagination,
+  Stack,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 
-import { productDetails, increment, fetchAllProducts, tagsDetails, discountDetails } from '../requestModules/products';
+import CloseIcon from "@mui/icons-material/Close";
 
-import { useNavigate } from 'react-router-dom';
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
+import { Link, useNavigate } from "react-router-dom";
 
-const styleComponent = {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    width: '80%!important',
-    justifyContent: "space-around",
-    justifySelf: "flex-center",
-}
+import { styled, alpha } from "@mui/material/styles";
 
+import {
+  productDetails,
+  increment,
+  fetchAllProducts,
+  tagsDetails,
+  discountDetails,
+  getCategories,
+  filterProducts,
+} from "../requestModules/products";
+
+const CardFooter = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+  justifyContent: "space-between",
+  justifySelf: "flex-center",
+}));
+
+const Filter = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "10%",
+  cursor: "pointer",
+  backgroundColor: alpha(theme.palette.common.black, 0.25),
+  padding: "0.5rem 1rem",
+  margin: "1rem 1rem 0rem 0rem",
+}));
+
+const StackPagination = styled(Stack)(({ theme }) => ({
+  margin: "auto",
+  width: "fit-content",
+  paddingBottom: "2rem",
+}));
+
+const Wrapper = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-evenly",
+  margin: "2rem",
+  [theme.breakpoints.down("md")]: {
+    margin: "2rem 0.5rem",
+  },
+}));
+
+const UnorderedList = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  alignItems: "start",
+  listStyle: "none",
+  [theme.breakpoints.down("md")]: {
+    width: "10%",
+  },
+}));
+
+const ProductList = styled("div")(({ theme }) => ({
+  width: "80%",
+  flex: 2,
+  [theme.breakpoints.down("md")]: {
+    flex: 0,
+    width: "100%",
+    margin: "2rem",
+  },
+}));
+
+const ProductCard = styled(Card)(({ theme }) => ({
+  width: "100%",
+  height: "18rem",
+  padding: "0.5rem",
+  display: "flex",
+  flexDirection: "column",
+  [theme.breakpoints.down("md")]: {},
+}));
+
+const ProductItem = styled("div")(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {},
+}));
+
+const FilterOption = styled("div")(({ theme }) => ({
+  width: "fit-contents",
+}));
+
+const FilterHeader = styled("h6")(({ theme }) => ({}));
+
+export const Loading = styled("h1")(({ theme }) => ({
+  width: "100%",
+  textAlign: "center",
+}));
+
+const List = styled("div")(({ theme }) => ({}));
+
+const OuterUnorderedList = styled(UnorderedList)(({ theme }) => ({
+  width: "15%",
+}));
+
+const UnorderedInlineList = styled(UnorderedList)(({ theme }) => ({
+  flexDirection: "row",
+  marginLeft: "0.3rem",
+  [theme.breakpoints.down("md")]: {
+    width: "100%",
+    marginLeft: "0rem",
+  },
+}));
 
 const Products = (props) => {
-    let navigate = useNavigate();
-    const [products, setProducts] = useState([]);
-    const [tags, setTags] = useState([]);
-    const [filters, setFilter] = useState([]);
-    const [discount, setDiscount] = useState([]);
+  let navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [filters, setFilter] = useState({ tags: null, discount: null });
+  const [categories, setCategories] = useState([]);
+  const [discount, setDiscount] = useState([]);
+  const [value, setValue] = useState([100, 200000]);
+  const [value1, setValue1] = useState(1000);
+  const [value2, setValue2] = useState(9999);
+  const [showDialog, setShowDialog] = useState(false);
 
-    useEffect(() => {
-        axios.get('http://localhost:5000/products')
-            .then(res => {
-                setProducts(res.data);
-            })
-            .catch(err => console.log(err));
-    }, [tags]);
-    useEffect(() => {
-        if (typeof props.search != undefined && props.search !== null) {
+  const [pageNumber, setPageNumber] = useState(1);
 
-                searchFilter(props.search)
-        }
-    }, [props.search]);
+  let minDistance = 100;
 
-    useEffect(() => {
-        axios.get('http://localhost:5000/tags')
-            .then(res => {
-                setTags(res.data);
-            })
-            .catch(err => console.log(err));
-    }, []);
+  const lowerValueRef = useRef();
+  const upperValueRef = useRef();
 
-    useEffect(() => {
+  useEffect(() => {
+    fetchAllProducts(pageNumber)
+      .then((res) => {
+        setProducts(res);
+      })
+      .catch((err) => console.log(err))
+  }, []);
 
-        // discountDetails()
-        //     .then(res => {
-        //         setDiscount(res.data);
-        //     })
-        //     .catch(err => console.log(err));
-        axios.get('http://localhost:5000/discount')
-            .then(res => {
-                setDiscount(res.data);
-            })
-            .catch(err => console.log(err));
-    }, []);
-
-
-    function tagFilter(value) {
-        // let tagFilter = products.filter(item=>item.tags.includes(value));
-        // setProducts(tagFilter);
-        setFilter([...filters, value])
+  useEffect(() => {
+    if (typeof props.search != undefined && props.search !== null) {
+      searchFilter(props.search);
     }
+  }, [props.search]);
 
-    function applyAll() {
+  useEffect(() => {
+    tagsDetails()
+      .then((res) => {
+        setTags(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
+  useEffect(() => {
+    getCategories()
+      .then((res) => {
+        setCategories(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    discountDetails()
+      .then((res) => {
+        setDiscount(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  function addFilter(value) {
+    setFilter(Object.assign({}, filters, value));
+  }
+
+  useEffect(() => {
+    let url = "?";
+    if (filters.tags != null) {
+      url += `tags=${filters.tags.id}&`;
     }
-
-    function tagRemoveFilter(value) {
-        // let filteredProducts = products.filter(item=>item.name!==value);
-        let remainingFilters = tags.filter(item => item !== value);
-        setTags(remainingFilters);
-
+    if (filters.discount != null) {
+      url += `discount=${filters.discount.id}&`;
     }
+    if (filters.category != null) {
+      url += `category=${filters.category.id}&`;
+    }
+    url += `lower=${value[0]}&upper=${value[1]}&pageNumber=${pageNumber}`;
 
-    function fetchProducts() {
-        fetchAllProducts().then(res => {
-            setProducts(res);
+    if (url !== "?") {
+      filterProducts(url)
+        .then((res) => {
+          setProducts(res);
         })
+        .catch((err) => console.log(err));
     }
+  }, [filters, value, pageNumber]);
 
-    function searchFilter(value) {
-        if (!value.length) return fetchProducts();
-        let serachedResults = products.filter(items => items.productName.toLowerCase().includes(value.toLowerCase()));
-        if (serachedResults.length)
-            setProducts(serachedResults);
-    }
+  function removeFilter(data) {
+    setFilter(Object.assign({}, filters, { [data]: null }));
+  }
 
-    return (
-        <>
-            <div>
-                <ul>
-                    {filters.map((item, index) => <li key={`${item}-${index}`} onClick={() => tagRemoveFilter(item)}>{item}</li>)}
-                </ul>
-            </div>
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", margin: "2rem" }}>
-                <ul style={{ width: "20%" }}>
-                    <div>
-                        <h6>Price Range</h6>
-                        <ul >
-                            <li><label><input name="price" type="radio" value={1000} />Under 1000</label></li>
-                            <li><label><input name="price" type="radio" value={10000} />₹10,000 - ₹10,000</label></li>
-                            <li><label><input name="price" type="radio" value={15000} />₹15,000 - ₹20,000</label></li>
-                            <li><label><input name="price" type="radio" value={20000} />₹20,000 - ₹30,000</label></li>
-                            <li><label><input name="price" type="radio" value={30000} />Over ₹30,000</label></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h6>Discount</h6>
-                        <ul>
-                            {
-                                discount.map(item => <li key={item.id}><label><input
-                                    onChange={(e) => tagFilter(e.target.value)} name="tag" type="radio" value={item.value} />{item.value}%</label></li>)
-                            }
-                        </ul>
-                    </div>
+  function fetchProducts() {
+    fetchAllProducts().then((res) => {
+      setProducts(res);
+    });
+  }
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-                    <div>
-                        <h6>Tags</h6>
-                        <ul>
-                            {
-                                tags.map(item => <li key={item.id}><label><input
-                                    onChange={(e) => tagFilter(e.target.value)} name="tag" type="radio" value={item.name} />{item.name}</label></li>)
-                            }
-                        </ul>
-                    </div>
-                </ul>
-                <ul className="grid" style={{ width: "80%" }}>
-                    {//product.availability > 0
-                        products.map(product => (
-                            <li key={product._id}>
-                                <Card style={{ width: '100%', padding: "0.5rem", display: "flex", flexDirection: "column" }}>
-                                    <Link to={`/products/${product._id}`}>
-                                        <CardMedia
-                                            component="img"
-                                            height="140"
-                                            width="30"
-                                            image={product.images[0]}
-                                            alt={product.name}
-                                            onClick={() => productDetails(product._id)}
-                                        // allowAdd={(product.availability > 0) ? true : false}
-                                        />
-                                    </Link>
-                                    <CardContent>
-                                        <Typography gutterBottom variant="body" component="div">
-                                            {product.productName.slice(0, 10)}
-                                        </Typography>
-                                    </CardContent>
-                                    {/* </CardActionArea> */}
-                                    <div style={styleComponent}>
-                                        <Typography variant="subtitle1" color="text.primary">
-                                            <b>{'\u20B9'}</b>{product.price}
-                                        </Typography>
-                                        <CardActions>
-                                            {
-                                                product.availability > 0 ?
-                                                    <Button onClick={() => {
-                                                        if (localStorage.getItem("token") !== null) {
-                                                            increment(product._id, navigate).then(res => {
-                                                                props.value.add()
-                                                            })
-                                                        }
-                                                    }
-                                                    }
-                                                        variant="contained" startIcon={<AddShoppingCartIcon />}>
-                                                    </Button>
-                                                    :
-                                                    <Alert severity="info">Not Available</Alert>
-
-                                            }
-                                        </CardActions>
-                                    </div>
-                                </Card>
-                            </li>
-                        )
-                        )
-                    }
-                </ul>
-            </div>
-        </>
+  function searchFilter(value) {
+    if (!value.length) return fetchProducts();
+    let serachedResults = products.filter((items) =>
+      items.productName.toLowerCase().includes(value.toLowerCase())
     );
-}
+    if (serachedResults.length) setProducts(serachedResults);
+  }
+
+  useEffect(() => {
+    handleChange(null, [value1, value[1]]);
+  }, [value1]);
+
+  useEffect(() => {
+    return () => handleChange(null, [value[0], value2]);
+  }, [value2]);
+
+  return (
+    <>
+      <UnorderedInlineList>
+        {filters &&
+          Object.keys(filters).map((item, index) => (
+            <>
+              {filters[item] && (
+                <Filter onClick={() => removeFilter(item)}>
+                  <List key={`${item}-${filters.item}`}>
+                    {filters[item].value}
+                  </List>
+                  <CloseIcon />
+                </Filter>
+              )}
+            </>
+          ))}
+      </UnorderedInlineList>
+      <Wrapper>
+        <OuterUnorderedList>
+          <FilterOption>
+            <FilterHeader>Price Range</FilterHeader>
+            <Slider
+              getAriaLabel={() => "Minimum distance"}
+              value={value}
+              onChange={handleChange}
+              valueLabelDisplay="auto"
+              // getAriaValueText={valuetext}
+              disableSwap
+              min={0}
+              step={1500}
+              max={100000}
+            />
+          </FilterOption>
+          <FilterOption>
+            <FilterHeader>Discount</FilterHeader>
+            <UnorderedList>
+              {discount.map((item) => (
+                <li key={item.id}>
+                  <label>
+                    <input
+                      onChange={(e) =>
+                        addFilter({
+                          discount: {
+                            value: `${e.target.value}%`,
+                            id: item._id,
+                          },
+                        })
+                      }
+                      name="discount"
+                      type="radio"
+                      value={item.value}
+                    />
+                    {item.value}%,{item.name}
+                  </label>
+                </li>
+              ))}
+            </UnorderedList>
+          </FilterOption>
+
+          <FilterOption>
+            <FilterHeader>Tags</FilterHeader>
+            <UnorderedList>
+              {tags &&
+                tags.map((item) => (
+                  <li key={item.id}>
+                    <label>
+                      <input
+                        onChange={(e) =>
+                          addFilter({
+                            tags: { value: e.target.value, id: item._id },
+                          })
+                        }
+                        name="tag"
+                        type="radio"
+                        value={item.tagNAme}
+                      />
+                      {item.tagNAme}
+                    </label>
+                  </li>
+                ))}
+            </UnorderedList>
+          </FilterOption>
+          <FilterOption>
+            <h6>Categories</h6>
+            <UnorderedList>
+              {categories &&
+                categories.map((item) => (
+                  <li key={item.id}>
+                    <label>
+                      <input
+                        onChange={(e) =>
+                          addFilter({
+                            category: { value: e.target.value, id: item._id },
+                          })
+                        }
+                        name="category"
+                        type="radio"
+                        value={item.categoryName}
+                      />
+                      {item.categoryName}
+                    </label>
+                  </li>
+                ))}
+            </UnorderedList>
+          </FilterOption>
+        </OuterUnorderedList>
+        {products.length === 0 ? (
+          <Loading>
+            <CircularProgress />
+          </Loading>
+        ) : (
+          <ProductList className="grid">
+            {products.map((product) => {
+              return (
+                <ProductItem key={product._id}>
+                  <ProductCard
+                    style={{ opacity: `${product.availability > 0 ? 1 : 0.5}` }}
+                  >
+                    <Link
+                      to={`${
+                        product.availability > 0
+                          ? `/products/${product._id}`
+                          : ""
+                      }  `}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        width="30"
+                        image={product.images[0]}
+                        alt={product.name}
+                        onClick={() => productDetails(product._id)}
+                      />
+                    </Link>
+                    <CardContent>
+                      <Typography gutterBottom variant="body" component="div">
+                        {product.productName &&
+                          product.productName.slice(0, 10)}
+                      </Typography>
+                    </CardContent>
+
+                    <CardFooter>
+                      <Typography variant="subtitle1" color="text.primary">
+                        <b>{"\u20B9"}</b>
+                        <strike>{product.price / 100}</strike>
+                        {"  "}
+                        <span>
+                          &#8377;
+                          {(product.price / 100) *
+                            (1 - product.discount[0].value / 100)}
+                        </span>
+                      </Typography>
+                      <CardActions>
+                        {product.availability > 0 ? (
+                          <Button
+                            onClick={() => {
+                              if (localStorage.getItem("token") !== null) {
+                                increment(product._id, navigate, 1).then(
+                                  (res) => {
+                                    props.value.add();
+                                  }
+                                );
+                              }
+                            }}
+                            variant="contained"
+                            startIcon={<AddShoppingCartIcon />}
+                          ></Button>
+                        ) : (
+                          <Alert severity="info">Not Available</Alert>
+                        )}
+                      </CardActions>
+                      <div>
+                        {
+                          // getQuantity(product._id,navigate).then(res=>{})
+                        }
+                      </div>
+                    </CardFooter>
+                  </ProductCard>
+                </ProductItem>
+              );
+            })}
+          </ProductList>
+        )}
+      </Wrapper>
+      <StackPagination spacing={2}>
+        <Pagination
+          count={3}
+          color="secondary"
+          onChange={(event, value) => setPageNumber(value)}
+        />
+      </StackPagination>
+      {showDialog && (
+        <Alert style={{ width: "20%" }} severity="success">
+          Item added to Cart
+        </Alert>
+      )}
+    </>
+  );
+};
 export default Products;

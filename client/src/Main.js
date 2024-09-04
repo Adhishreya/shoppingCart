@@ -1,38 +1,59 @@
-import React, { Component } from "react"
-import Products from "./components/DataFetch";
-import Menu from "./components/MenuComponent";
-import { connect, context } from "react-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import {
-    BrowserRouter,
-    Switch,
-    Route,
-    Routes,
-    Link
-} from "react-router-dom";
-import ErrorPage from "./components/ErrorPage";
-import ProductDetails from "./components/ProductDetails";
-import Profile from "./components/Profile";
+  Products,
+  Menu,
+  ErrorPage,
+  ProductDetails,
+  Profile,
+  Cart,
+  Admin,
+  Order,
+  ManagePayments,
+  Review,
+  WishList,
+  Invoice,
+} from "./components";
+import ProductCarousel from "./components/ProductCarousel";
+import Slider from "./components/reusable/Slider";
 
 import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
-import Cart from "./components/Cart";
+
 class Main extends Component {
-    render() {
-        return (
-            <div>
-                <Menu value={this.props.itemCount} setCount={this.props.setQuantity} searchString={this.props.setSearchState} />
-                {/* {localStorage.getItem("user") ? "Welcome " + localStorage.getItem("user") : null} */}
-                <Routes>
-                    <Route path="/" element={<Products value={this.props} search={this.props.searchString} />} />
-                    {/* <Route path="*" element={<ErrorPage  />} /> */}
-                    {["*", "/error"].map((path) => <Route key={path} path={path} element={<ErrorPage />} />)}
-                    <Route path="/products/:id" element={<ProductDetails />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/cart" element={<Cart value={this.props} />} />
-                </Routes>
-
-            </div>
-        )
-    }
-
+  render() {
+    return (
+      <div>
+        <Menu
+          value={this.props.itemCount}
+          setCount={this.props.setQuantity}
+          searchString={this.props.setSearchState}
+          // selectedAddress={this.props.selectedAddress}
+          // selectAddress= {this.props.selectAddress}
+        />
+        {/* <ProductCarousel/> */}
+        <Routes>
+          {["*", "/error"].map((path) => (
+            <Route key={path} path={path} element={<ErrorPage />} />
+          ))}
+          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/profile/*" element={<Profile />} />
+          <Route path="/cart" element={<Cart value={this.props} />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/order/*" element={<Order />} />
+          <Route path="/review/*" element={<Review />} />
+          <Route
+            path="/"
+            element={
+              <Products value={this.props} search={this.props.searchString} />
+            }
+          />
+          <Route path="/wish-list/*" element={<WishList />} />
+          <Route path="/managepayments" element={<ManagePayments />} />
+          <Route path="/invoice/*" element={<Invoice />} />
+        </Routes>
+      </div>
+    );
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

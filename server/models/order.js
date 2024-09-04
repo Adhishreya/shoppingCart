@@ -7,11 +7,18 @@ const order = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
-    orderSummary:[],
-    // status: {
-    //     type: String,
-    //     enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
-    // },
+    orderSummary: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order_items'
+        }
+    ],
+    status: {
+        type: String,
+        enum: { values: ['Delivered', 'Pending','Cancelled','Returned'] },
+        default: 'Pending'
+        // enum: { values: ['Delivered', 'Cancelled', 'Failed', 'Pending', 'Declined', 'Rejected', 'Success'] }
+    },
     total: {
         type: currency
     },
@@ -19,11 +26,12 @@ const order = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    itemCount: {
-        type: Number
-    },  // no of items in the cart
+    // itemCount: {
+    //     type: Number
+    // },  // no of items in the cart
     shippingAddress: {
-        type: String
+        type: mongoose.Types.ObjectId,
+        ref:"Address"
     },
     paymentId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,5 +44,5 @@ const order = new mongoose.Schema({
         type: currency
     },
 
-});
+}, { timestamps: true });
 module.exports = mongoose.model("Orders", order);

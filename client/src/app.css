@@ -21,16 +21,6 @@ body{
     height: 50%;
 }
 
-.productImage{
-    box-shadow: grey 1px 4px 0px 2px;
-    border-radius: 14px;
-    display:flex ;
-    width: "100%"
-}
-/* .button{
-    width: 50%;
-    height: fit-content;
-} */
 a{
     text-decoration: none;
 }
@@ -51,10 +41,12 @@ ul{
 }
 .fit-entireSpace{
     width: 100%;
-    border-radius: 14px;
     height: 100%;
     align-self: center;
 }
 #standard-basic{
     width: 80%;
+}
+
+@media screen and (max-width:900px) {
 }
