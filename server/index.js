@@ -1,47 +1,59 @@
-const express = require('express');;
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const createError = require('http-errors');
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const createError = require("http-errors");
 const app = express();
-const JWTStrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
-const LocalStrategy = require('passport-local').Strategy;
-const config = require('./config');
+const JWTStrategy = require("passport-jwt").Strategy;
+const ExtractJWT = require("passport-jwt").ExtractJwt;
+const LocalStrategy = require("passport-local").Strategy;
 const port = process.env.PORT || 5000;
-const Users = require('./models/user');
-app.use(bodyParser.urlencoded({ extended: false }))
-const userRouter = require('./routers/userRouter');
-const vendorRouter = require('./routers/vendorRouter');
-const productsRouter = require('./routers/productRouter');
-const CartRouter = require('./routers/cartRouter');
-const CardRouter = require('./routers/cardDetailsRouter');
-var flash = require('connect-flash');
+const Users = require("./models/user");
+const redis = require("redis");
+const flash = require("connect-flash");
+const session = require("express-session");
+const passport = require("passport");
+const mongoSession = mongoose.startSession();
 
-// const categoryRouter = require('./routers/categoryRouter');
-require('dotenv').config();
-const session = require('express-session')
-// app.use(session({ secret: config['secret-key'] }));
-const paymentRouter = require('./routers/paymentsRouter');
-const passport = require('passport');
-const orderRouter = require('./routers/orderRouter');
-const TagRouter = require('./routers/tagRouter');
-const DiscountRouter = require('./routers/discountRouter');
+const {
+  userRouter,
+  vendorRouter,
+  productsRouter,
+  CartRouter,
+  UserPaymentRouter,
+  paymentRouter,
+  orderRouter,
+  TagRouter,
+  DiscountRouter,
+  addressRouter,
+  categoryRouter,
+  ReviewRouter,
+  WishListRouter,
+} = require("./routers");
+
+var opts = {};
+
+require("dotenv").config();
+
+app.use(session({ secret: process.env.SECRET_KEY }));
+
+app.disable("x-powered-by");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(passport.initialize());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(flash());
-// mongoose.set('useCreateIndex', true);
-mongoose.connect(
-  "mongodb+srv://adhishreya:nougat%40IO2018@realmcluster.ptlvu.mongodb.net/ShoppingCart?retryWrites=true&w=majority",
-  {
+
+mongoose
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-).catch(err => {
-  console.log('unable to connect' + err)
-});
-const mongoSession = mongoose.startSession();
+    useUnifiedTopology: true,
+  })
+  .catch((err) => {
+    console.log("unable to connect" + err);
+  });
 
 passport.use(new LocalStrategy(Users.authenticate()));
 passport.serializeUser((user, done) => {
@@ -53,48 +65,48 @@ passport.deserializeUser((id, done) => {
     done(err, user);
   });
 });
-// app.use(passport.session({secret:config.secretKey,resave:false,saveUninitialized:false}));
-// console.log(config['secret-key']);
-var opts = {}
+
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 //extracts the jwt from the authorization header with the scheme 'bearer'
-opts.secretOrKey = config.secretKey;
-passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
-  Users.findOne({ _id: jwt_payload._id }, (err, user) => {
-    if (err) {
-      return done(err, false);
-    }
-    if (user) {
-      return done(null, user);//callback when the user is successfully found and the first parameter is the error that is assigned to null and the second parameter is the successfully obtained parameter
-    }
-    else {
-      return done(null, false);//the error is not encountered but a new account of the specified user can be created
-    }
+opts.secretOrKey = process.env.SECRET_KEY.toString();
+//this function is called when passport.authenticate() is called
+passport.use(
+  new JWTStrategy(opts, (jwt_payload, done) => {
+    Users.findOne({ _id: jwt_payload._id }, (err, user) => {
+      if (err) {
+        return done(err, false);
+      }
+      if (user) {
+        return done(null, user); //callback when the user is successfully found and the first parameter is the error that is assigned to null and the second parameter is the successfully obtained parameter
+      } else {
+        return done(null, false); //the error is not encountered but a new account of the specified user can be created
+      }
+    });
   })
-}
+);
 
-));
+app.use("/users", userRouter);
+app.use("/address", addressRouter);
+app.use("/vendor", vendorRouter);
+app.use("/products", productsRouter);
+app.use("/cart", CartRouter);
+app.use("/review", ReviewRouter);
+app.use("/categories", categoryRouter);
+app.use("/payment/methods", UserPaymentRouter);
+app.use("/orders", orderRouter);
+app.use("/tags", TagRouter);
+app.use("/discount", DiscountRouter);
+app.use("/status", paymentRouter);
+app.use("/wish-list",WishListRouter);
 
-app.use('/users', userRouter);
-app.use('/vendor', vendorRouter);
-app.use('/products', productsRouter);
-app.use('/cart', CartRouter);
-app.use('/saveCard', CardRouter);
-app.use('/checkout',orderRouter);
-app.use('/tags',TagRouter);
-app.use('/discount',DiscountRouter);
-app.use('/pay',paymentRouter);
-app.use(function (err, req, res, next) {
-  if (err) {
-    // res.sendCode(500);
-    console.log(err);
-    // res.statusCode = 500;
-    // console.log(err.co?)
-    res.setHeader('Content-Type', 'application/json');
-    res.send('unable to perform operation' + err)
-  }
-})
+app.use((err, req, res, next) => {
+  const message = err.message || "Something went wrong!";
+  const status = err.status || 500;
+  res.json({ message, status });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
+
+module.exports = app;

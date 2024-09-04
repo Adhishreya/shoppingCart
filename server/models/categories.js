@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 const categories = new mongoose.Schema({
   categoryName: {
     type: String,
-    enum: {values:['Food', 'Apparel', 'Electronics', 'Home', 'Other']},
+    enum: { values: ['Food', 'Apparel', 'Electronics', 'Home', 'Other'] },
     required: true,
-    unique: true,
-    }
+  }
 });
-module.exports = mongoose.Schema("Category",categories);
+module.exports = mongoose.model("Category", categories);

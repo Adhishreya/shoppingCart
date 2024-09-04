@@ -1,40 +1,23 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
+import {
+  AppBar, Box, Toolbar, Button, IconButton, InputBase, MenuItem, Modal, Avatar, Menu, ListItemIcon, Divider, Tooltip
+} from '@mui/material/';
+
 import SearchIcon from '@mui/icons-material/Search';
-import MenuIcon from '@mui/icons-material/Menu';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-import MenuItem from '@mui/material/MenuItem';
-import Modal from "@mui/material/Modal";
-import Login from './Login';
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-// import { useNavigate } from "react-router-dom";
-
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-
-
-import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
 import Logout from '@mui/icons-material/Logout';
 
+import { styled, alpha } from '@mui/material/styles';
 
-// import IconMenu from "./BasicMenu";
-import { useSelector, useDispatch } from 'react-redux';
+import Login from './Login';
 
+import { Link, useNavigate } from "react-router-dom";
 
+const RightAlignWrapper = styled('div')(({ theme }) => ({
+  justifySelf: "flex-end",
+  display: "flex",
+}))
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -44,7 +27,6 @@ const Search = styled('div')(({ theme }) => ({
     backgroundcolor: alpha(theme.palette.common.white, 0.25),
   },
   marginLeft: 0,
-  width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto',
@@ -68,13 +50,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
+    borderBottom:"2px solid white",
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
+      width: '15ch',
       '&:focus': {
-        width: '20ch',
+        width: '25ch',
       },
     },
   },
@@ -85,20 +68,8 @@ const styleComponent = {
   flexDirection: "row",
   alignItems: "center",
   width: '100%!important',
-  // background: "red"
+  justifyContent: "space-between"
 }
-
-const menuStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4
-};
 
 function AccountMenu(props) {
   let navigate = useNavigate();
@@ -165,6 +136,9 @@ function AccountMenu(props) {
           <Avatar /> Profile
         </MenuItem>
 
+        <MenuItem onClick={() => {
+        }}>
+        </MenuItem>
         <Divider />
         <MenuItem onClick={() => {
           localStorage.clear();
@@ -181,84 +155,62 @@ function AccountMenu(props) {
   );
 }
 
-function BasicModal() {
+const MenuComponent = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return (
-    <>
-      {/* <Button >Open modal</Button> */}
-      <Modal
-        open={open}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-
-        <Box sx={menuStyle}>
-          <Button onClick={() => handleClose()}>click</Button>
-        </Box>
-      </Modal>
-      <Button><Link to="/" style={{color:"#f1f5f9"}}>Home</Link></Button>
-      {/* <Button onClick={handleOpen}><Link to="/">Home</Link></Button> */}
-      {/* <conMenu></IconMenu> */}
-    </>
-  );
-}
-
-
-const MenuComponent = (props) => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [input, setInput] = React.useState();
-  const [searchParams, setSearchparams] = useSearchParams();
-
-  return ( 
-    //style={{ styleComponent }}
     <Box sx={{ flexGrow: 1 }} >
       <AppBar position="static" style={styleComponent}>
-        <Toolbar style={{ display: 'flex', flexDirection: "row",background:"#374151", width: "100%", justifyContent: "space-around" }}>
-          <IconButton
-            size="large"
+        <Toolbar style={{ display: 'flex', flexDirection: "row", background: "#374151", width: "100%", justifyContent: "space-between" }}>
+          <Button size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            {/* <BasicMenu /> */}
-            <BasicModal />
-          </IconButton>
+            sx={{ mr: 2 }}>
+            <Link to="/" style={{ color: "#f1f5f9" }}>
+              <HomeIcon />
+            </Link>
+          </Button>
+
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Search for products…"
               inputProps={{ 'aria-label': 'search' }}
               onChange={(e) => {
                 let searchValue = e.target.value;
-                if(searchValue.length)
-                {
+                if (searchValue.length) {
                   props.searchString(searchValue);
                 }
-                else
-                {
+                else {
                   props.searchString("");
                 }
               }}
 
             />
           </Search>
-          <div style={{ justifySelf: "flex-end" ,display:"flex" }}>
-            <Link to="/cart" style={{color:"#f1f5f9"}}>
+          <RightAlignWrapper>
+
+            <Link to="/cart" style={{ color: "#f1f5f9" }}>
               <IconButton color="inherit" aria-label="add to shopping cart">
                 <AddShoppingCartIcon backgroundcolor="white" />
               </IconButton>
             </Link>
+
             {props.value}
-            {localStorage.getItem("token") ? <AccountMenu setCount={props.setCount} /> : <Button color="inherit"><Login open={open} handleOpen={handleOpen} handleClose={handleClose} setCount={props.setCount} /></Button>}
-          </div>
+            {localStorage.getItem("token")
+              ?
+              <AccountMenu setCount={props.setCount} />
+              :
+              <Button color="inherit">
+                <Login open={open} handleOpen={handleOpen} handleClose={handleClose} setCount={props.setCount} />
+              </Button>}
+          </RightAlignWrapper>
+
         </Toolbar>
       </AppBar>
     </Box>

@@ -1,13 +1,10 @@
 const DiscountRouter = require('express').Router();
-var Discount = require('../models/discount');
+const authenticate = require('../authentication');
+
+const {getDiscounts,addDiscounts} = require('../controller/discountController');
 
 DiscountRouter.route('/')
-.get((req,res)=>{
-    Discount.find({}).then(data=>{
-        res.statusCode= 200;
-        res.header('ContentType','application/json');
-        res.json(data);
-    });
-});
+    .get(getDiscounts)
+    .post(authenticate.verifyUser, authenticate.verifyVendor, addDiscounts);
 
 module.exports = DiscountRouter;
