@@ -15,6 +15,8 @@ import {
   WishList,
   Invoice,
 } from "./components";
+import ProductCarousel from "./components/ProductCarousel";
+import Slider from "./components/reusable/Slider";
 
 import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
 
@@ -29,6 +31,7 @@ class Main extends Component {
           // selectedAddress={this.props.selectedAddress}
           // selectAddress= {this.props.selectAddress}
         />
+        {/* <ProductCarousel/> */}
         <Routes>
           {["*", "/error"].map((path) => (
             <Route key={path} path={path} element={<ErrorPage />} />
