@@ -1,0 +1,196 @@
+_id
+62acdc9ca7880f0e57ccdb9a
+productName
+"ADIDAS  Men Grey Sandal"
+description
+"This is a genuine product of ADIDAS. The product comes with a standard…"
+sku
+"ADID23782"
+
+images
+Array
+0
+"https://rukminim1.flixcart.com/image/800/960/kzllrbk0/sandal/c/n/b/10-…"
+1
+"https://rukminim1.flixcart.com/image/800/960/l432ikw0/sandal/k/z/p/-or…"
+2
+"https://rukminim1.flixcart.com/image/800/960/kzllrbk0/sandal/v/h/i/8-h…"
+price
+520000
+
+vendorDetails
+Array 62ac5e51d861fae16f2f1787
+availability
+7
+
+colours
+Array
+
+sizes
+Array
+averageRating
+2
+
+discount
+Array 62ac7c7dcbb72257e43c40ca
+
+category
+Array 62ac7a1a1bb343d0d152bb0f
+
+tags
+Array
+__v
+0
+
+
+
+_________________________________________________
+
+_id
+62b0c40f7fb18a217da670c4
+productName
+"CP PLUS E21A"
+description
+"(New Design) Wireless Works with Alexa, Google Assistant Security Came…"
+sku
+"CPID23782"
+
+images
+Array "https://rukminim1.flixcart.com/image/832/832/kxhvf680/home-security-ca…"
+1
+"https://rukminim1.flixcart.com/image/832/832/kxhvf680/home-security-ca…
+price
+500000
+
+vendorDetails
+Array 62ac5e51d861fae16f2f1787
+availability
+12
+
+colours
+Array
+
+sizes
+Array
+averageRating
+3
+
+discount
+Array 62b0b9ed7fb18a217da670c0
+
+category
+Array 62ac7a211bb343d0d152bb12
+
+tags
+Array
+__v
+0
+
+____________________________________________________________
+
+
+_id
+62b138bd19418dee58a5796e
+productName
+"SONY Alpha Full Frame ILCE-7M2K/BQ IN5 "
+description
+"Mirrorless Camera Body with 28 - 70 mm Lens  (Black)"
+sku
+"SOND23782"
+
+images
+Array https://rukminim1.flixcart.com/image/832/832/jfbfde80/camera/n/r/n/can…"
+1
+"https://rukminim1.flixcart.com/image/832/832/jfbfde80/camera/n/r/n/can…"
+2
+"https://rukminim1.flixcart.com/image/832/832/jmthle80-1/dslr-camera/n/…"
+
+price
+12899000
+
+vendorDetails
+Array 62ac5e51d861fae16f2f1787
+availability
+0
+
+colours
+Array
+
+sizes
+Array
+averageRating
+4
+
+discount
+Array 62b137fc19418dee58a57961
+
+category
+Array 62ac7a211bb343d0d152bb12
+
+
+tags
+Array
+__v
+0
+
+
+______________________________________________________________________
+
+_id
+62b2a1ce3e545b2e7c3a2aa1
+productName
+"JUNEBERRY "
+description
+"Casual Regular Sleeves Printed Women Multicolor Top"
+sku
+"JUND23782"
+
+images
+Array
+0
+"https://rukminim1.flixcart.com/image/800/960/ki0loy80/top/m/g/d/s-tsh-…"
+1
+"https://rukminim1.flixcart.com/image/800/960/ki0loy80/top/m/g/d/xl-tsh…"
+price
+120000
+
+vendorDetails
+Array
+0
+62b2a1ce3e545b2e7c3a2aa0
+availability
+1
+
+colours
+Array
+
+sizes
+Array
+averageRating
+3
+
+discount
+Array
+0
+62ac7c7dcbb72257e43c40ca
+
+category
+Array
+0
+62ac7a1a1bb343d0d152bb0f
+
+tags
+Array
+__v
+0
+
+
+
+
+
+
+
+++++++++++++++++++++++++
+
+mongorestore --oplogReplay --oplogLimit 1664829103:3 oplogR
+

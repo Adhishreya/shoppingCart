@@ -1,11 +1,9 @@
 import { Provider, applyMiddleware, connect } from "react-redux";
 import { createStore } from "redux";
 import thunk from "redux-thunk";
-import Products from "../components/DataFetch";
-import Main from "../Main";
 
 import { localItems } from "../requestModules/products";
-// console.log(localItems());
+
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const ADD_TO_CART = "ADD_TO_CART";
 const SEARCH_SET = "SEARCH_SET";
@@ -14,7 +12,7 @@ const IS_LOGGED = "IS_LOGGED";
 const SEARCH_STRING = "SEARCH_STRING";
 const SAVE_USER = "SAVE_USER";
 const SELECTED_ADDRESS = "SELECTED_ADDRESS";
-// const GET_ORDER_DETAILS = "GET_ORDER_DETAILS";
+
 const initialState = {
   itemCount: localItems(),
   searchString: null,
@@ -93,6 +91,7 @@ export const mapDispatchToProps = (dispatch) => {
 };
 
 export const mapStateToProps = (store) => {
+  console.log(store)
   return {
     itemCount: store.itemCount,
     searchString: store.searchString,
