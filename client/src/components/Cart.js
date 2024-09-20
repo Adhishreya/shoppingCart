@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  cartDetails,
+  useCartItems,
   increment,
   decrement,
   deleteCartItem,
-  orderCheckout,
-  getCardDetails,
-} from "../requestModules/products";
+} from "../requestModules/cart";
+
+import { getCardDetails } from "../requestModules/payment";
+
+import { orderCheckout } from "../requestModules/orders";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccordionSummary from "@mui/material/AccordionSummary";
 
@@ -15,6 +18,7 @@ import {
   AccordionDetails,
   Box,
   Button,
+  CircularProgress,
   FormControlLabel,
   Modal,
   Radio,
@@ -28,12 +32,21 @@ import { addAddress, getAddress } from "../requestModules/authenticate";
 import Checkout from "./Checkout";
 import Trial from "./Trial";
 import { Row } from "./Order";
+import { Loading } from "./DataFetch";
 
 const FlexContainer = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   gap: "5rem",
+}));
+
+export const EmptyContainer = styled("div")(({ theme }) => ({
+  flexDirection: "column",
+  gap: "0rem",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 }));
 
 const CartItem = styled("div")(({ theme }) => ({
@@ -104,38 +117,43 @@ const Cart = (props) => {
     p: 4,
   };
 
+  const { isLoading, isError, data } = useCartItems(navigate, !!signedIn);
+
   useEffect(() => {
-    signedIn &&
-      cartDetails(navigate).then((res) => {
-        if (
-          res.data !== null &&
-          typeof res.data !== "undefined" &&
-          res.data.length > 0
-        ) {
-          setCartData(res.data);
-          res.data.forEach((element) => {
-            quantity += element.quantity;
-          });
-          props.value.setQuantity(quantity);
-        }
+    if (
+      data?.data !== null &&
+      typeof data?.data !== "undefined" &&
+      data?.data.length > 0
+    ) {
+      const cartData = data?.data;
+      setCartData(cartData);
+      cartData.forEach((element) => {
+        quantity += element.quantity;
       });
-  }, [signedIn]);
+      props.value.setQuantity(quantity);
+    }
+  }, [isLoading, data]);
 
   return (
     <Container>
-      {cartData === null ||
-      cartData.length === 0 ||
-      typeof cartData === "undefined" ? (
+      {!isLoading &&
+      (cartData === null ||
+        cartData.length === 0 ||
+        typeof cartData === "undefined") ? (
         <>
-          <FlexContainer>
+          <EmptyContainer style={{ flexDirection: "column" }}>
             <img
               src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png"
               alt="empty cart"
             />
-            <h3>Cart Empty</h3>
+            <h3>Cart is empty</h3>
             {!signedIn ? "Login to view Cart" : ""}
-          </FlexContainer>
+          </EmptyContainer>
         </>
+      ) : isLoading ? (
+        <Loading>
+          <CircularProgress />
+        </Loading>
       ) : (
         <Wrapper>
           {cartData.map((cartItem, key) => {
@@ -170,6 +188,7 @@ const Cart = (props) => {
                     </Button>{" "}
                     <span>{cartItem.quantity}</span>
                     <Button
+                      disabled={cartItem.productId.availability === 0}
                       variant="contained"
                       onClick={() => {
                         increment(cartItem.productId._id, navigate).then(
@@ -356,9 +375,7 @@ export const Payment = ({
               control={<Radio />}
               label="Wallet"
             />
-            <FormControlLabel   value="Wallet"
-              control={<Radio />}
-              label="Wallet">
+            <FormControlLabel value="Wallet" control={<Radio />} label="Wallet">
               <Trial>
                 <AccordionSummary
                   //   expandIcon={<ExpandMoreIcon />}

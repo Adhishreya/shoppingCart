@@ -57,7 +57,7 @@ const AlternateOption = styled(Button)(({ theme }) => ({}));
 
 const Buttons = styled("div")(({ theme }) => ({
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "space-between",
 }));
 
 export default function Login({ open, handleOpen, handleClose, setCount }) {
@@ -78,6 +78,8 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
   const [userError, setUserError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   // const [error,setError] = useState(false);
+
+  const [loginClicked, setLoginClicked] = useState(false);
 
   const [invalidAuth, setInvalidAuth] = useState(false);
   const [unsuccessfulSignup, setUnsuccessfulSignup] = useState(false);
@@ -161,11 +163,12 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                   onFocus={(e) => handleChange(e)}
                 />
                 <p style={{ color: "red" }}>
-                  {invalidAuth && "Invalid credentials"}
+                  {invalidAuth && !loginClicked && "Invalid credentials"}
                 </p>
                 <CustomButton
                   id="outlined-required"
                   onClick={() => {
+                    setLoginClicked(true);
                     loginRequest(
                       { username: userName, password: password },
                       navigate,
@@ -238,8 +241,10 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                       },
                       navigate
                     ).then((result) => {
-                    if(result){  setUnsuccessfulSignup(true);
-                      setMessage(result.message);}
+                      if (result) {
+                        setUnsuccessfulSignup(true);
+                        setMessage(result.message);
+                      }
                     });
                   }}
                   variant="contained"

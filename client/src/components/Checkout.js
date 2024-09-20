@@ -18,7 +18,7 @@ export default function Checkout({
 }) {
   const steps = [
     {
-      label: "Select campaign settings",
+      label: "Select delivery address",
       description: (
         <SelectAddress
           navigate={navigate}
@@ -28,7 +28,7 @@ export default function Checkout({
       ),
     },
     {
-      label: "Create an ad group",
+      label: "Select Payment methods",
       description: (
         <Payment
           navigate={navigate}
@@ -45,7 +45,6 @@ export default function Checkout({
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    console.log(address);
   };
 
   const handleBack = () => {

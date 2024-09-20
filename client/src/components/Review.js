@@ -1,11 +1,8 @@
 import { Rating, styled, TextField, alpha, Button } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import { basicProductDetails, submitReview } from "../requestModules/products";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { submitReview } from "../requestModules/review";
+import { basicProductDetails } from "../requestModules/products";
 import { Row } from "./Order";
 
 const Wrapper = styled("div")(({ theme }) => ({
@@ -58,10 +55,10 @@ const Review = () => {
     return () => {};
   }, [para]);
 
-  const handleEvent = () =>{
+  const handleEvent = () => {
     let id = para.get("review-purchase");
-    submitReview(id,{title,body,rating},navigate)
-  }
+    submitReview(id, { title, body, rating }, navigate);
+  };
 
   return (
     <Wrapper>

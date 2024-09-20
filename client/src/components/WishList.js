@@ -5,8 +5,9 @@ import {
   getWishList,
   moveToCart,
   removeFromWishList,
-} from "../requestModules/products";
+} from "../requestModules/wishlist";
 import { Loading } from "./DataFetch";
+import { EmptyContainer } from "./Cart";
 
 const Wrapper = styled("div")(({ theme }) => ({
   margin: "1rem auto",
@@ -61,10 +62,17 @@ const WishList = () => {
       </Loading>
     );
 
-  
-
   return (
     <Wrapper>
+      <>
+        <EmptyContainer style={{ flexDirection: "column" }}>
+          <img
+            src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png"
+            alt="empty cart"
+          />
+          <h3>No wishlist</h3>
+        </EmptyContainer>
+      </>
       {data &&
         data.map((item, index) => (
           <ListItem key={item._id}>

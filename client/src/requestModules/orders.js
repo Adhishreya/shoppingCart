@@ -50,3 +50,53 @@ export const getCancelledItems = async () => {
   });
   return orderItems.data;
 };
+
+
+export const orderCheckout = (paymentMode, provider, address, navigate) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        "http://localhost:5000/orders/checkout",
+        { paymentMode: paymentMode, provider: provider, address: address },
+        {
+          headers: { Authorization: "bearer " + localStorage.getItem("token") },
+        }
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          axios
+            .post(
+              "http://localhost:5000/status/success",
+              {
+                order_id: res.data,
+                paymentMode: "COD",
+              },
+              {
+                headers: {
+                  Authorization: "bearer " + localStorage.getItem("token"),
+                },
+              }
+            )
+            .then((result) => {
+              resolve("Payment successful");
+              navigate("/");
+            });
+        }
+      });
+  });
+};
+
+export const orders = (navigate) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${url}orders`, {
+        headers: { Authorization: "bearer " + localStorage.getItem("token") },
+      })
+      .then(
+        (res) => {
+          resolve(res.data);
+        },
+        (err) => navigate("/error")
+      );
+  });
+};

@@ -19,17 +19,20 @@ import ProductCarousel from "./components/ProductCarousel";
 import Slider from "./components/reusable/Slider";
 
 import { mapDispatchToProps, mapStateToProps } from "./reduxStore/store";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-class Main extends Component {
-  render() {
-    return (
-      <div>
+const Main = (props) => {
+  const queryClient = new QueryClient();
+
+  return (
+    <div>
+      <QueryClientProvider client={queryClient}>
         <Menu
-          value={this.props.itemCount}
-          setCount={this.props.setQuantity}
-          searchString={this.props.setSearchState}
-          // selectedAddress={this.props.selectedAddress}
-          // selectAddress= {this.props.selectAddress}
+          value={props.itemCount}
+          setCount={props.setQuantity}
+          searchString={props.setSearchState}
+          // selectedAddress={props.selectedAddress}
+          // selectAddress= {props.selectAddress}
         />
         {/* <ProductCarousel/> */}
         <Routes>
@@ -38,22 +41,22 @@ class Main extends Component {
           ))}
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/profile/*" element={<Profile />} />
-          <Route path="/cart" element={<Cart value={this.props} />} />
+          <Route path="/cart" element={<Cart value={props} />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/order/*" element={<Order />} />
           <Route path="/review/*" element={<Review />} />
           <Route
             path="/"
             element={
-              <Products value={this.props} search={this.props.searchString} />
+              <Products value={props} search={props.searchString} />
             }
           />
           <Route path="/wish-list/*" element={<WishList />} />
           <Route path="/managepayments" element={<ManagePayments />} />
           <Route path="/invoice/*" element={<Invoice />} />
         </Routes>
-      </div>
-    );
-  }
-}
+      </QueryClientProvider>
+    </div>
+  );
+};
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

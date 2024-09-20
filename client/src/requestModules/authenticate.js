@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cartDetails } from "../requestModules/products";
+import { cartDetails } from "../requestModules/cart";
 
 let url = "http://localhost:5000";
 

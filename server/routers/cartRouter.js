@@ -9,11 +9,38 @@ CartRouter.route("/").get(authenticate.verifyUser, (req, res, next) => {
     (session) => {
       if (session) {
         CartItem.find({ sessionId: session._id })
-          .populate("productId", "images productName price")
+          .populate("productId", "images productName price availability")
           .then((data) => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
             res.json(data);
+          })
+          .catch((err) => next(err));
+      } else {
+        Session.create({ userId: req.user.id }).then((data) => {
+          res.statusCode = 200;
+          res.json(null);
+        });
+      }
+    },
+    (err) => next(err)
+  );
+});
+
+CartRouter.route("/count").get(authenticate.verifyUser, (req, res, next) => {
+  Session.findOne({ userId: req.user.id }).then(
+    (session) => {
+      if (session) {
+        CartItem.find({ sessionId: session._id })
+          .populate("productId")
+          .then((data) => {
+            const count = data.reduce(
+              (count, item) => count + item.quantity,
+              0
+            );
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json(count);
           })
           .catch((err) => next(err));
       } else {
@@ -181,7 +208,7 @@ CartRouter.route("/decrement/:id").post(
             if (err) {
               next(err);
             } else {
-              Products.findById(doc[0].productId, (err, product) => {
+              Products.findById(doc[0]?.productId, (err, product) => {
                 if (err) {
                   next(err);
                 } else {

@@ -3,10 +3,13 @@ import { useParams } from "react-router";
 import {
   addToWishList,
   checkWishList,
-  increment,
-  productDetails,
   removeFromWishList,
-} from "../requestModules/products";
+} from "../requestModules/wishlist";
+
+import { productDetails } from "../requestModules/products";
+
+import { increment } from "../requestModules/cart";
+
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
@@ -88,6 +91,15 @@ const Container = styled("div")(({ theme }) => ({
   margin: "2rem",
 }));
 
+const Price = styled("div")(({ theme }) => ({
+  fontSize: "1.6rem",
+}));
+
+const Name = styled("div")(({ theme }) => ({
+  fontSize: "2rem",
+  fontWeight: 600,
+}));
+
 const ProductDetails = (props) => {
   const [data, setData] = useState(null);
   const [showDetails, setDetails] = useState(false);
@@ -112,7 +124,7 @@ const ProductDetails = (props) => {
   }, []);
 
   const handleChange = (e) => {
-    setQuantity(e.target.value)
+    setQuantity(e.target.value);
   };
 
   let param = useParams();
@@ -159,9 +171,8 @@ const ProductDetails = (props) => {
               </GridDisplay>
             </Wrapper>
             <Detail>
-              <h2>{data.productName}</h2>
-              <h4>
-                Cost{" "}
+              <Name>{data.productName}</Name>
+              <Price>
                 <strike>
                   <span>&#8377;{`${data.price / 100}`}</span>
                 </strike>{" "}
@@ -169,7 +180,7 @@ const ProductDetails = (props) => {
                   &#8377;
                   {(data.price / 100) * (1 - data.discount[0].value / 100)}
                 </span>
-              </h4>
+              </Price>
               <p>
                 {data.averageRating > 0 ? (
                   // `Rating : ${ data.averageRating}`
@@ -178,7 +189,10 @@ const ProductDetails = (props) => {
                   "Rating is not available for this product"
                 )}
               </p>
-              <Button onClick={() => setDetails((showDetails) => !showDetails)}>
+              <Button
+                onClick={() => setDetails((showDetails) => !showDetails)}
+                style={{ paddingLeft: "0rem" }}
+              >
                 {showDetails ? "Hide Details " : "View Vendor details"}
               </Button>
               {showDetails && data.vendorDetails ? (
@@ -209,7 +223,7 @@ const ProductDetails = (props) => {
 
                 {/* <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-                {data.availability && (
+                {!!data.availability && (
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -242,7 +256,7 @@ const ProductDetails = (props) => {
                         data.availability > 0 ? "pointer" : "not-allowed"
                       }`,
                     }}
-                    onClick={()=>increment(data._id,navigate,quantity)}
+                    onClick={() => increment(data._id, navigate, quantity)}
                   >
                     Add to cart
                   </Button>
@@ -288,7 +302,7 @@ const ProductDetails = (props) => {
               ))}
             </div>
           ) : (
-            <p style={{ margin: "6% 4%" }}>
+            <p style={{ margin: "4%", paddingBottom: "2rem" }}>
               Reviews on this product is not yet available
             </p>
           )}
