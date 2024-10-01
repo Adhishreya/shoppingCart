@@ -151,7 +151,7 @@ function AccountMenu(props) {
           <Avatar /> Profile
         </MenuItem>
 
-        <MenuItem onClick={() => {}}></MenuItem>
+        {/* <MenuItem onClick={() => {}}></MenuItem> */}
         <Divider />
         <MenuItem
           onClick={() => {

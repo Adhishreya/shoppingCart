@@ -9,11 +9,22 @@ CartRouter.route("/").get(authenticate.verifyUser, (req, res, next) => {
     (session) => {
       if (session) {
         CartItem.find({ sessionId: session._id })
-          .populate("productId", "images productName price availability")
+          .populate(
+            "productId",
+            "images productName price availability tax discount"
+          )
           .then((data) => {
+            console.log(data, "data");
+            let tax = 0;
+            let totalPrice = 0;
+            data.forEach((item) => {
+              totalPrice += item?.cost;
+              tax += item?.productId?.tax;
+            });
             res.statusCode = 200;
+            const productDetails = { tax, totalPrice, productDetails: data };
             res.setHeader("Content-Type", "application/json");
-            res.json(data);
+            res.json(productDetails);
           })
           .catch((err) => next(err));
       } else {

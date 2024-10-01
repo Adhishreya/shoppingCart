@@ -44,7 +44,7 @@ export const cartDetails = (navigate) => {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
-        resolve(res);
+        resolve(res.data);
       });
     //   .catch((err) => {
     //     console.log(err);
@@ -118,7 +118,7 @@ export const decrement = (id, navigate) => {
 export const deleteCartItem = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios({
-      url: "http://localhost:5000/cart/delete/" + id,
+      url: `${url}cart/delete/` + id,
       method: "delete",
       data: { orderId: id },
       headers: { Authorization: "bearer " + localStorage.getItem("token") },
@@ -131,7 +131,7 @@ export const deleteCartItem = (id, navigate) => {
 // export const deleteCartItem = (id, navigate) => {
 //     return new Promise((resolve, reject) => {
 //         axios({
-//             url: "http://localhost:5000/cart/delete/" + id,
+//             url: `${url}cart/delete/` + id,
 //             method: 'delete',
 //             data: { orderId: id },
 //             headers: { Authorization: "bearer " + localStorage.getItem("token") }

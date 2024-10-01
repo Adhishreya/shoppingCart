@@ -30,6 +30,7 @@ const {
   ReviewRouter,
   WishListRouter,
 } = require("./routers");
+const stripeRouter = require("./routers/stripeRouter");
 
 var opts = {};
 
@@ -97,7 +98,8 @@ app.use("/orders", orderRouter);
 app.use("/tags", TagRouter);
 app.use("/discount", DiscountRouter);
 app.use("/status", paymentRouter);
-app.use("/wish-list",WishListRouter);
+app.use("/wish-list", WishListRouter);
+app.use("/checkout", stripeRouter);
 
 app.use((err, req, res, next) => {
   const message = err.message || "Something went wrong!";

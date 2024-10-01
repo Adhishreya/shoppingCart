@@ -55,6 +55,10 @@ const products = new mongoose.Schema({
     default: 0,
     type: Number,
   },
+  tax: {
+    default: 0,
+    type: Number,
+  },
   discount: [
     {
       type: mongoose.Schema.Types.ObjectId,

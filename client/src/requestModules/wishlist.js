@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const url = "http://localhost:5000/";
+import { url } from "../constants/constant";
 
 export const addToWishList = (id, navigate) => {
   return new Promise((resolve, reject) => {

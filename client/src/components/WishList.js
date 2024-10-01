@@ -13,6 +13,11 @@ const Wrapper = styled("div")(({ theme }) => ({
   margin: "1rem auto",
   width: "90%",
 }));
+
+const ImageWrapper = styled("img")(({ theme }) => ({
+  maxWidth: "100%",
+}));
+
 const ListItem = styled("div")(({ theme }) => ({}));
 const Box = styled("div")(({ theme }) => ({
   display: "flex",
@@ -66,7 +71,7 @@ const WishList = () => {
     <Wrapper>
       <>
         <EmptyContainer style={{ flexDirection: "column" }}>
-          <img
+          <ImageWrapper
             src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png"
             alt="empty cart"
           />

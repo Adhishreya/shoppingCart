@@ -6,7 +6,7 @@ import Profile from "./Profile";
 import Cart from "./Cart";
 import Vendor from "./Vendor";
 import Admin from "./Admin";
-import Order from "./Order";
+import Order from "./Orders/index";
 import Login from "./Login";
 import ManagePayments from "./ManagePayments";
 import Review from "./Review";

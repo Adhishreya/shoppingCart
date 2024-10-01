@@ -132,7 +132,7 @@ export const useFilterFetch = (customUrl) => {
 // const tage = ["Refurbished","New","Used","Damaged","Discontinued","Refurbished","NewArivals","Used","Damaged","Discontinued"];
 // export const cartDetails = () => {
 //     return new Promise((resolve, reject) => {
-//         axios.get("http://localhost:5000/cart", { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => resolve(res));
+//         axios.get(`${url}cart`, { headers: { Authorization: "bearer " + localStorage.getItem("token") } }).then(res => resolve(res));
 //     })
 // }
 

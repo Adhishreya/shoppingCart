@@ -1,6 +1,6 @@
 import { Button, InputLabel, MenuItem, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import { userVendorProfile, vendorRegister } from '../requestModules/authenticate';
+import { userVendorProfile, vendorRegister } from '../requestModules/vendor';
 import { useNavigate } from "react-router-dom";
 import { discountDetails, getCategories, sellProduct, tagsDetails } from '../requestModules/products';
 import CloseIcon from '@mui/icons-material/Close';

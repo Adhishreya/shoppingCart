@@ -14,13 +14,13 @@ import {
   ImageListItem,
 } from "@mui/material";
 
-import CloseIcon from "@mui/icons-material/Close";
-
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 import { Link, useNavigate } from "react-router-dom";
 
 import { styled, alpha } from "@mui/material/styles";
+
+import CloseIcon from "@mui/icons-material/Close";
 
 import {
   productDetails,
@@ -35,6 +35,7 @@ import {
 import { increment } from "../requestModules/cart";
 
 import { PAGE_COUNT } from "../constants/constant";
+import { useResponsive } from "../utilities/breakpoints";
 
 const CardFooter = styled("div")(({ theme }) => ({
   display: "flex",
@@ -75,6 +76,9 @@ const Wrapper = styled("div")(({ theme, isEmpty }) => ({
   [theme.breakpoints.down("md")]: {
     margin: "2rem 0.5rem",
   },
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+  },
 }));
 
 const UnorderedList = styled("div")(({ theme }) => ({
@@ -86,6 +90,7 @@ const UnorderedList = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     width: "10%",
   },
+  [theme.breakpoints.down("md")]: {},
 }));
 
 const ProductList = styled("div")(({ theme }) => ({
@@ -93,13 +98,13 @@ const ProductList = styled("div")(({ theme }) => ({
   flex: 2,
   [theme.breakpoints.down("md")]: {
     flex: 0,
-    width: "100%",
+    width: "calc(100% - 4rem)",
     margin: "2rem",
   },
 }));
 
 const ProductCard = styled(Card)(({ theme }) => ({
-  width: "100%",
+  width: "calc(100% - 1.6rem)",
   height: "18rem",
   padding: "0.5rem",
   display: "flex",
@@ -112,7 +117,10 @@ const ProductItem = styled("div")(({ theme }) => ({
 }));
 
 const FilterOption = styled("div")(({ theme }) => ({
-  width: "fit-contents",
+  width: "fit-content",
+  [theme.breakpoints.down("sm")]: {
+    width: "95%",
+  },
 }));
 
 const FilterHeader = styled("h6")(({ theme }) => ({}));
@@ -128,6 +136,22 @@ const Image = styled("img")(({ theme }) => ({ margin: "auto" }));
 
 const OuterUnorderedList = styled(UnorderedList)(({ theme }) => ({
   width: "15%",
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    top: "4rem",
+    zIndex: "464",
+    background: "white",
+    position: "fixed",
+    height: "100vh",
+  },
+}));
+
+const CloseWrapper = styled(UnorderedList)(({ theme }) => ({
+  position: "fixed",
+  top: "4rem",
+  right: "0.5rem",
+  zIndex: 900,
+  cursor: "pointer",
 }));
 
 const UnorderedInlineList = styled(UnorderedList)(({ theme }) => ({
@@ -180,6 +204,10 @@ const Products = (props) => {
   };
   const { data, isLoading, isError, refetch } = useFeatureFetch(pageNumber);
 
+  const isMobile = useResponsive(window.innerWidth);
+
+  const [showFilters, setShowFilter] = useState(false);
+
   useEffect(() => {
     setTotalPages(data?.data?.total);
     setProducts(data?.data?.products);
@@ -219,7 +247,7 @@ const Products = (props) => {
     setFilter(Object.assign({}, filters, value));
   }
 
-  let url = "?";
+  const [url, setUrl] = useState("?");
 
   const {
     data: filterData,
@@ -236,7 +264,7 @@ const Products = (props) => {
   }, [filterData, filterLoading, isFetching]);
 
   useEffect(() => {
-    url = "?";
+    let url = "?";
     if (filters.tags != null) {
       url += `tags=${filters.tags.id}&`;
     }
@@ -249,6 +277,7 @@ const Products = (props) => {
     url += `lower=${value[0]}&upper=${value[1]}&pageNumber=${pageNumber}`;
 
     if (url !== "?") {
+      setUrl(url);
       filterRefetch();
     }
   }, [filters, value, pageNumber]);
@@ -283,6 +312,11 @@ const Products = (props) => {
     return () => handleChange(null, [value[0], value2]);
   }, [value2]);
 
+  useEffect(() => {
+    if (showFilters) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "auto";
+  }, [showFilters]);
+
   return (
     <>
       <UnorderedInlineList>
@@ -302,126 +336,148 @@ const Products = (props) => {
       </UnorderedInlineList>
       <Wrapper isEmpty={products?.length === 0 && !isLoading}>
         {products?.length > 0 && (
-          <OuterUnorderedList>
-            <FilterOption>
-              <FilterHeader>Price Range</FilterHeader>
-              <Slider
-                getAriaLabel={() => "Minimum distance"}
-                value={value}
-                onChange={handleChange}
-                valueLabelDisplay="auto"
-                // getAriaValueText={valuetext}
-                disableSwap
-                min={0}
-                step={1500}
-                max={100000}
-              />
-            </FilterOption>
-            <FilterOption>
-              <FilterHeader>Discount</FilterHeader>
-              <UnorderedList>
-                {discount.map((item) => (
-                  <li key={item.id}>
-                    <label>
-                      <input
-                        onChange={(e) => {
-                          const discount = `${e.target.value}%`;
-                          navigate(`/?discount=${discount}`);
-                          addFilter({
-                            discount: {
-                              value: `${e.target.value}%`,
-                              id: item._id,
-                            },
-                          });
-                        }}
-                        name="discount"
-                        type="radio"
-                        value={item.value}
-                        checked={
-                          item.value ===
-                          Number(filters.discount?.value?.split("%")[0] || 0)
-                        }
-                      />
-                      {item.value}%,{item.name}
-                    </label>
-                  </li>
-                ))}
-              </UnorderedList>
-            </FilterOption>
+          <>
+            {isMobile && (
+              <Button onClick={() => setShowFilter(true)}>Apply Filters</Button>
+            )}
+            {isMobile && showFilters && (
+              <CloseWrapper
+                onClick={() => setShowFilter(false)}
+                className="close-wrapper"
+              >
+                <CloseIcon />
+              </CloseWrapper>
+            )}
+            {showFilters && (
+              <OuterUnorderedList>
+                <FilterOption>
+                  <FilterHeader>Price Range</FilterHeader>
+                  <Slider
+                    getAriaLabel={() => "Minimum distance"}
+                    value={value}
+                    onChange={handleChange}
+                    valueLabelDisplay="auto"
+                    // getAriaValueText={valuetext}
+                    disableSwap
+                    min={0}
+                    step={1500}
+                    max={100000}
+                  />
+                </FilterOption>
+                <FilterOption>
+                  <FilterHeader>Discount</FilterHeader>
+                  <UnorderedList>
+                    {discount.map((item) => (
+                      <li key={item.id}>
+                        <label>
+                          <input
+                            onChange={(e) => {
+                              const discount = `${e.target.value}%`;
+                              navigate(`/?discount=${discount}`);
+                              addFilter({
+                                discount: {
+                                  value: `${e.target.value}%`,
+                                  id: item._id,
+                                },
+                              });
+                            }}
+                            name="discount"
+                            type="radio"
+                            value={item.value}
+                            checked={
+                              item.value ===
+                              Number(
+                                filters.discount?.value?.split("%")[0] || 0
+                              )
+                            }
+                          />
+                          {item.value}%,{item.name}
+                        </label>
+                      </li>
+                    ))}
+                  </UnorderedList>
+                </FilterOption>
 
-            <FilterOption>
-              <FilterHeader>Tags</FilterHeader>
-              <UnorderedList>
-                {tags &&
-                  tags.map((item) => (
-                    <li key={item.id}>
-                      <label>
-                        <input
-                          onChange={(e) =>
-                            addFilter({
-                              tags: { value: e.target.value, id: item._id },
-                            })
-                          }
-                          name="tag"
-                          type="radio"
-                          value={item.tagNAme}
-                          checked={item.tagNAme === filters.tags?.value}
-                        />
+                <FilterOption>
+                  <FilterHeader>Tags</FilterHeader>
+                  <UnorderedList>
+                    {tags &&
+                      tags.map((item) => (
+                        <li key={item.id}>
+                          <label>
+                            <input
+                              onChange={(e) =>
+                                addFilter({
+                                  tags: { value: e.target.value, id: item._id },
+                                })
+                              }
+                              name="tag"
+                              type="radio"
+                              value={item.tagNAme}
+                              checked={item.tagNAme === filters.tags?.value}
+                            />
 
-                        {item.tagNAme}
-                      </label>
-                    </li>
-                  ))}
-              </UnorderedList>
-            </FilterOption>
-            <FilterOption>
-              <h6>Categories</h6>
-              <UnorderedList>
-                {categories &&
-                  categories.map((item) => (
-                    <li key={item.id}>
-                      <label>
-                        <input
-                          onChange={(e) =>
-                            addFilter({
-                              category: { value: e.target.value, id: item._id },
-                            })
-                          }
-                          name="category"
-                          type="radio"
-                          value={item.categoryName}
-                          checked={
-                            item.categoryName === filters?.category?.value
-                          }
-                        />
-                        {item.categoryName}
-                      </label>
-                    </li>
-                  ))}
-              </UnorderedList>
-            </FilterOption>
-          </OuterUnorderedList>
+                            {item.tagNAme}
+                          </label>
+                        </li>
+                      ))}
+                  </UnorderedList>
+                </FilterOption>
+                <FilterOption>
+                  <h6>Categories</h6>
+                  <UnorderedList>
+                    {categories &&
+                      categories.map((item) => (
+                        <li key={item.id}>
+                          <label>
+                            <input
+                              onChange={(e) =>
+                                addFilter({
+                                  category: {
+                                    value: e.target.value,
+                                    id: item._id,
+                                  },
+                                })
+                              }
+                              name="category"
+                              type="radio"
+                              value={item.categoryName}
+                              checked={
+                                item.categoryName === filters?.category?.value
+                              }
+                            />
+                            {item.categoryName}
+                          </label>
+                        </li>
+                      ))}
+                  </UnorderedList>
+                </FilterOption>
+              </OuterUnorderedList>
+            )}
+          </>
         )}
-        {isLoading ? (
+        {isLoading || filterLoading ? (
           <Loading>
             <CircularProgress />
           </Loading>
         ) : products?.length === 0 ? (
-          <ColumnContainer style={{ width: "100%" }}>
-            <Image
-              // component="img"
-              height="auto"
-              width="50%"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRdkL889A0WSFsDhxsVsZo0QPOZoQPrq1q8Q&s"
-              alt="No Products found"
-              // onClick={() => productDetails(product._id)}
-            />
-            <div style={{ width: "fit-content" }}>
-              <Button variant="outlined" size="medium" onClick={resetFilters}>
-                Clear Filters
-              </Button>
-            </div>
-          </ColumnContainer>
+          <>
+            <ColumnContainer style={{ width: "100%" }}>
+              <Image
+                // component="img"
+                height="auto"
+                width="50%"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRdkL889A0WSFsDhxsVsZo0QPOZoQPrq1q8Q&s"
+                alt="No Products found"
+                // onClick={() => productDetails(product._id)}
+              />
+              <div style={{ width: "fit-content" }}>
+                <Button variant="outlined" size="medium" onClick={resetFilters}>
+                  Clear Filters
+                </Button>
+              </div>
+            </ColumnContainer>
+          </>
         ) : (
           <>
             {products && (

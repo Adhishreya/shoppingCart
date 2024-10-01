@@ -3,13 +3,7 @@ import { Button, TextField } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 
 import { styled, alpha } from "@mui/material/styles";
-import {
-  uploadImage,
-  changeAddress,
-  addAddress,
-  profileDetails,
-  deleteAddress,
-} from "../requestModules/authenticate";
+import { uploadImage, profileDetails } from "../requestModules/profile";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import Vendor from "./Vendor";
 import Address from "./Address";
@@ -22,11 +16,17 @@ const Container = styled("div")(({ theme }) => ({
   width: "100%",
 }));
 
+const LinkWrapper = styled(Link)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {
+    flexBasis: "50%",
+  },
+}));
+
 export const Wrapper = styled("div")(({ theme }) => ({
-  width: "90%",
+  width: "calc(100% - 4rem)",
   display: "flex",
   flexDirection: "column",
-  margin: " 2rem auto",
+  margin: " 2rem",
 }));
 
 const OptionsContainer = styled("div")(({ theme }) => ({
@@ -36,6 +36,11 @@ const OptionsContainer = styled("div")(({ theme }) => ({
   margin: "1rem 0rem",
   display: "grid",
   gridTemplateColumns: "repeat(3, minmax(100px, 1fr))",
+  [theme.breakpoints.down("sm")]: {
+    gridTemplateColumns: "repeat(2, minmax(100px, 1fr))",
+    gap: "1rem",
+    // whiteSpace: "nowrap !important",
+  },
 }));
 
 const InputContainer = styled("div")(({ theme }) => ({
@@ -74,6 +79,9 @@ const BasicDetails = styled("div")(({ theme }) => ({
   fontWeight: "500",
   flexDirection: "column",
   marginTop: "1rem",
+  [theme.breakpoints.down("sm")]: {
+    padding: "2rem 1rem",
+  },
 }));
 
 const ButtonDefault = styled(Button)(({ theme }) => ({
@@ -125,26 +133,26 @@ const Profile = () => {
             ) : null}
           </InputContainer> */}
           <OptionsContainer>
-            <Link to="/order">
+            <LinkWrapper to="/order">
               <BasicDetails variant="contained">Orders</BasicDetails>
-            </Link>
-            <Link to="/cart">
+            </LinkWrapper>
+            {/* <Link to="/cart">
               <BasicDetails variant="contained">Cart</BasicDetails>
-            </Link>
-            <Link to="/wish-list">
+            </Link> */}
+            <LinkWrapper to="/wish-list">
               <BasicDetails variant="contained">Wish List</BasicDetails>
-            </Link>
-            <Link to="/profile/vendor">
+            </LinkWrapper>
+            <LinkWrapper to="/profile/vendor">
               <BasicDetails variant="contained">
                 Register as Vendor
               </BasicDetails>
-            </Link>
-            <Link to="/profile/address">
+            </LinkWrapper>
+            <LinkWrapper to="/profile/address">
               <BasicDetails variant="contained">Address</BasicDetails>
-            </Link>
-            <Link to="/managepayments">
+            </LinkWrapper>
+            <LinkWrapper to="/managepayments">
               <BasicDetails variant="contained">Payment Options</BasicDetails>
-            </Link>
+            </LinkWrapper>
             <BasicDetails>Contact support</BasicDetails>
           </OptionsContainer>
 

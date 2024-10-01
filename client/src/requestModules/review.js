@@ -1,13 +1,10 @@
 import axios from "axios";
-
-const url = "http://localhost:5000/";
-
-
+import { url } from "../constants/constant";
 
 // export const submitReview = (id, review, navigate) => {
 //   return new Promise((resolve, reject) => {
 //     axios
-//       .get(`http://localhost:5000/review`, {review},
+//       .get(`${url}review`, {review},
 //       //  {
 //       //   headers: { Authorization: "bearer " + localStorage.getItem("token") },
 //       // }
@@ -21,21 +18,20 @@ const url = "http://localhost:5000/";
 // };
 
 export const submitReview = (id, review, navigate) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .post(
-          `${url}review/${id}`,
-          { ...review },
-          {
-            headers: { Authorization: "bearer " + localStorage.getItem("token") },
-          }
-        )
-        .then(
-          (res) => {
-            resolve(res);
-          },
-          (err) => navigate("/error")
-        );
-    });
-  };
-  
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${url}review/${id}`,
+        { ...review },
+        {
+          headers: { Authorization: "bearer " + localStorage.getItem("token") },
+        }
+      )
+      .then(
+        (res) => {
+          resolve(res);
+        },
+        (err) => navigate("/error")
+      );
+  });
+};

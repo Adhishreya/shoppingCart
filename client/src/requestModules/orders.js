@@ -1,6 +1,6 @@
 import axios from "axios";
-
-const url = "http://localhost:5000/";
+import { CANCELLED_ORDERS, DELIVERED_ORDERS, INTRANSIT_ORDERS, RETURNED_ORDERS, url } from "../constants/constant";
+import { useQuery } from "react-query";
 
 export const getOrderItems = async (id) => {
   const orderItems = await axios.get(`${url}orders/items/${id}`, {
@@ -16,11 +16,23 @@ export const getInTransitOrderItems = async () => {
   return orderItems.data;
 };
 
+export const useGetInTransitOrderItems= () => {
+  return useQuery([INTRANSIT_ORDERS], () => getInTransitOrderItems(), {
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const getDeliveredItems = async () => {
   const orderItems = await axios.get(`${url}orders/delivered`, {
     headers: { Authorization: "bearer " + localStorage.getItem("token") },
   });
   return orderItems.data;
+};
+
+export const useGetDeliveredItems = () => {
+  return useQuery([DELIVERED_ORDERS], () => getDeliveredItems(), {
+    refetchOnWindowFocus: false,
+  });
 };
 
 export const cancelOrder = async (id) => {
@@ -44,6 +56,13 @@ export const getReturnedItems = async () => {
   return orderItems.data;
 };
 
+
+export const useGetReturnedItems = () => {
+  return useQuery([RETURNED_ORDERS], () => getReturnedItems(), {
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const getCancelledItems = async () => {
   const orderItems = await axios.get(`${url}orders/cancelled`, {
     headers: { Authorization: "bearer " + localStorage.getItem("token") },
@@ -51,12 +70,17 @@ export const getCancelledItems = async () => {
   return orderItems.data;
 };
 
+export const useGetCancelledItems = () => {
+  return useQuery([CANCELLED_ORDERS], () => getCancelledItems(), {
+    refetchOnWindowFocus: false,
+  });
+};
 
 export const orderCheckout = (paymentMode, provider, address, navigate) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        "http://localhost:5000/orders/checkout",
+        `${url}orders/checkout`,
         { paymentMode: paymentMode, provider: provider, address: address },
         {
           headers: { Authorization: "bearer " + localStorage.getItem("token") },
@@ -66,7 +90,7 @@ export const orderCheckout = (paymentMode, provider, address, navigate) => {
         if (res.status === 200) {
           axios
             .post(
-              "http://localhost:5000/status/success",
+              `${url}status/success`,
               {
                 order_id: res.data,
                 paymentMode: "COD",

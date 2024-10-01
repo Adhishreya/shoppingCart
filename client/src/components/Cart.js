@@ -28,10 +28,7 @@ import {
 } from "@mui/material";
 
 import { styled } from "@mui/material/styles";
-import { addAddress, getAddress } from "../requestModules/authenticate";
 import Checkout from "./Checkout";
-import Trial from "./Trial";
-import { Row } from "./Order";
 import { Loading } from "./DataFetch";
 
 const FlexContainer = styled("div")(({ theme }) => ({
@@ -56,6 +53,9 @@ const CartItem = styled("div")(({ theme }) => ({
   margin: "1rem 0rem",
   [theme.breakpoints.down("md")]: {
     gap: "1rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    justifyContent: "space-between",
   },
 }));
 
@@ -83,12 +83,10 @@ const Image = styled("img")(({ theme }) => ({
     height: "5rem",
     width: "5rem",
   },
-}));
-
-const Column = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: "2rem",
+  [theme.breakpoints.down("md")]: {
+    width: "40%",
+    height: "auto",
+  },
 }));
 
 const Cart = (props) => {
@@ -121,11 +119,11 @@ const Cart = (props) => {
 
   useEffect(() => {
     if (
-      data?.data !== null &&
-      typeof data?.data !== "undefined" &&
-      data?.data.length > 0
+      data !== null &&
+      typeof data !== "undefined" &&
+      data?.productDetails?.length > 0
     ) {
-      const cartData = data?.data;
+      const cartData = data?.productDetails;
       setCartData(cartData);
       cartData.forEach((element) => {
         quantity += element.quantity;
@@ -241,218 +239,6 @@ const Cart = (props) => {
         </Box>
       </Modal>
     </Container>
-  );
-};
-
-export const SelectAddress = ({ navigate, selectAddress, address }) => {
-  const [addresses, setAddresses] = useState(null);
-
-  const [newAddress, setNewAddress] = useState();
-
-  const [selectedAddress, setSelectedAddress] = useState();
-
-  useEffect(() => {
-    getAddress(navigate).then((res) => {
-      setAddresses(res);
-    });
-  }, []);
-
-  const handleEvent = () => {
-    addAddress({ addressLine1: newAddress }, navigate).then((res) => {
-      setSelectedAddress(res);
-      selectAddress(res);
-    });
-  };
-
-  const handleChange = (e) => {
-    setNewAddress(e.target.value);
-  };
-
-  const handleSelect = (e) => {
-    setSelectedAddress(e.target.value);
-    selectAddress(e.target.value);
-  };
-
-  return (
-    <div>
-      <h2>Select Shipping Address</h2>
-      {addresses && addresses.length > 0 && (
-        <RadioGroup
-          aria-labelledby="demo-radio-buttons-group-label"
-          defaultValue={addresses[0]._id}
-          name="address"
-          onChange={handleSelect}
-        >
-          {addresses.map((address, index) => {
-            let label_address =
-              address &&
-              address.addressLine1 +
-                (address.addressLine2 && address.addressLine2 !== "undefined"
-                  ? ` ${address.addressLine2}`
-                  : "") +
-                (address.city && address.city !== "undefined"
-                  ? ` ${address.city}`
-                  : "") +
-                (address.country && address.country !== "undefined"
-                  ? ` ${address.country}`
-                  : "") +
-                (address.country_code && address.country_code !== "undefined"
-                  ? ` ${address.country_code}`
-                  : "") +
-                (address.post_code && address.post_code !== "undefined"
-                  ? ` ${address.post_code}`
-                  : "");
-            return (
-              <FormControlLabel
-                key={address._id}
-                value={address._id}
-                control={<Radio />}
-                label={label_address}
-              />
-            );
-          })}
-        </RadioGroup>
-      )}
-      <Column>
-        <TextField
-          id="outlined-multiline-flexible"
-          multiline
-          maxRows={8}
-          value={newAddress}
-          onChange={handleChange}
-        />
-        <Button variant="contained" onClick={handleEvent}>
-          Add new Address
-        </Button>
-      </Column>
-    </div>
-  );
-};
-
-export const Payment = ({
-  setOpen,
-  navigate,
-  style,
-  selectAddress,
-  address,
-}) => {
-  const [selectDebit, setSelectDebit] = useState(false);
-  const [cardDetails, setCardDetails] = useState([]);
-
-  useEffect(() => {
-    if (selectDebit) {
-      getCardDetails(navigate).then((res) => {
-        setCardDetails(res.data);
-      });
-    } else setCardDetails([]);
-  }, [selectDebit]);
-
-  const handleSelect = () => {};
-
-  return (
-    <Box>
-      <h2>Select Payment Method</h2>
-      {!selectDebit ? (
-        <>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="Cash on Delivery"
-            name="payment"
-            onChange={handleSelect}
-          >
-            <FormControlLabel
-              value="Cash on Delivery"
-              control={<Radio />}
-              label="Cash on Delivery"
-            />
-            <FormControlLabel
-              value="Debit/Credit"
-              control={<Radio />}
-              label="Debit/Credit"
-            />
-            <FormControlLabel
-              value="Wallet"
-              control={<Radio />}
-              label="Wallet"
-            />
-            <FormControlLabel value="Wallet" control={<Radio />} label="Wallet">
-              <Trial>
-                <AccordionSummary
-                  //   expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography>UPI Method</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Row>
-                    <TextField />
-                    <Button variant="contained">Verify</Button>
-                  </Row>
-                </AccordionDetails>
-              </Trial>
-            </FormControlLabel>
-          </RadioGroup>
-          <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              orderCheckout("COD", "", address, navigate);
-            }}
-          >
-            Cash On Delivery
-          </Typography>
-          {/* <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            style={{ cursor: "pointer" }}
-            onClick={() => setSelectDebit(true)}
-          >
-            Debit/Credit
-          </Typography> */}
-          {/* <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            style={{ cursor: "pointer" }}
-          >
-            UPI
-          </Typography> */}
-          {/* <Typography
-            id="modal-modal-description"
-            sx={{ mt: 2 }}
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              orderCheckout("Wallet", "ShopPay", address, navigate);
-            }}
-          >
-            Wallet
-          </Typography> */}
-        </>
-      ) : (
-        <>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Select Card
-          </Typography>
-          {cardDetails &&
-            cardDetails.map((card) => (
-              <Typography
-                key={card._id}
-                id="modal-modal-description"
-                sx={{ mt: 2 }}
-                onClick={() => {
-                  orderCheckout("Card", card.cardName);
-                }}
-              >
-                {card.cardName}{" "}
-                {`${card.cardNumber.substr(0, 4)}...${card.cardNumber.substr(
-                  -4
-                )}`}
-              </Typography>
-            ))}
-        </>
-      )}
-    </Box>
   );
 };
 

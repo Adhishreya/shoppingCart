@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { submitReview } from "../requestModules/review";
 import { basicProductDetails } from "../requestModules/products";
-import { Row } from "./Order";
+import { Row } from "./Orders";
 
 const Wrapper = styled("div")(({ theme }) => ({
   display: "flex",

@@ -26,7 +26,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 
 import { styled, alpha } from "@mui/material/styles";
-import { Row } from "./Order";
+import { Row } from "./Orders";
 
 const Wrapper = styled("div")(({ theme }) => ({
   display: "flex",

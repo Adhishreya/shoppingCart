@@ -2,17 +2,18 @@ import { Button, CircularProgress, Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import {
-  getInTransitOrderItems,
+  useGetInTransitOrderItems,
   cancelOrder,
-  getDeliveredItems,
   returnOrder,
   getReturnedItems,
-  getCancelledItems,
-} from "../requestModules/orders";
+  useGetCancelledItems,
+  useGetDeliveredItems,
+} from "../../requestModules/orders";
 
-import { Loading } from "./DataFetch";
+import { Loading } from "../DataFetch";
 
 import { styled, alpha } from "@mui/material/styles";
+import { tabHeaders } from "../../utilities/predefinedData";
 const Container = styled("div")(({ theme }) => ({
   width: "90%",
   margin: "2rem auto",
@@ -21,12 +22,12 @@ const Container = styled("div")(({ theme }) => ({
   },
 }));
 
-const tabHeaders = [
-  "Buy Again",
-  "Not Yet Shipped",
-  "Cancelled Orders",
-  "Returned",
-];
+const TabWrapper = styled(Tabs)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    overflowX: "scroll",
+  },
+}));
 
 const OrderList = styled("div")(({ theme }) => ({
   display: "flex",
@@ -71,6 +72,13 @@ export const Row = styled("div")(({ theme }) => ({
   gap: "1rem",
 }));
 
+export const Column = styled(Row)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+    alignItems: "start",
+  },
+}));
+
 const Order = () => {
   let navigate = useNavigate();
 
@@ -78,8 +86,11 @@ const Order = () => {
 
   return (
     <Container>
-      <Tabs
+      <TabWrapper
         value={selectedTab}
+        allowScrollButtonsMobile
+        scrollButtons={false}
+        variant="scrollable"
         onChange={(e, h) => {
           setSelectedTab(h);
           let selectedTabOption = tabHeaders[h].toLowerCase();
@@ -91,7 +102,7 @@ const Order = () => {
         <Tab label={`${tabHeaders[1]}`} />
         <Tab label={`${tabHeaders[2]}`} />
         <Tab label={`${tabHeaders[3]}`} />
-      </Tabs>
+      </TabWrapper>
       <Routes>
         <Route path="buyagain" element={<BuyAgain />} index />
         <Route path="notyetshipped" element={<NotYetShiped />} />
@@ -105,43 +116,41 @@ const Order = () => {
 const BuyAgain = () => {
   const [items, setItems] = useState([]);
 
+  const { data, isLoading, isError } = useGetDeliveredItems();
+
   useEffect(() => {
-    const handleOrderFetch = async () => {
-      await getDeliveredItems().then((data) => {
-        setItems(data);
-      });
-    };
-    handleOrderFetch();
-  }, []);
-  return <OrderWrapper items={items} route={"delivered"} />;
+    setItems(data);
+  }, [data]);
+
+  return (
+    <OrderWrapper items={items} route={"delivered"} isLoading={isLoading} />
+  );
 };
 
 const NotYetShiped = () => {
   const [items, setItems] = useState([]);
 
+  const { isLoading, data } = useGetInTransitOrderItems();
+
   useEffect(() => {
-    const handleOrderFetch = async () => {
-      await getInTransitOrderItems().then((data) => {
-        setItems(data);
-      });
-    };
-    handleOrderFetch();
-  }, []);
-  return <OrderWrapper items={items} route={"transit"} />;
+    setItems(data);
+  }, [data]);
+
+  return <OrderWrapper items={items} route={"transit"} isLoading={isLoading} />;
 };
 
 const Cancelled = () => {
   const [items, setItems] = useState([]);
 
+  const { data, isLoading } = useGetCancelledItems();
+
   useEffect(() => {
-    const handleOrderFetch = async () => {
-      await getCancelledItems().then((data) => {
-        setItems(data);
-      });
-    };
-    handleOrderFetch();
-  }, []);
-  return <OrderWrapper items={items} route={"cancelled"} />;
+    setItems(data);
+  }, [data]);
+
+  return (
+    <OrderWrapper items={items} route={"cancelled"} isLoading={isLoading} />
+  );
 };
 
 const Returned = () => {
@@ -158,7 +167,7 @@ const Returned = () => {
   return <OrderWrapper items={items} route={"returned"} />;
 };
 
-const OrderWrapper = ({ items, route }) => {
+const OrderWrapper = ({ items, route, isLoading }) => {
   const navigate = useNavigate();
 
   // useEffect(() => {
@@ -187,27 +196,34 @@ const OrderWrapper = ({ items, route }) => {
               <Image src={item.image} />
               <OrderItem>
                 <h2>{item.productName}</h2>
-                <h3>&#8377;{item.cost}</h3>
-                <p>{item.quantity}</p>
                 <Row>
-                  <Link to={`/review?review-purchase=${item.product_id}`}>
-                    <Button>Add a review</Button>
-                  </Link>
-                  <Button onClick={() => handleCancel(item._id)}>
-                    {route === "transit" && "Cancel Order"}
-                    {route === "delivered" && "Return"}
-                  </Button>
+                  <h3>&#8377;{item.cost}</h3>
+                  <p>Qty: {item.quantity}</p>
                 </Row>
+                <Column>
+                  <Link to={`/review?review-purchase=${item.product_id}`}>
+                    <Button style={{ width: "fit-content" }}>
+                      Add a review
+                    </Button>
+                  </Link>
+                  {(route === "transit" || route === "delivered") && (
+                    <Button onClick={() => handleCancel(item._id)}>
+                      {route === "transit" && "Cancel Order"}
+                      {route === "delivered" && "Return"}
+                    </Button>
+                  )}
+                </Column>
               </OrderItem>
             </OrderList>
           ))}
       </OrderTiles>
       {items === null ||
-        (items.length === 0 && (
+        (isLoading && (
           <Loading>
             <CircularProgress />
           </Loading>
         ))}
+      {!isLoading && items?.length === 0 && <>Nothing here!</>}
     </>
   );
 };
