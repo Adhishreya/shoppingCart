@@ -1,6 +1,6 @@
 var orderRouter = require("express").Router();
 var authenticate = require("../authentication");
- 
+
 const {
   getOrder,
   getOrderItems,
@@ -9,14 +9,17 @@ const {
   returnedOrders,
   cancelOrders,
   getDeliveredItems,
-  returnOrder
+  returnOrder,
 } = require("../controller/orderController");
+const { paymentSuccess } = require("../controller/paymentController");
 
 orderRouter.route("/").get(authenticate.verifyUser, getOrder);
 
 orderRouter.route("/items").get(authenticate.verifyUser, getOrderItems);
 
-orderRouter.route("/checkout").post(authenticate.verifyUser, checkout);
+orderRouter
+  .route("/checkout")
+  .post(authenticate.verifyUser, checkout, paymentSuccess);
 
 orderRouter.route("/cancelled").get(authenticate.verifyUser, cancelledOrders);
 

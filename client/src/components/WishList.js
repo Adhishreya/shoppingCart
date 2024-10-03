@@ -8,6 +8,7 @@ import {
 } from "../requestModules/wishlist";
 import { Loading } from "./DataFetch";
 import { EmptyContainer } from "./Cart";
+import { EMPTY_CONTAINER } from "../constants/dataUri";
 
 const Wrapper = styled("div")(({ theme }) => ({
   margin: "1rem auto",
@@ -72,7 +73,7 @@ const WishList = () => {
       <>
         <EmptyContainer style={{ flexDirection: "column" }}>
           <ImageWrapper
-            src="https://cdni.iconscout.com/illustration/free/thumb/empty-cart-4085814-3385483.png"
+            src={EMPTY_CONTAINER}
             alt="empty cart"
           />
           <h3>No wishlist</h3>

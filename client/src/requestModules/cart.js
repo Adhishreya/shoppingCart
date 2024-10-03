@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { CART_COUNT, CART_DETAILS, PRODUCTS, url } from "../constants/constant";
 
 export const localItems = () => {
@@ -61,7 +61,7 @@ export const useCartItems = (navigate, signedIn) => {
   });
 };
 
-export const increment = (id, navigate, quantity) => {
+export const increment = (id, navigate, quantity,queryClient) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
@@ -73,6 +73,7 @@ export const increment = (id, navigate, quantity) => {
       )
       .then((res) => {
         resolve(res);
+        queryClient.invalidateQueries([CART_COUNT]);
       })
       .catch((err) => {
         navigate("/error");

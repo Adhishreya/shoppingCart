@@ -28,7 +28,6 @@ export const checkWishList = (id, navigate) => {
 };
 
 export const removeFromWishList = (id, navigate) => {
-  console.log(id);
   return new Promise((resolve, reject) => {
     axios
       .delete(`${url}wish-list/${id}`, {

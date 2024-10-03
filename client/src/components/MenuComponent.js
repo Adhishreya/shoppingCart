@@ -177,13 +177,13 @@ const MenuComponent = (props) => {
 
   const isNotCartPage = !window.location.pathname.includes("cart");
 
-  const { data } = useCartCountFetch(isNotCartPage);
+  const { data, isFetching } = useCartCountFetch(isNotCartPage);
 
   React.useEffect(() => {
     if (data) {
       props.setCount(data.data);
     }
-  }, [data]);
+  }, [data, isFetching]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>

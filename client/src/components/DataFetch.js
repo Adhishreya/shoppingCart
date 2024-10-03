@@ -36,6 +36,7 @@ import { increment } from "../requestModules/cart";
 
 import { PAGE_COUNT } from "../constants/constant";
 import { useResponsive } from "../utilities/breakpoints";
+import { useQueryClient } from "react-query";
 
 const CardFooter = styled("div")(({ theme }) => ({
   display: "flex",
@@ -109,7 +110,9 @@ const ProductCard = styled(Card)(({ theme }) => ({
   padding: "0.5rem",
   display: "flex",
   flexDirection: "column",
-  [theme.breakpoints.down("md")]: {},
+  [theme.breakpoints.down("sm")]: {
+    width: "calc(100% - 0.8rem)",
+  },
 }));
 
 const ProductItem = styled("div")(({ theme }) => ({
@@ -165,6 +168,8 @@ const UnorderedInlineList = styled(UnorderedList)(({ theme }) => ({
 
 const Products = (props) => {
   let navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [products, setProducts] = useState([]);
   const [tags, setTags] = useState([]);
   const [filters, setFilter] = useState({
@@ -206,7 +211,7 @@ const Products = (props) => {
 
   const isMobile = useResponsive(window.innerWidth);
 
-  const [showFilters, setShowFilter] = useState(false);
+  const [showFilters, setShowFilter] = useState(!isMobile);
 
   useEffect(() => {
     setTotalPages(data?.data?.total);
@@ -533,11 +538,14 @@ const Products = (props) => {
                               <Button
                                 onClick={() => {
                                   if (localStorage.getItem("token") !== null) {
-                                    increment(product._id, navigate, 1).then(
-                                      (res) => {
-                                        props.value.add();
-                                      }
-                                    );
+                                    increment(
+                                      product._id,
+                                      navigate,
+                                      1,
+                                      queryClient
+                                    ).then((res) => {
+                                      props.value.add();
+                                    });
                                   }
                                 }}
                                 variant="contained"

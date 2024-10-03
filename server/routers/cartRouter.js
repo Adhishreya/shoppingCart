@@ -14,15 +14,21 @@ CartRouter.route("/").get(authenticate.verifyUser, (req, res, next) => {
             "images productName price availability tax discount"
           )
           .then((data) => {
-            console.log(data, "data");
             let tax = 0;
             let totalPrice = 0;
+            let totalItems = 0;
             data.forEach((item) => {
               totalPrice += item?.cost;
               tax += item?.productId?.tax;
+              totalItems = item?.quantity;
             });
             res.statusCode = 200;
-            const productDetails = { tax, totalPrice, productDetails: data };
+            const productDetails = {
+              tax,
+              totalPrice,
+              productDetails: data,
+              totalItems,
+            };
             res.setHeader("Content-Type", "application/json");
             res.json(productDetails);
           })
@@ -122,8 +128,8 @@ CartRouter.route("/delete/:id").delete(
     Session.find({ userId: req.user.id }, (error, session) => {
       CartItem.findByIdAndDelete({ _id: req.params.id }).then(
         (data) => {
-          console.log(data);
-          Products.findById(data.productId).then(
+          console.log("daa", data);
+          Products.findById(data?.productId).then(
             (product) => {
               product
                 .updateAvailability(

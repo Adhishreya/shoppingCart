@@ -27,6 +27,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { styled, alpha } from "@mui/material/styles";
 import { Row } from "./Orders";
+import { useQueryClient } from "react-query";
 
 const Wrapper = styled("div")(({ theme }) => ({
   display: "flex",
@@ -126,6 +127,8 @@ const ProductDetails = (props) => {
   const handleChange = (e) => {
     setQuantity(e.target.value);
   };
+
+  const queryClient = useQueryClient();
 
   let param = useParams();
   return (
@@ -256,7 +259,11 @@ const ProductDetails = (props) => {
                         data.availability > 0 ? "pointer" : "not-allowed"
                       }`,
                     }}
-                    onClick={() => increment(data._id, navigate, quantity)}
+                    onClick={() =>
+                      increment(data._id, navigate, quantity, queryClient).then(
+                        (res) => props.value.add()
+                      )
+                    }
                   >
                     Add to cart
                   </Button>

@@ -142,18 +142,18 @@ const Profile = () => {
             <LinkWrapper to="/wish-list">
               <BasicDetails variant="contained">Wish List</BasicDetails>
             </LinkWrapper>
-            <LinkWrapper to="/profile/vendor">
+            {/* <LinkWrapper to="/profile/vendor">
               <BasicDetails variant="contained">
                 Register as Vendor
               </BasicDetails>
-            </LinkWrapper>
+            </LinkWrapper> */}
             <LinkWrapper to="/profile/address">
               <BasicDetails variant="contained">Address</BasicDetails>
             </LinkWrapper>
             <LinkWrapper to="/managepayments">
               <BasicDetails variant="contained">Payment Options</BasicDetails>
             </LinkWrapper>
-            <BasicDetails>Contact support</BasicDetails>
+            {/* <BasicDetails>Contact support</BasicDetails> */}
           </OptionsContainer>
 
           {/* <Link style={{ color: "#f1f5f9" }} to="/admin">Admin</Link> */}

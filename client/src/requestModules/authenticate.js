@@ -7,7 +7,7 @@ export const loginRequest = ({ username, password }, navigate, setCount) => {
   var cartItems = [];
 
   return axios
-    .post(`${url}signin`, {
+    .post(`${url}users/signin`, {
       username: username,
       password: password,
     })

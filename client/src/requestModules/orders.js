@@ -1,6 +1,13 @@
 import axios from "axios";
-import { CANCELLED_ORDERS, DELIVERED_ORDERS, INTRANSIT_ORDERS, RETURNED_ORDERS, url } from "../constants/constant";
-import { useQuery } from "react-query";
+import {
+  CANCELLED_ORDERS,
+  DELIVERED_ORDERS,
+  INTRANSIT_ORDERS,
+  ORDER_PROCESS,
+  RETURNED_ORDERS,
+  url,
+} from "../constants/constant";
+import { useMutation, useQuery } from "react-query";
 
 export const getOrderItems = async (id) => {
   const orderItems = await axios.get(`${url}orders/items/${id}`, {
@@ -16,7 +23,7 @@ export const getInTransitOrderItems = async () => {
   return orderItems.data;
 };
 
-export const useGetInTransitOrderItems= () => {
+export const useGetInTransitOrderItems = () => {
   return useQuery([INTRANSIT_ORDERS], () => getInTransitOrderItems(), {
     refetchOnWindowFocus: false,
   });
@@ -56,7 +63,6 @@ export const getReturnedItems = async () => {
   return orderItems.data;
 };
 
-
 export const useGetReturnedItems = () => {
   return useQuery([RETURNED_ORDERS], () => getReturnedItems(), {
     refetchOnWindowFocus: false,
@@ -87,27 +93,52 @@ export const orderCheckout = (paymentMode, provider, address, navigate) => {
         }
       )
       .then((res) => {
-        if (res.status === 200) {
-          axios
-            .post(
-              `${url}status/success`,
-              {
-                order_id: res.data,
-                paymentMode: "COD",
-              },
-              {
-                headers: {
-                  Authorization: "bearer " + localStorage.getItem("token"),
-                },
-              }
-            )
-            .then((result) => {
-              resolve("Payment successful");
-              navigate("/");
-            });
-        }
-      });
+        console.log("success");
+        resolve(res);
+      })
+      .catch((e) => console.log("error"));
+    // .then((res) => {
+    //   if (res.status === 200) {
+    //     console.log("res", res.data);
+    //     axios
+    //       .post(
+    //         `${url}status/success`,
+    //         {
+    //           order_id: res.data,
+    //           paymentMode,
+    //         },
+    //         {
+    //           headers: {
+    //             Authorization: "bearer " + localStorage.getItem("token"),
+    //           },
+    //         }
+    //       )
+    //       .then((result) => {
+    //         console.log(result.data, "fial");
+    //         resolve("Payment successful");
+    //         // navigate("/");
+    //       });
+    //   }
+    // });
   });
+};
+
+export const useOrderCheckout = (
+  paymentMode,
+  address,
+  navigate,
+  onSuccess,
+  onError
+) => {
+  return useMutation(
+    (paymentMode, provider, address) =>
+      orderCheckout(paymentMode, provider, address, navigate),
+    {
+      onSuccess: (d) => onSuccess(d),
+      onError: (d) => onError(d),
+      mutationKey: [ORDER_PROCESS],
+    }
+  );
 };
 
 export const orders = (navigate) => {

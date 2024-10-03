@@ -13,7 +13,6 @@ paymentRouter.route('/success')
 //     const mode = req.body.paymentMode;
 //     Orders.find({ userId: req.user._id }).then(order => {
 //         var total  =order[0].total + order[0].tax + order[0].shippingCost;
-//         console.log(total);
 //         Paymets.create({paymentMode: mode, paymentStatus: 'Pending', amount: total }).then(payment => {
 //             // order.paymentId = payment._id;
 //             // order.save().then(order => {

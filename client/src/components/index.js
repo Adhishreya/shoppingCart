@@ -3,7 +3,7 @@ import Menu from "./MenuComponent";
 import ErrorPage from "./ErrorPage";
 import ProductDetails from "./ProductDetails";
 import Profile from "./Profile";
-import Cart from "./Cart";
+import Cart from "./Cart/index";
 import Vendor from "./Vendor";
 import Admin from "./Admin";
 import Order from "./Orders/index";

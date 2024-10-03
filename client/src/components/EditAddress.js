@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 
@@ -55,6 +55,7 @@ const EditAddress = ({
   sourceCode,
   setInvalidate,
   setDetails,
+  setCheckValidity,
 }) => {
   const [addressLine1, setAddressLine1] = useState(addLine1);
   const [addressLine2, setAddressLine2] = useState(addLine2);
@@ -86,6 +87,7 @@ const EditAddress = ({
       mobile.trim() !== "" &&
       post_code.trim() !== "";
     setIsFormValid(isValid);
+    if (setCheckValidity) setCheckValidity(isValid);
     if (setDetails)
       setDetails({
         addressLine1,
@@ -181,6 +183,7 @@ const EditAddress = ({
         variant="standard"
         name="post_code"
         value={post_code}
+        inputProps={{ maxLength: 6 }}
         required
         onKeyDown={(e) => {
           if (!isNumeric(e.key)) {
@@ -197,7 +200,7 @@ const EditAddress = ({
         value={country}
         required
         onKeyDown={(e) => {
-          if (!isNumeric(e.key)) {
+          if (!isAlpha(e.key)) {
             e.preventDefault();
           }
         }}
@@ -230,14 +233,14 @@ const EditAddress = ({
           }
         }}
         value={mobile}
-        inputProps={{ pattern: "[1-9]{1}[0-9]{9}" }}
+        inputProps={{ pattern: "[1-9]{1}[0-9]{9}", maxLength: 10 }}
         onChange={(e) => setMobile(e.target.value)}
       />
       {sourceCode === "page" && (
         <Button
           color="success"
           variant="contained"
-          type="submit"
+          type="button"
           disabled={!formValid}
         >
           Save

@@ -13,6 +13,7 @@ import { orderCheckout } from "../requestModules/orders";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import CheckIcon from "@mui/icons-material/Check";
 
 import {
   AccordionDetails,
@@ -32,29 +33,88 @@ import ComponentWrapper from "./ComponentWrapper";
 import { Row } from "./Orders";
 import { Loading } from "./DataFetch";
 
+const CardNumber = styled("div")(({ theme }) => ({
+  fontSize: "1.2rem",
+  fontWeight: "700",
+}));
+
+const FlexWrapper = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+}));
+
+const FlexColumnWrapper = styled("div")(({ theme }) => ({
+  flexDirection: "column",
+}));
+
+const LinkWrapper = styled(Link)(({ theme }) => ({
+  [theme.breakpoints.down("sm")]: {},
+}));
+
 export const Payment = ({
   setOpen,
   navigate,
   style,
-  selectAddress,
+  setPaymentDetails,
   address,
+  paymentDetailSelected,
+  setPaymentDetailSelected,
+  paymentDetails,
 }) => {
   const [selectDebit, setSelectDebit] = useState(false);
   const [cardDetails, setCardDetails] = useState([]);
 
+  const [upiId, setUpiId] = useState("");
+  const [upiVerified, setUpiVerified] = useState(false);
+
   useEffect(() => {
     if (selectDebit) {
       getCardDetails(navigate).then((res) => {
-        setCardDetails(res.data);
+        setCardDetails(res);
       });
     } else setCardDetails([]);
   }, [selectDebit]);
 
-  const handleSelect = () => {};
+  const [selectedMethod, setSelectedMethod] = useState("");
+
+  const handleSelect = (e) => {
+    const valueSelected = e.target.value;
+    if (valueSelected.includes("Debit")) setSelectDebit(true);
+    setSelectedMethod(valueSelected);
+
+    setPaymentDetails({
+      paymentMethod: valueSelected,
+    });
+  };
+
+  useEffect(() => {
+    setPaymentDetails({
+      paymentMethod: "Cash on Delivery",
+    });
+  }, []);
+
+  useEffect(() => {
+    let isValid = true;
+    switch (paymentDetails.paymentMethod) {
+      case "Cash on Delivery":
+        isValid = true;
+        break;
+      case "Debit/Credit":
+        isValid = cardDetails && cardDetails.length > 0;
+        break;
+      case "UPI Method":
+        isValid = upiVerified;
+        break;
+      default:
+        isValid = false;
+    }
+    setPaymentDetailSelected(isValid);
+  }, [paymentDetails, upiVerified, cardDetails]);
 
   return (
     <Box>
-      <h2>Select Payment Method</h2>
+      {!selectDebit && <h2>Select Payment Method</h2>}
       {!selectDebit ? (
         <>
           <RadioGroup
@@ -73,38 +133,58 @@ export const Payment = ({
               control={<Radio />}
               label="Debit/Credit"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               value="Wallet"
               control={<Radio />}
               label="Wallet"
+            /> */}
+            <FormControlLabel
+              value="UPI Method"
+              control={<Radio />}
+              label="UPI Method"
             />
-            <FormControlLabel value="Wallet" control={<Radio />} label="Wallet">
+            {selectedMethod.includes("UPI") && (
               <ComponentWrapper>
                 <AccordionSummary
                   //   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
                 >
-                  <Typography>UPI Method</Typography>
+                  <Typography>Verify ID</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   <Row>
-                    <TextField />
-                    <Button variant="contained">Verify</Button>
+                    <TextField
+                      onChange={(e) => {
+                        setUpiId(e.target.value);
+                        if (upiVerified) setUpiVerified(false);
+                      }}
+                    />
+                    {!upiVerified ? (
+                      <Button
+                        variant="contained"
+                        disabled={upiId === ""}
+                        onClick={() => setUpiVerified(true)}
+                      >
+                        Verify
+                      </Button>
+                    ) : (
+                      <CheckIcon color="success" />
+                    )}
                   </Row>
                 </AccordionDetails>
               </ComponentWrapper>
-            </FormControlLabel>
+            )}
           </RadioGroup>
           <Typography
             id="modal-modal-description"
             sx={{ mt: 2 }}
             style={{ cursor: "pointer" }}
             onClick={() => {
-              orderCheckout("COD", "", address, navigate);
+              // orderCheckout("COD", "", address, navigate);
             }}
           >
-            Cash On Delivery
+            {/* Cash On Delivery */}
           </Typography>
           {/* <Typography
               id="modal-modal-description"
@@ -135,24 +215,41 @@ export const Payment = ({
       ) : (
         <>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Select Card
+            {cardDetails?.length === 0 ? "Add Card" : "Saved Card"}
           </Typography>
           {cardDetails &&
+            cardDetails?.length > 0 &&
             cardDetails.map((card) => (
               <Typography
                 key={card._id}
                 id="modal-modal-description"
                 sx={{ mt: 2 }}
                 onClick={() => {
-                  orderCheckout("Card", card.cardName);
+                  // orderCheckout("Card", card.cardName);
                 }}
               >
-                {card.cardName}{" "}
-                {`${card.cardNumber.substr(0, 4)}...${card.cardNumber.substr(
-                  -4
-                )}`}
+                <FlexWrapper>
+                  <FlexColumnWrapper>
+                    {card.cardName} <br />
+                    <CardNumber>
+                      {" "}
+                      {`${card.cardNumber.substr(
+                        0,
+                        4
+                      )}...${card.cardNumber.substr(-4)}`}
+                    </CardNumber>
+                  </FlexColumnWrapper>
+                  <LinkWrapper to="/managepayments">
+                    <Button variant="contained">Change Card</Button>
+                  </LinkWrapper>
+                </FlexWrapper>
               </Typography>
             ))}
+          {cardDetails && cardDetails?.length === 0 && (
+            <LinkWrapper to="/managepayments">
+              <Button variant="contained">Add Card</Button>
+            </LinkWrapper>
+          )}
         </>
       )}
     </Box>

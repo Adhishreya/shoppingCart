@@ -87,8 +87,9 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
 
   const handleChange = (e) => {
     if (e.target.name === "name") {
+      const userNameValue = e.target.value;
       setUserName(e.target.value);
-      if (userName.length < 5) {
+      if (userNameValue < 5) {
         setUserErrorMessage("Cannot be less than 5 characters");
         setUserError(true);
       } else {
@@ -96,14 +97,15 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
         setUserError(false);
       }
     } else {
-      if (password.length < 7) {
+      const passwordValue = e.target.value
+      if (passwordValue.length < 7) {
         setPasswordErrorMessage("Cannot be less than 8 characters");
         setPasswordError(true);
       } else {
         setPasswordErrorMessage("");
         setPasswordError(false);
       }
-      setPassword(e.target.value);
+      setPassword(passwordValue);
     }
   };
   const toggleLog = () => {

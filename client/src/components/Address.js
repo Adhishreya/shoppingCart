@@ -45,6 +45,16 @@ const Address = (props) => {
   const { profile, navigate } = props;
   const [editAdd, setEditAdd] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
+  const [savedDetails, setSavedDetails] = useState({
+    id: null,
+    addLine1: "",
+    addLine2: "",
+    addCity: "",
+    addPost_code: "",
+    addCountry: "",
+    addCountry_code: "",
+    addMobile: "",
+  });
 
   return (
     <WrapperAddress>
@@ -52,17 +62,17 @@ const Address = (props) => {
       {editAdd ? (
         <Wrapper>
           <EditAddress
-            addLine1=""
-            addLine2=""
-            addCity=""
-            addPost_code=""
-            addCountry=""
-            addCountry_code=""
-            addMobile=""
+            id={savedDetails.id}
+            addLine1={savedDetails.addLine1}
+            addLine2={savedDetails.addLine2}
+            addCity={savedDetails.addCity}
+            addPost_code={savedDetails.addPost_code}
+            addCountry={savedDetails.addCountry}
+            addCountry_code={savedDetails.addCountry_code}
+            addMobile={savedDetails.addMobile}
             setEditAdd={setEditAdd}
             setEditAddress={setEditAddress}
             navigate={navigate}
-            id={null}
             sourceCode="page"
           />
           <Cancel
@@ -78,58 +88,43 @@ const Address = (props) => {
           <div>
             {profile?.address?.map((item, index) => (
               <>
-                {!editAddress ? (
-                  <AddressItem key={item._id}>
-                    <Info key={index}>
-                      {item.addressLine1},{item.addressLine2}
-                    </Info>
-                    <Info key={index}>
-                      {item.city},{item.country}
-                    </Info>
-                    {/* <p key={index}>{item.country_code}</p> */}
-                    <Info key={index}>{item.post_code}</Info>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => deleteAddress(item._id, navigate)}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => {
-                        setEditAddress(true);
-                      }}
-                    >
-                      Edit Address
-                    </Button>
-                  </AddressItem>
-                ) : (
-                  <Wrapper>
-                    <EditAddress
-                      id={item._id}
-                      addLine1={item.addressLine1}
-                      addLine2={item.addressLine2}
-                      addCity={item.city}
-                      addPost_code={item.post_code}
-                      addCountry={item.country}
-                      addCountry_code={item.country_code}
-                      addMobile={item.mobile}
-                      setEditAdd={setEditAdd}
-                      setEditAddress={setEditAddress}
-                      navigate={navigate}
-                      sourceCode="page"
-                    />
-                    <Cancel
-                      color="error"
-                      variant="contained"
-                      onClick={() => window.location.reload()}
-                    >
-                      Cancel
-                    </Cancel>
-                  </Wrapper>
-                )}
+                <AddressItem key={item._id}>
+                  <Info key={index}>
+                    {item.addressLine1},{item.addressLine2}
+                  </Info>
+                  <Info key={index}>
+                    {item.city},{item.country}
+                  </Info>
+                  {/* <p key={index}>{item.country_code}</p> */}
+                  <Info key={index}>{item.post_code}</Info>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => deleteAddress(item._id, navigate)}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={() => {
+                      setEditAdd(true);
+                      setEditAddress(true);
+                      setSavedDetails({
+                        id: item._id,
+                        addLine1: item.addressLine1,
+                        addLine2: item.addressLine2,
+                        addCity: item.city,
+                        addPost_code: item.post_code,
+                        addCountry: item.country,
+                        addCountry_code: item.country_code,
+                        addMobile: item.mobile,
+                      });
+                    }}
+                  >
+                    Edit Address
+                  </Button>
+                </AddressItem>
                 {/* <hr /> */}
               </>
             ))}
