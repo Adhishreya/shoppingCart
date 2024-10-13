@@ -120,7 +120,7 @@ const CheckOutForm = () => {
   };
 
   const onError = (d) => {
-    console.log(d, "checking");
+    // console.log(d, "checking");
   };
 
   const setMutation = useSetCardDetails({}, onSuccess, onError, navigate);

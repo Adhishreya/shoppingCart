@@ -158,6 +158,7 @@ function AccountMenu(props) {
             localStorage.clear();
             props.setCount(0);
             navigate("/");
+            props.setToken(null);
           }}
         >
           <ListItemIcon>
@@ -174,10 +175,15 @@ const MenuComponent = (props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [token, setToken] = React.useState(localStorage.getItem("token"));
 
   const isNotCartPage = !window.location.pathname.includes("cart");
 
-  const { data, isFetching } = useCartCountFetch(isNotCartPage);
+  const { data, isFetching } = useCartCountFetch(
+    isNotCartPage,
+    setToken,
+    props.setCount
+  );
 
   React.useEffect(() => {
     if (data) {
@@ -234,8 +240,8 @@ const MenuComponent = (props) => {
             </Link>
 
             {props.value}
-            {localStorage.getItem("token") ? (
-              <AccountMenu setCount={props.setCount} />
+            {token ? (
+              <AccountMenu setCount={props.setCount} setToken={setToken} />
             ) : (
               <Button color="inherit">
                 <Login
@@ -243,6 +249,7 @@ const MenuComponent = (props) => {
                   handleOpen={handleOpen}
                   handleClose={handleClose}
                   setCount={props.setCount}
+                  setToken={setToken}
                 />
               </Button>
             )}

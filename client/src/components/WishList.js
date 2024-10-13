@@ -11,7 +11,7 @@ import { EmptyContainer } from "./Cart";
 import { EMPTY_CONTAINER } from "../constants/dataUri";
 
 const Wrapper = styled("div")(({ theme }) => ({
-  margin: "1rem auto",
+  margin: "0rem auto 1rem",
   width: "90%",
 }));
 

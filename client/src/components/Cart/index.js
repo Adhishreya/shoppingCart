@@ -60,7 +60,7 @@ const CartItem = styled("div")(({ theme }) => ({
 
 const Container = styled("div")(({ theme }) => ({
   width: "90%",
-  margin: "2rem auto",
+  margin: "0rem auto 2rem",
 }));
 
 const Controls = styled("div")(({ theme }) => ({

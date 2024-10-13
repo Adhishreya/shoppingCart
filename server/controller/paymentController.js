@@ -4,7 +4,6 @@ const { Sessions, CartItem, Orders, Payment } = require("../models");
 const paymentSuccess = async (req, res, next) => {
   try {
     let { order_id, paymentMode } = req.body;
-    console.log("checking", req.user._id);
     const order = await Orders.findById(mongoose.Types.ObjectId(order_id));
 
     const payment = await Payment.findOneAndUpdate(

@@ -65,13 +65,10 @@ export default function Checkout({
     invalidateFn();
   };
 
-  console.log("result", result);
-
   const onError = (d) => {
     setPaymentFinal(true);
     setResult({ success: false, error: true });
     invalidateFn();
-    console.log(d, "checking");
   };
 
   const orderMutation = useOrderCheckout(
@@ -141,8 +138,6 @@ export default function Checkout({
   const handleReset = () => {
     setActiveStep(0);
   };
-
-  console.log("activeStep", activeStep, paymentDetailSelected);
 
   const isMutatingOrder = useIsMutating({ mutationKey: [ORDER_PROCESS] });
 

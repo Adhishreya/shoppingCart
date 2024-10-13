@@ -28,6 +28,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { styled, alpha } from "@mui/material/styles";
 import { Row } from "./Orders";
 import { useQueryClient } from "react-query";
+import { useGetReviews } from "../requestModules/review";
+import ReviewItems from "./ReviewItems";
 
 const Wrapper = styled("div")(({ theme }) => ({
   display: "flex",
@@ -83,13 +85,32 @@ const Detail = styled("div")(({ theme }) => ({
   alignItems: "flex-start",
 }));
 
+const ReviewWrapper = styled(Detail)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  margin: "2rem",
+  // padding: "2rem",
+  gap: "2rem",
+  [theme.breakpoints.down("md")]: {
+    margin: " 0rem",
+    padding: "2rem 0rem",
+    gap: "1.4rem",
+  },
+}));
+
+const ReviewHeader = styled("div")(({ theme }) => ({
+  fontSize: "2rem",
+  fontWeight: 700,
+}));
+
 const CustomImageList = styled(ImageList)(({ theme }) => ({
   width: "100%",
   height: "12rem",
 }));
 
 const Container = styled("div")(({ theme }) => ({
-  margin: "2rem",
+  margin: "0rem 2rem 2rem",
 }));
 
 const Price = styled("div")(({ theme }) => ({
@@ -105,12 +126,13 @@ const ProductDetails = (props) => {
   const [data, setData] = useState(null);
   const [showDetails, setDetails] = useState(false);
   const [img, setImg] = useState(null);
-
+  const [reviewDetails, setReviewDetails] = useState([]);
   const [quantity, setQuantity] = useState(1);
-
+  const [avgRataing, setAvgRating] = useState(0);
   const [isWishListPresent, setIsWishListPresent] = useState(false);
 
   let navigate = useNavigate();
+  let param = useParams();
 
   useEffect(() => {
     productDetails(param.id)
@@ -124,13 +146,29 @@ const ProductDetails = (props) => {
     });
   }, []);
 
+  const {
+    data: reviewData,
+    isLoading,
+    isError,
+  } = useGetReviews(param.id, navigate);
+
+  useEffect(() => {
+    if (reviewData) {
+      setReviewDetails(reviewData);
+      let avgTempCount = 0;
+      reviewData?.forEach((element) => {
+        if (element?.rating) avgTempCount += element?.rating;
+      });
+      // setAvgRating(avgRataing / 5);
+    }
+  }, [reviewData]);
+
   const handleChange = (e) => {
     setQuantity(e.target.value);
   };
 
   const queryClient = useQueryClient();
 
-  let param = useParams();
   return (
     <Container>
       {data ? (
@@ -291,23 +329,19 @@ const ProductDetails = (props) => {
             </Detail>
           </FlexRow>
 
-          {data.reviews && data.reviews.length > 0 ? (
-            <div className="flex-row">
-              <h1>Reviews</h1>
-              {data.reviews.map((item, index) => (
-                <div key={item._id}>
-                  <h5>{item.userId.username}</h5>
-                  {item.userId.displayPicture && (
-                    <Avatar src={item.userId.displayPicture} />
-                  )}
-                  {/* <h6>{item.username}</h6> */}
-                  <p>{item.title}</p>
-                  <Rating value={item.rating} readOnly precision={0.5} />
-                  <p>{item.body}</p>
-                  <hr />
-                </div>
+          {reviewDetails && reviewDetails.length > 0 ? (
+            <ReviewWrapper>
+              <ReviewHeader>Reviews on the product</ReviewHeader>
+              {reviewDetails?.map((element) => (
+                <ReviewItems
+                  body={element?.body}
+                  title={element?.title}
+                  images={element?.images}
+                  rating={element?.rating}
+                  username={element?.userId?.username}
+                />
               ))}
-            </div>
+            </ReviewWrapper>
           ) : (
             <p style={{ margin: "4%", paddingBottom: "2rem" }}>
               Reviews on this product is not yet available
@@ -325,3 +359,22 @@ const ProductDetails = (props) => {
 };
 
 export default ProductDetails;
+
+{
+  /* <div className="flex-row">
+<h1>Reviews</h1>
+{data.reviews.map((item, index) => (
+  <div key={item._id}>
+    <h5>{item.userId.username}</h5>
+    {item.userId.displayPicture && (
+      <Avatar src={item.userId.displayPicture} />
+    )}
+    {/* <h6>{item.username}</h6> */
+}
+//     <p>{item.title}</p>
+//     <Rating value={item.rating} readOnly precision={0.5} />
+//     <p>{item.body}</p>
+//     <hr />
+//   </div>
+// ))}
+// </div>

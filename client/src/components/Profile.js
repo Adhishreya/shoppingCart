@@ -3,7 +3,11 @@ import { Button, TextField } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 
 import { styled, alpha } from "@mui/material/styles";
-import { uploadImage, profileDetails } from "../requestModules/profile";
+import {
+  uploadImage,
+  profileDetails,
+  useProfileDetails,
+} from "../requestModules/profile";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import Vendor from "./Vendor";
 import Address from "./Address";
@@ -26,7 +30,7 @@ export const Wrapper = styled("div")(({ theme }) => ({
   width: "calc(100% - 4rem)",
   display: "flex",
   flexDirection: "column",
-  margin: " 2rem",
+  margin: "0rem 2rem 2rem",
 }));
 
 const OptionsContainer = styled("div")(({ theme }) => ({
@@ -94,10 +98,12 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    profileDetails()
-      .then((data) => setProfile(data[0]))
-      .catch((err) => console.log(err));
+    profileDetails().then((data) => {
+      setProfile(data[0]);
+    });
   }, []);
+
+  // const { data, isLoading, isError } = useProfileDetails();
 
   return (
     <Container>

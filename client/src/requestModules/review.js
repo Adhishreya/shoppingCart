@@ -1,35 +1,44 @@
 import axios from "axios";
-import { url } from "../constants/constant";
+import { REVIEW_DETAILS, url } from "../constants/constant";
+import { useQuery } from "react-query";
 
-// export const submitReview = (id, review, navigate) => {
-//   return new Promise((resolve, reject) => {
-//     axios
-//       .get(`${url}review`, {review},
-//       //  {
-//       //   headers: { Authorization: "bearer " + localStorage.getItem("token") },
-//       // }
-//       )
-//       .then((res) => {
-//         if (res.status === 201) navigate("/");
-//         else navigate("/error");
-//       })
-//       .catch((e) => navigate("/error"));
-//   });
-// };
-
-export const submitReview = (id, review, navigate) => {
+export const getReview = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios
-      .post(
-        `${url}review/${id}`,
-        { ...review },
-        {
-          headers: { Authorization: "bearer " + localStorage.getItem("token") },
-        }
-      )
+      .get(`${url}review/${id}`, {
+        headers: {},
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((e) => navigate("/error"));
+  });
+};
+
+export const useGetReviews = (id, navigate) => {
+  return useQuery([REVIEW_DETAILS], () => getReview(id, navigate), {
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const submitReview = (id, review, navigate, image) => {
+  const data = new FormData();
+  data.append("file", image);
+  data.append("details", review.body);
+  data.append("rating", review.rating);
+  data.append("title", review.title);
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${url}review/${id}`, data, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then(
         (res) => {
           resolve(res);
+          navigate(`/products/${id}`);
         },
         (err) => navigate("/error")
       );

@@ -1,6 +1,13 @@
 import axios from "axios";
 import { useQuery, useQueryClient } from "react-query";
-import { CART_COUNT, CART_DETAILS, PRODUCTS, url } from "../constants/constant";
+import {
+  CART,
+  CART_COUNT,
+  CART_DETAILS,
+  ERRROR,
+  PRODUCTS,
+  url,
+} from "../constants/constant";
 
 export const localItems = () => {
   var itemC = 0;
@@ -17,20 +24,28 @@ export const localItems = () => {
   return itemC;
 };
 
-export const getCartCount = () => {
-  const data = axios.get(`${url}cart/count`, {
+export const getCartCount = (setToken, setCount) => {
+  const data = axios.get(`${url}${CART}/count`, {
     headers: { Authorization: "bearer " + localStorage.getItem("token") },
   });
 
   return new Promise((resolve, reject) => {
-    data.then((res) => {
-      resolve(res);
-    });
+    data
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((error) => {
+        if (error?.message.includes("401")) {
+          setToken(null);
+          localStorage.clear();
+          setCount(0);
+        }
+      });
   });
 };
 
-export const useCartCountFetch = (enable) => {
-  const res = useQuery([CART_COUNT], () => getCartCount(), {
+export const useCartCountFetch = (enable, setToken, setCount) => {
+  const res = useQuery([CART_COUNT], () => getCartCount(setToken, setCount), {
     refetchOnWindowFocus: false,
     enabled: enable,
   });
@@ -40,7 +55,7 @@ export const useCartCountFetch = (enable) => {
 export const cartDetails = (navigate) => {
   return new Promise((resolve, reject) => {
     axios
-      .get(`${url}cart`, {
+      .get(`${url}${CART}`, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
@@ -49,7 +64,7 @@ export const cartDetails = (navigate) => {
     //   .catch((err) => {
     //     console.log(err);
     //     console.log(err.response);
-    //     navigate("/error");
+    //     navigate(`/${ERRROR}`);
     //   });
   });
 };
@@ -61,11 +76,11 @@ export const useCartItems = (navigate, signedIn) => {
   });
 };
 
-export const increment = (id, navigate, quantity,queryClient) => {
+export const increment = (id, navigate, quantity, queryClient) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        `${url}cart/increment/${id}`,
+        `${url}${CART}/increment/${id}`,
         { quantity: quantity },
         {
           headers: { Authorization: "bearer " + localStorage.getItem("token") },
@@ -76,7 +91,7 @@ export const increment = (id, navigate, quantity,queryClient) => {
         queryClient.invalidateQueries([CART_COUNT]);
       })
       .catch((err) => {
-        navigate("/error");
+        navigate(`/${ERRROR}`);
       });
   });
 };
@@ -84,7 +99,7 @@ export const increment = (id, navigate, quantity,queryClient) => {
 export const getQuantity = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios
-      .get(`${url}cart/quantity/${id}`, null, {
+      .get(`${url}${CART}/quantity/${id}`, null, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then(
@@ -100,7 +115,7 @@ export const decrement = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        `${url}cart/decrement/${id}`,
+        `${url}${CART}/decrement/${id}`,
         { orderId: id },
         {
           headers: { Authorization: "bearer " + localStorage.getItem("token") },
@@ -110,8 +125,7 @@ export const decrement = (id, navigate) => {
         resolve(res);
       })
       .catch((err) => {
-        console.log(err.response);
-        navigate("/error");
+        navigate(`/${ERRROR}`);
       });
   });
 };
@@ -119,7 +133,7 @@ export const decrement = (id, navigate) => {
 export const deleteCartItem = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios({
-      url: `${url}cart/delete/` + id,
+      url: `${url}${CART}/delete/` + id,
       method: "delete",
       data: { orderId: id },
       headers: { Authorization: "bearer " + localStorage.getItem("token") },
@@ -132,7 +146,7 @@ export const deleteCartItem = (id, navigate) => {
 // export const deleteCartItem = (id, navigate) => {
 //     return new Promise((resolve, reject) => {
 //         axios({
-//             url: `${url}cart/delete/` + id,
+//             url: `${url}${CART}/delete/` + id,
 //             method: 'delete',
 //             data: { orderId: id },
 //             headers: { Authorization: "bearer " + localStorage.getItem("token") }

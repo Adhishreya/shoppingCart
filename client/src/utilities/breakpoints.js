@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-const maxWidth = 600;
-
-export const useResponsive = (breakpoint) => {
+export const useResponsive = (breakpoint, maxWidth = 600) => {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     if (breakpoint <= maxWidth) setIsMobile(true);

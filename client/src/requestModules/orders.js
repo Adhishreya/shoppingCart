@@ -93,13 +93,12 @@ export const orderCheckout = (paymentMode, provider, address, navigate) => {
         }
       )
       .then((res) => {
-        console.log("success");
         resolve(res);
       })
       .catch((e) => console.log("error"));
     // .then((res) => {
     //   if (res.status === 200) {
-    //     console.log("res", res.data);
+    //
     //     axios
     //       .post(
     //         `${url}status/success`,
@@ -114,7 +113,6 @@ export const orderCheckout = (paymentMode, provider, address, navigate) => {
     //         }
     //       )
     //       .then((result) => {
-    //         console.log(result.data, "fial");
     //         resolve("Payment successful");
     //         // navigate("/");
     //       });

@@ -16,7 +16,7 @@ import { styled, alpha } from "@mui/material/styles";
 import { tabHeaders } from "../../utilities/predefinedData";
 const Container = styled("div")(({ theme }) => ({
   width: "90%",
-  margin: "2rem auto",
+  margin: "0rem auto 2rem",
   [theme.breakpoints.down("md")]: {
     width: "100%",
   },

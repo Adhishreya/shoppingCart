@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADDRESS_PATH, GET_ADDRESS, url } from "../constants/constant";
+import { ADDRESS_PATH, ERRROR, GET_ADDRESS, PROFILE, url } from "../constants/constant";
 import { useMutation, useQuery } from "react-query";
 
 // ADD NEW ADDRESS
@@ -23,7 +23,7 @@ export const addAddress = (address, navigate, retain = false) => {
 const defaultSuccessFn = (navigate, retain) => {
   if (res.data) {
     if (retain) {
-      navigate("/profile");
+      navigate(`/${PROFILE}`);
       window.location.reload();
     } else {
       return res.data.address[0];
@@ -41,7 +41,7 @@ export const useAddAddress = (
     (address, navigate) => addAddress(address, navigate, (retain = false)),
     {
       onError: (d) => {
-        navigate("/error");
+        navigate(`/${ERRROR}`);
       },
       onSuccess: onSuccess,
     }
@@ -57,12 +57,12 @@ export const deleteAddress = (id, navigate) => {
     })
     .then((res) => {
       if (res.data) {
-        navigate("/profile");
+        navigate(`/${PROFILE}`);
         window.location.reload();
       }
     })
     .catch((err) => {
-      navigate("/error");
+      navigate(`/${ERRROR}`);
     });
 };
 
@@ -78,12 +78,12 @@ export const changeAddress = (id, address, navigate) => {
     .then(
       (res) => {
         if (res.data) {
-          navigate("/profile");
+          navigate(`/${PROFILE}`);
           window.location.reload();
         }
       },
       (err) => {
-        navigate("/error");
+        navigate(`/${ERRROR}`);
       }
     );
 };
@@ -106,8 +106,7 @@ export const useGetAddress = (navigate) => {
   return useQuery([GET_ADDRESS], () => getAddress(navigate), {
     refetchOnWindowFocus: false,
     onError: (d) => {
-      console.log(e);
-      navigate("/error");
+      navigate(`/${ERRROR}`);
     },
   });
 };

@@ -128,7 +128,6 @@ CartRouter.route("/delete/:id").delete(
     Session.find({ userId: req.user.id }, (error, session) => {
       CartItem.findByIdAndDelete({ _id: req.params.id }).then(
         (data) => {
-          console.log("daa", data);
           Products.findById(data?.productId).then(
             (product) => {
               product

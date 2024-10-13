@@ -1,10 +1,10 @@
 import axios from "axios";
-import { url } from "../constants/constant";
+import { url, WISHLIST } from "../constants/constant";
 
 export const addToWishList = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios
-      .post(`${url}wish-list/${id}`, null, {
+      .post(`${url}${WISHLIST}/${id}`, null, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
@@ -17,7 +17,7 @@ export const addToWishList = (id, navigate) => {
 export const checkWishList = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios
-      .get(`${url}wish-list/${id}`, {
+      .get(`${url}${WISHLIST}/${id}`, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
@@ -30,7 +30,7 @@ export const checkWishList = (id, navigate) => {
 export const removeFromWishList = (id, navigate) => {
   return new Promise((resolve, reject) => {
     axios
-      .delete(`${url}wish-list/${id}`, {
+      .delete(`${url}${WISHLIST}/${id}`, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => {
@@ -43,7 +43,7 @@ export const removeFromWishList = (id, navigate) => {
 export const getWishList = () => {
   return new Promise((resolve, reject, next) => {
     axios
-      .get(`${url}wish-list`, {
+      .get(`${url}${WISHLIST}`, {
         headers: { Authorization: "bearer " + localStorage.getItem("token") },
       })
       .then((res) => resolve(res.data))

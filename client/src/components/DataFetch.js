@@ -58,7 +58,8 @@ const Filter = styled("div")(({ theme }) => ({
   alignItems: "center",
   width: "10%",
   cursor: "pointer",
-  backgroundColor: alpha(theme.palette.common.black, 0.25),
+  // border: "1rem solid alpha(theme.palette.common.black, 0.25)",
+  border: `0.2rem solid ${alpha(theme.palette.primary.main, 0.25)}`,
   padding: "0.5rem 1rem",
   margin: "1rem 1rem 0rem 0rem",
 }));
@@ -73,11 +74,30 @@ const Wrapper = styled("div")(({ theme, isEmpty }) => ({
   display: "flex",
   flexDirection: "row",
   justifyContent: isEmpty ? "space-between" : "space-evenly",
-  margin: "2rem",
-  [theme.breakpoints.down("md")]: {
-    margin: "2rem 0.5rem",
+  [theme.breakpoints.up("md")]: {
+    margin: "1rem",
   },
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
+    margin: "0rem 0.8rem 2rem",
+    justifyContent: "space-between",
+  },
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+  },
+}));
+
+const OuterWrapper = styled("div")(({ theme, isEmpty }) => ({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: isEmpty ? "space-between" : "space-evenly",
+  [theme.breakpoints.up("md")]: {
+    margin: "1rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    margin: "0rem 0.8rem 2rem",
+    justifyContent: "space-between",
+  },
+  [theme.breakpoints.down("md")]: {
     flexDirection: "column",
   },
 }));
@@ -100,7 +120,7 @@ const ProductList = styled("div")(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     flex: 0,
     width: "calc(100% - 4rem)",
-    margin: "2rem",
+    margin: "0rem 2rem 2rem",
   },
 }));
 
@@ -110,7 +130,7 @@ const ProductCard = styled(Card)(({ theme }) => ({
   padding: "0.5rem",
   display: "flex",
   flexDirection: "column",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     width: "calc(100% - 0.8rem)",
   },
 }));
@@ -121,31 +141,50 @@ const ProductItem = styled("div")(({ theme }) => ({
 
 const FilterOption = styled("div")(({ theme }) => ({
   width: "fit-content",
-  [theme.breakpoints.down("sm")]: {
-    width: "95%",
+  [theme.breakpoints.down("md")]: {
+    width: "92%",
+    marginTop: "2rem",
+    marginLeft: "1rem",
   },
 }));
 
-const FilterHeader = styled("h6")(({ theme }) => ({}));
+const FilterHeader = styled("div")(({ theme }) => ({
+  fontWeight: 700,
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1.4rem",
+  },
+}));
+
+export const ApplyButton = styled(Button)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    margin: "auto",
+    width: "fit-content",
+  },
+}));
 
 export const Loading = styled("h1")(({ theme }) => ({
   width: "100%",
   textAlign: "center",
 }));
 
-const List = styled("div")(({ theme }) => ({}));
+const List = styled("div")(({ theme }) => ({
+  // []
+  background: "alpha(theme.palette.primary)",
+}));
 
 const Image = styled("img")(({ theme }) => ({ margin: "auto" }));
 
 const OuterUnorderedList = styled(UnorderedList)(({ theme }) => ({
   width: "15%",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     width: "100%",
     top: "4rem",
     zIndex: "464",
     background: "white",
     position: "fixed",
-    height: "100vh",
+    // height: "100vh",
+    height: "90vh",
+    overflowY: "auto",
   },
 }));
 
@@ -153,8 +192,19 @@ const CloseWrapper = styled(UnorderedList)(({ theme }) => ({
   position: "fixed",
   top: "4rem",
   right: "0.5rem",
-  zIndex: 900,
+  zIndex: 2147483,
   cursor: "pointer",
+  marginTop: "1rem",
+}));
+
+const StickyButton = styled(UnorderedList)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    position: "fixed",
+    width: "100%",
+    top: "3.5rem",
+    zIndex: 100,
+    background: `${theme.palette.common.white}`,
+  },
 }));
 
 const UnorderedInlineList = styled(UnorderedList)(({ theme }) => ({
@@ -162,7 +212,7 @@ const UnorderedInlineList = styled(UnorderedList)(({ theme }) => ({
   marginLeft: "0.3rem",
   [theme.breakpoints.down("md")]: {
     width: "100%",
-    marginLeft: "0rem",
+    margin: "1rem",
   },
 }));
 
@@ -191,6 +241,16 @@ const Products = (props) => {
   const lowerValueRef = useRef();
   const upperValueRef = useRef();
 
+  useEffect(() => {
+    const wrapper = document.getElementsByClassName("body-wrapper");
+    if (wrapper && wrapper.length > 0) {
+      wrapper[0].style.top = "6rem";
+    }
+    return () => {
+      wrapper[0].style.top = "4rem";
+    };
+  }, []);
+
   // useEffect(() => {
   //   fetchAllProducts(pageNumber)
   //     .then((res) => {
@@ -209,9 +269,13 @@ const Products = (props) => {
   };
   const { data, isLoading, isError, refetch } = useFeatureFetch(pageNumber);
 
-  const isMobile = useResponsive(window.innerWidth);
+  const isMobile = useResponsive(window.innerWidth, 900);
 
-  const [showFilters, setShowFilter] = useState(!isMobile);
+  const [showFilters, setShowFilter] = useState(isMobile ? false : true);
+
+  useEffect(() => {
+    if (isMobile) setShowFilter(false);
+  }, [isMobile]);
 
   useEffect(() => {
     setTotalPages(data?.data?.total);
@@ -318,33 +382,43 @@ const Products = (props) => {
   }, [value2]);
 
   useEffect(() => {
-    if (showFilters) document.body.style.overflow = "hidden";
+    if (showFilters && isMobile) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "auto";
   }, [showFilters]);
 
   return (
-    <>
-      <UnorderedInlineList>
-        {filters &&
-          Object.keys(filters).map((item, index) => (
-            <>
-              {filters[item] && (
-                <Filter onClick={() => removeFilter(item)}>
-                  <List key={`${item}-${filters.item}`}>
-                    {filters[item].value}
-                  </List>
-                  <CloseIcon />
-                </Filter>
-              )}
-            </>
-          ))}
-      </UnorderedInlineList>
+    <OuterWrapper isEmpty={products?.length === 0 && !isLoading}>
+      {products?.length > 0 &&
+        (filters.categories || filters.discount || filters.tags) && (
+          <UnorderedInlineList>
+            {filters &&
+              Object.keys(filters).map((item, index) => (
+                <>
+                  {filters[item] && (
+                    <Filter onClick={() => removeFilter(item)}>
+                      <List key={`${item}-${filters.item}`} className="list">
+                        {filters[item].value}
+                      </List>
+                      <CloseIcon />
+                    </Filter>
+                  )}
+                </>
+              ))}
+          </UnorderedInlineList>
+        )}
       <Wrapper isEmpty={products?.length === 0 && !isLoading}>
         {products?.length > 0 && (
           <>
             {isMobile && (
-              <Button onClick={() => setShowFilter(true)}>Apply Filters</Button>
+              <StickyButton>
+                <ApplyButton>
+                  <Button onClick={() => setShowFilter(true)}>
+                    Apply Filters
+                  </Button>
+                </ApplyButton>
+              </StickyButton>
             )}
+
             {isMobile && showFilters && (
               <CloseWrapper
                 onClick={() => setShowFilter(false)}
@@ -378,7 +452,7 @@ const Products = (props) => {
                           <input
                             onChange={(e) => {
                               const discount = `${e.target.value}%`;
-                              navigate(`/?discount=${discount}`);
+                              // navigate(`/?discount=${discount}`);
                               addFilter({
                                 discount: {
                                   value: `${e.target.value}%`,
@@ -429,7 +503,7 @@ const Products = (props) => {
                   </UnorderedList>
                 </FilterOption>
                 <FilterOption>
-                  <h6>Categories</h6>
+                  <FilterHeader>Categories</FilterHeader>
                   <UnorderedList>
                     {categories &&
                       categories.map((item) => (
@@ -584,7 +658,7 @@ const Products = (props) => {
           Item added to Cart
         </Alert>
       )}
-    </>
+    </OuterWrapper>
   );
 };
 export default Products;
