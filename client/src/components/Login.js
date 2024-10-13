@@ -9,6 +9,15 @@ import { FormControl, InputLabel, Input, FormGroup } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { styled, alpha } from "@mui/material/styles";
+import { PROFILE_DETAILS } from "../constants/constant";
+import { useQueryClient } from "react-query";
+import {
+  emailValid,
+  isAlpha,
+  isAlphaWithSpace,
+  isNumeric,
+  trimSuccessiveSpace,
+} from "../utilities/patterns";
 
 const Form = styled("form")(({ theme }) => ({
   display: "flex",
@@ -37,10 +46,10 @@ const BoxForm = styled(Box)(({ theme }) => ({
   transform: "translate(-50%, -50%)",
   width: "30%",
   padding: "2rem 3rem",
-  background: "#d4d4d8",
-  border: "2px solid #000",
+  background: "#fff",
   boxShadow: 24,
   p: 4,
+  borderRadius: "0.2rem",
   [theme.breakpoints.down("md")]: {
     width: "70%",
   },
@@ -57,10 +66,16 @@ const AlternateOption = styled(Button)(({ theme }) => ({}));
 
 const Buttons = styled("div")(({ theme }) => ({
   display: "flex",
-  justifyContent: "center",
+  justifyContent: "space-between",
 }));
 
-export default function Login({ open, handleOpen, handleClose, setCount }) {
+export default function Login({
+  open,
+  handleOpen,
+  handleClose,
+  setCount,
+  setToken,
+}) {
   let navigate = useNavigate();
   const [userToggleLog, setToggleLog] = useState(false);
   const [userName, setUserName] = useState("");
@@ -79,14 +94,17 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
   const [passwordError, setPasswordError] = useState(false);
   // const [error,setError] = useState(false);
 
+  const [loginClicked, setLoginClicked] = useState(false);
+
   const [invalidAuth, setInvalidAuth] = useState(false);
   const [unsuccessfulSignup, setUnsuccessfulSignup] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     if (e.target.name === "name") {
+      const userNameValue = e.target.value;
       setUserName(e.target.value);
-      if (userName.length < 5) {
+      if (userNameValue < 5) {
         setUserErrorMessage("Cannot be less than 5 characters");
         setUserError(true);
       } else {
@@ -94,14 +112,15 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
         setUserError(false);
       }
     } else {
-      if (password.length < 7) {
+      const passwordValue = e.target.value;
+      if (passwordValue.length < 7) {
         setPasswordErrorMessage("Cannot be less than 8 characters");
         setPasswordError(true);
       } else {
         setPasswordErrorMessage("");
         setPasswordError(false);
       }
-      setPassword(e.target.value);
+      setPassword(passwordValue);
     }
   };
   const toggleLog = () => {
@@ -117,6 +136,21 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
       navigate("/");
     }
   }, [localStorage.getItem("token")]);
+
+  const queryClient = useQueryClient();
+
+  const invalidateFetch = () =>
+    queryClient.invalidateQueries([PROFILE_DETAILS]);
+
+  const isRegisterBtnEnabled = () => {
+    return (
+      message !== "" ||
+      userName == "" ||
+      password == "" ||
+      email == "" ||
+      phone === ""
+    );
+  };
 
   return (
     <div>
@@ -144,6 +178,12 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                   autoComplete={true}
                   helperText={userErrorMessage}
                   variant="standard"
+                  onKeyDown={(e) => {
+                    if (!isAlphaWithSpace(e.key)) {
+                      e.preventDefault();
+                    }
+                    trimSuccessiveSpace(e, e.target.value);
+                  }}
                   onChange={(e) => handleChange(e)}
                 />
                 <TextField
@@ -161,20 +201,28 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                   onFocus={(e) => handleChange(e)}
                 />
                 <p style={{ color: "red" }}>
-                  {invalidAuth && "Invalid credentials"}
+                  {invalidAuth && !loginClicked && "Invalid credentials"}
                 </p>
                 <CustomButton
                   id="outlined-required"
                   onClick={() => {
+                    setLoginClicked(true);
                     loginRequest(
                       { username: userName, password: password },
                       navigate,
-                      setCount
+                      setCount,
+                      setToken
                     ).then((result) => setInvalidAuth(true));
                   }}
                   variant="contained"
                   color="primary"
                   style={{ margin: "1rem auto " }}
+                  disabled={
+                    (passwordError && passwordError !== "") ||
+                    (userErrorMessage && userErrorMessage !== "") ||
+                    password === "" ||
+                    userName === ""
+                  }
                 >
                   Login
                 </CustomButton>
@@ -191,18 +239,41 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                   required
                   helperText={userErrorMessage}
                   variant="standard"
-                  onChange={(e) => handleChange(e)}
+                  onChange={(e) => {
+                    if (message !== "") setMessage("");
+                    handleChange(e);
+                  }}
+                  onKeyDown={(e) => {
+                    if (!isAlphaWithSpace(e.key)) {
+                      e.preventDefault();
+                    }
+                    trimSuccessiveSpace(e, e.target.value);
+                  }}
                   ref={nameRef}
                 />
-                <TextField
-                  id="standard-basic"
-                  label="Email"
-                  ref={emailRef}
-                  type="email"
-                  variant="standard"
-                  required
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <div style={{ flexDirection: "column", display: "flex" }}>
+                  <TextField
+                    id="standard-basic"
+                    label="Email"
+                    ref={emailRef}
+                    type="email"
+                    variant="standard"
+                    required
+                    onChange={(e) => {
+                      if (message !== "") setMessage("");
+                      setEmail(e.target.value);
+                      const isValidEmail = emailValid(e.target.value);
+                      if (isValidEmail) setMessage("");
+                      else setMessage("Email not valid");
+                    }}
+                    // onKeyDown={(e) => {
+                    //   emailValid(e);
+                    // }}
+                  />
+                  {message.includes("Email") && (
+                    <div style={{ color: "red" }}>{message}</div>
+                  )}
+                </div>
                 <TextField
                   id="standard-basic"
                   label="Phone No"
@@ -211,6 +282,11 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                   type="tel"
                   required
                   onChange={(e) => setPhone(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (!isNumeric(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
                 <TextField
                   id="standard-password-input"
@@ -236,15 +312,19 @@ export default function Login({ open, handleOpen, handleClose, setCount }) {
                         email: email,
                         phone: phone,
                       },
-                      navigate
+                      navigate,
+                      setToken
                     ).then((result) => {
-                    if(result){  setUnsuccessfulSignup(true);
-                      setMessage(result.message);}
+                      if (result) {
+                        setUnsuccessfulSignup(true);
+                        setMessage(result.message);
+                      }
                     });
                   }}
                   variant="contained"
                   color="primary"
                   style={{ margin: "1rem auto " }}
+                  disabled={isRegisterBtnEnabled()}
                 >
                   Register
                 </CustomButton>

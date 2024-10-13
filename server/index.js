@@ -7,7 +7,7 @@ const app = express();
 const JWTStrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 const Users = require("./models/user");
 const redis = require("redis");
 const flash = require("connect-flash");
@@ -30,6 +30,7 @@ const {
   ReviewRouter,
   WishListRouter,
 } = require("./routers");
+const stripeRouter = require("./routers/stripeRouter");
 
 var opts = {};
 
@@ -97,7 +98,8 @@ app.use("/orders", orderRouter);
 app.use("/tags", TagRouter);
 app.use("/discount", DiscountRouter);
 app.use("/status", paymentRouter);
-app.use("/wish-list",WishListRouter);
+app.use("/wish-list", WishListRouter);
+app.use("/checkout", stripeRouter);
 
 app.use((err, req, res, next) => {
   const message = err.message || "Something went wrong!";

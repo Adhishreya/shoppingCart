@@ -31,13 +31,11 @@ const reviews = new mongoose.Schema({
 });
 
 // reviews.post("save", function (doc) {
-//     console.log(Products.find({}));
 // Products.findOne({ _id: doc.productId }).exec();
 //   let products = Products.findOne({_id:doc.productId});
 // Products.find({_id:doc.productId})
 //   let avgRating = (products.averageRating + doc.rating) / 2;
 //   products.averageRating = avgRating;
-//   console.log(doc.productId);
 //   await products.save();
 // });
 module.exports = mongoose.model("Reviews", reviews);

@@ -1,19 +1,35 @@
 import { Rating, styled, TextField, alpha, Button } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import { basicProductDetails, submitReview } from "../requestModules/products";
-import { Row } from "./Order";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { submitReview } from "../requestModules/review";
+import { basicProductDetails } from "../requestModules/products";
+import { Row } from "./Orders";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Wrapper = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  margin: "2rem auto",
+  margin: "0rem auto 2rem",
   width: "50%",
-  gap: "3rem",
+  gap: "1rem",
+  [theme.breakpoints.down("md")]: {
+    width: "calc(100% - 4rem)",
+    margin: "0rem 2rem 2rem",
+    paddingBottom: "0.8rem",
+  },
+}));
+
+const Heading = styled("div")(({ theme }) => ({
+  fontSize: "1.2rem",
+  fontWeight: 500,
+}));
+
+const PageHeading = styled("div")(({ theme }) => ({
+  fontSize: "1.4rem",
+  fontWeight: 700,
+  [theme.breakpoints.down("md")]: {
+    marginTop: "0.8rem",
+  },
 }));
 
 const Upload = styled("button")(({ theme }) => ({
@@ -22,10 +38,13 @@ const Upload = styled("button")(({ theme }) => ({
   height: "6rem",
   borderRadius: "0.2rem",
   position: "relative",
+  background: `${theme.palette.common.white}`,
+  cursor: "pointer",
 }));
 
 const FileInput = styled("input")(({ theme }) => ({
   position: "absolute",
+  background: "red",
 }));
 
 const Image = styled("img")(({ theme }) => ({
@@ -35,14 +54,45 @@ const Image = styled("img")(({ theme }) => ({
   backgroundColor: alpha(theme.palette.common.black, 0.5),
 }));
 
+const ImageUploadWrapper = styled("div")(({ theme }) => ({
+  width: "8rem",
+  height: "8rem",
+  position: "relative",
+}));
+
+const ImageWrapper = styled("div")(({ theme }) => ({
+  maxWidth: "4rem",
+  maxHeight: "4rem",
+  position: "relative",
+}));
+
+const CloseWrapper = styled("div")(({ theme }) => ({
+  width: "0.5rem",
+  height: "0.5rem",
+  position: "absolute",
+  right: "0.8rem",
+  top: "0.4rem",
+}));
+
+const ButtonWrapper = styled("div")(({ theme }) => ({
+  width: "5rem",
+  display: "flex",
+  height: "6rem",
+  textAlign: "center",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+}));
+
 const Review = () => {
   const [rating, setRating] = useState(0);
   const ratingRef = useRef();
+  const [uploadFile, setUploadFile] = useState(null);
 
   const [productDetails, setProductDetails] = useState();
 
-  const [title, setTitle] = useState();
-  const [body, setBody] = useState();
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
 
   const [para, setPara] = useSearchParams();
 
@@ -58,14 +108,22 @@ const Review = () => {
     return () => {};
   }, [para]);
 
-  const handleEvent = () =>{
+  const imageToBeUploaded = useRef(null);
+
+  const handleEvent = () => {
     let id = para.get("review-purchase");
-    submitReview(id,{title,body,rating},navigate)
-  }
+    let imageDetails = null;
+    if (uploadFile) {
+      imageDetails = imageToBeUploaded.current;
+    }
+    submitReview(id, { title, body, rating }, navigate, imageDetails);
+  };
+
+  const isEnabled = () => title !== "" && body !== "";
 
   return (
     <Wrapper>
-      <h2>Create Review</h2>
+      <PageHeading>Add Review</PageHeading>
 
       {productDetails && (
         <Row>
@@ -75,8 +133,6 @@ const Review = () => {
           </Link>
         </Row>
       )}
-
-      <hr />
       <Rating
         name="simple-controlled"
         size="large"
@@ -89,8 +145,7 @@ const Review = () => {
           //   modifyRating(navigate, item._id, rating);
         }}
       />
-      <hr />
-      <h2>Add a headline</h2>
+      <Heading>Add a headline</Heading>
       <TextField
         id="outlined-basic"
         name="title"
@@ -99,12 +154,58 @@ const Review = () => {
         variant="outlined"
         onChange={(e) => setTitle(e.target.value)}
       />
-      <h2>Add a photo or video</h2>
-      <Upload>
-        <h1>+</h1>
-        <FileInput hidden accept="image/*" multiple type="file" />
-      </Upload>
-      <h2>Add a written review</h2>
+      <Heading>Add a photo or video</Heading>
+      {uploadFile ? (
+        <ImageUploadWrapper>
+          <CloseWrapper
+            onClick={() => setUploadFile(null)}
+            className="close-wrapper"
+          >
+            <CloseIcon width="0.5rem" fontSize="small" />
+          </CloseWrapper>
+          <ImageWrapper>
+            <Image src={uploadFile} height="100%" width="100%" />
+          </ImageWrapper>
+        </ImageUploadWrapper>
+      ) : (
+        <Upload>
+          <label htmlFor="contained-button-file">
+            <ButtonWrapper>+</ButtonWrapper>
+          </label>
+          <FileInput
+            hidden
+            accept="image/*"
+            multiple
+            type="file"
+            id="contained-button-file"
+            onChange={(e) => {
+              // setUploadFile(e.target.files[0]);
+              const readFile = e.target.files[0];
+              const reader = new FileReader();
+              // reader.readAsDataURL(readFile);
+
+              // reader?.onload((e) => {
+              // setUploadFile(URL.createObjectURL(readFile));
+              // });
+
+              if (readFile) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                  setUploadFile(e.target.result);
+                };
+                reader.readAsDataURL(readFile);
+              }
+              const data = new FormData();
+
+              data.append("image", readFile, "" + readFile.name + "");
+              imageToBeUploaded.current = readFile;
+            }}
+            encType="multipart/form-data"
+            name="image"
+          />
+        </Upload>
+      )}
+      <Heading>Add a written review</Heading>
       <TextField
         id="outlined-multiline-flexible"
         // label="Multiline"
@@ -116,7 +217,13 @@ const Review = () => {
         // value={value}
         // onChange={handleChange}
       />
-      <Button onClick={() => handleEvent()}>Submit</Button>
+      <Button
+        onClick={() => handleEvent()}
+        variant="contained"
+        disabled={!isEnabled()}
+      >
+        Submit
+      </Button>
     </Wrapper>
   );
 };

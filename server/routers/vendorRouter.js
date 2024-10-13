@@ -13,7 +13,6 @@ vendorRouter.route('/profile')
     })
     .post(authenticate.verifyUser, (req, res, next) => {
         let { licensedVendor, companyName, companyAddress, companyEmail, companyPhone, companyWebsite } = req.body.vendorDetails;
-        console.log(req.body)
         Vendor.create({ licensedVendor, companyName, companyAddress, companyEmail, companyPhone, companyWebsite, userId: mongoose.Types.ObjectId(req.user.id) }, (err, vendor) => {
             if (err) {
                 next(err);

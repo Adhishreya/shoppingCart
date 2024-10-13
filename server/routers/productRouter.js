@@ -6,7 +6,11 @@ const mongoose = require("mongoose");
 productsRouter
   .route("/")
   .get((req, res) => {
-    Products.find({}, "productName images price _id tags availability discount")
+    const findProducts = Products.find(
+      {},
+      "productName images price _id tags availability discount"
+    );
+    findProducts
       .skip(10)
       .lean()
       .populate("vendorDetails", "companyName")
@@ -14,9 +18,10 @@ productsRouter
       .populate("category")
       .populate("tags")
       .then((data) => {
+        const mainData = { products: data, total: data?.length };
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.json(data);
+        res.json(mainData);
       })
       .catch((e) => console.log("unsuccessful"));
   })
@@ -98,7 +103,6 @@ productsRouter.route("/filter").get((req, res, next) => {
   ) {
     filters.price = { $lt: parseInt(upper) * 100, $gt: parseInt(lower) * 100 };
   }
-  // filters.
   Products.find(filters)
     .populate("vendorDetails")
     .skip(page > 0 ? page * nPerPage : 0)
@@ -108,9 +112,10 @@ productsRouter.route("/filter").get((req, res, next) => {
     .populate("tags")
     .then(
       (data) => {
+        const mainData = { products: data, total: data?.length };
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.json(data);
+        res.json(mainData);
       },
       (err) => next(err)
     );
@@ -124,7 +129,7 @@ productsRouter
       .populate("discount")
       .populate("category")
       .populate("tags")
-      .populate({ path: "reviews" ,populate:"userId"})
+      .populate({ path: "reviews", populate: "userId" })
       .then((data) => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");

@@ -2,7 +2,7 @@ import { Provider, applyMiddleware, connect } from "react-redux";
 import { createStore } from "redux";
 import thunk from "redux-thunk";
 
-import { localItems } from "../requestModules/products";
+import { localItems } from "../requestModules/cart";
 
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const ADD_TO_CART = "ADD_TO_CART";
@@ -45,8 +45,7 @@ const cartReducer = (state = initialState, action) => {
       return Object.assign({}, state, { isLogged: !state.isLogged });
     }
     case SEARCH_STRING: {
-      console.log("this is the redux store " + action.payload);
-      return Object.assign({}, { searchString: action.payload });
+      return Object.assign({}, state, { searchString: action.payload });
     }
     default:
       return state;
@@ -91,7 +90,6 @@ export const mapDispatchToProps = (dispatch) => {
 };
 
 export const mapStateToProps = (store) => {
-  console.log(store)
   return {
     itemCount: store.itemCount,
     searchString: store.searchString,

@@ -55,6 +55,10 @@ const products = new mongoose.Schema({
     default: 0,
     type: Number,
   },
+  tax: {
+    default: 0,
+    type: Number,
+  },
   discount: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -131,7 +135,6 @@ products.methods.updateRating = async function (id, rating, rating_id) {
   // return this.model(this.constructor.modelName, this.schema).findById(
   //   id,
   //   (err, doc) => {
-  //     // console.log(doc);
   //     if (doc) {
   //       let avgRating = (doc.averageRating + rating) / 2;
   //       doc.averageRating = avgRating;

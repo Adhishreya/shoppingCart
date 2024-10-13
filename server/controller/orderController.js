@@ -81,9 +81,13 @@ const checkout = async (req, res, next) => {
 
     await CartItem.deleteMany({ sessionId: session._id });
 
-    res.statusCode = 200;
-    res.setHeader("ContentType", "application/json");
-    res.json({ data: "createdOrder" });
+    // res={...res,order_id:doc._id, paymentMode}
+    req.body.order_id = doc._id;
+    req.body.paymentMode = paymentMode;
+    // res.statusCode = 200;
+    // res.setHeader("ContentType", "application/json");
+    // res.json({ data: doc._id});
+    next();
   } catch (error) {
     next(error);
   }
