@@ -54,7 +54,7 @@
 - https://stackoverflow.com/questions/46133557/why-is-my-header-not-being-set-on-redirect
 - https://stackoverflow.com/questions/39513753/my-redux-state-has-changed-why-doesnt-react-trigger-a-re-render
 
-- [authentication]
+- ### [authentication]
 - https://stackoverflow.com/questions/37582444/jwt-vs-cookies-for-token-based-authentication
 - [store cart when user not signed in](https://stackoverflow.com/questions/68941814/add-to-cart-when-the-user-is-not-logged-in)
 
